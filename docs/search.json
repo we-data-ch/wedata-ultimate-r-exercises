@@ -1,0 +1,163 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "WeData’s ultimate exercises",
+    "section": "",
+    "text": "The aim of this website is to be a compendium of knowledge on R made by members of the WeData association. It should serve both as a reference for knowledge, and as an exercise interface. We hope to highlight some important themes in this book.\n\n\n\n\nIt is free\nData analysis and statics ecosystem\nBeautiful visualization capabilities\nAmazing reporting tools\nWeb application development\nVibrant and nice community\nWidely used in research\nKey tools in specific sectors\n\n\n\n\nWhy this website? To complete existing resources with exercises. In fact, there are already numerous free or paid resources on R scattered on the internet. The main concern is not about knowing if a resource exists but about finding it. Rarely do collaborative projects try to bring together various R resources in the form of a book or website. Here are some notable examples I know of (there are probably more):\n\nThe big book of R\nBookdown\nPyofile (R and Python books)\n\nIt is amusing to find excellent resources hidden in Rmarkdown and Quarto galleries. We believe that despite the dissemination of resources, the community is doing a fantastic job trying to consolidate them, and I strongly encourage anyone interested in contributing to this effort to feed the sources mentioned earlier. However, another problem remains: there is a glaring lack of exercises and interactive resources. It’s important to note that there are platforms for doing R exercises online to some degree of interactivity. Notable cases include Exercism, Codewars and W3school (for a more comprehensive list, check our blog post). There is also the learnr package, which allows creating interactive R exercises using Rmarkdown. The system is great (at least locally), but when it comes to putting exercises online for use without installing R, it requires an active server, adding more work and concerns, particularly regarding hosting and managing a large number of requests. Our goal would be to create an exercise platform that does not require running R on a server. Is this possible? The answer is yes!\n\nThe advancements in web technologies over the past few years have given us hope to create online interactive exercise platforms without a server, and it was only recently that the idea of reusing a system like learnr within webr (the Quarto extension) surfaced. These developments are very encouraging and have inspired the creation of this platform.\n\nOur association is made up of passionate individuals with varying levels, goals, and interests. But I believe we can create an interactive resource that allows curious people to train. The objective will be to create exercise series and recommend existing resources to help users complete the exercises.\n\nThis is new territory for me, and I don’t know if it will work. Perhaps I’m missing essential elements, or web pages might be unbelievably slow or inefficient. But I believe it’s worth a try!\n\n\n\nAs we said earlier, thanks to webr, it’s now possible to use R in the browser without the need for a server (a computer that’s always running). To be more precise, R is translated into WebAssembly, which runs in the browser. All thanks to webr. If you don’t believe me, you can try R in the browser here. Or you can test it just below using the code or writting yours:\n\n\n\n\n\n\n\n\nMagic! You can use it without an R, even on your cell phone!\nQuarto’s strength lies in its ability to integrate it so seamlessly into its ecosystem. This has enabled the same webr authors to create the quarto-live extension, which adds the elements needed to create online exercises. So we can easily create interactive online exercises simply by hosting our website on a GitHub repository, with no real performance problems.\nWe can thank quarto-live for this feat. Here is an example of an exercise suggested in the documentation:\nFilter the starwars dataset so that only the droid characters are included.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint 1\n\n\n\n\n\nConsider using the filter() function from dplyr.\nstarwars |&gt; filter(______)\n\n\n\n\n\n\n\n\n\n\n\nHint 2\n\n\n\n\n\nYou should filter the dataset using the species column.\nstarwars |&gt; filter(species == ______)\n\n\n\n\n\n\n\n\n\n\n\nFully worked solution:\n\n\n\n\n\nUse the filter() function from dplyr:\n1starwars |&gt;\n2    filter(species == \"Droid\")\n\n1\n\nTake the starwars dataset, and then,\n\n2\n\nFilter for the “Droid” species.\n\n\n\n\n\n\nFantastic! This allows you to have the capabilities of {learnr} without the need to install R or have a server to hold it all together. Note that quarto-live is still in its infancy and will probably improve over time."
+  },
+  {
+    "objectID": "index.html#exercice-example-from-quarto-live",
+    "href": "index.html#exercice-example-from-quarto-live",
+    "title": "WeData’s ultimate exercises",
+    "section": "",
+    "text": "As we said earlier, thanks to webr, it’s now possible to use R in the browser without the need for a server (a computer that’s always running). To be more precise, R is translated into WebAssembly, which runs in the browser. All thanks to webr. If you don’t believe me, you can try R in the browser here. Or you can test it just below using the code or writting yours:\n\n\n\n\n\n\n\n\nMagic! You can use it without an R, even on your cell phone!\nQuarto’s strength lies in its ability to integrate it so seamlessly into its ecosystem. This has enabled the same webr authors to create the quarto-live extension, which adds the elements needed to create online exercises. So we can easily create interactive online exercises simply by hosting our website on a GitHub repository, with no real performance problems.\nWe can thank quarto-live for this feat. Here is an example of an exercise suggested in the documentation:\nFilter the starwars dataset so that only the droid characters are included.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint 1\n\n\n\n\n\nConsider using the filter() function from dplyr.\nstarwars |&gt; filter(______)\n\n\n\n\n\n\n\n\n\n\n\nHint 2\n\n\n\n\n\nYou should filter the dataset using the species column.\nstarwars |&gt; filter(species == ______)\n\n\n\n\n\n\n\n\n\n\n\nFully worked solution:\n\n\n\n\n\nUse the filter() function from dplyr:\n1starwars |&gt;\n2    filter(species == \"Droid\")\n\n1\n\nTake the starwars dataset, and then,\n\n2\n\nFilter for the “Droid” species.\n\n\n\n\n\n\nFantastic! This allows you to have the capabilities of {learnr} without the need to install R or have a server to hold it all together. Note that quarto-live is still in its infancy and will probably improve over time."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "intermediate.html",
+    "href": "intermediate.html",
+    "title": "Intermediate",
+    "section": "",
+    "text": "Intermediate\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "advanced.html",
+    "href": "advanced.html",
+    "title": "Advanced",
+    "section": "",
+    "text": "Advanced\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "beginner.html",
+    "href": "beginner.html",
+    "title": "Beginner",
+    "section": "",
+    "text": "Beginner\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1. Basic R\n\n\n\n\n\nExercises for absolute beginners O.o\n\n\n\n\n\nVestin Hategekimana\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "beginner/Basics.html",
+    "href": "beginner/Basics.html",
+    "title": "1. Basic R",
+    "section": "",
+    "text": "Calculate the sum of 15 and 30.\nSolution:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the + operator to add two numbers like a machine calculator.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n15 + 30"
+  },
+  {
+    "objectID": "beginner/Basics.html#exercise-1-basic-arithmetic",
+    "href": "beginner/Basics.html#exercise-1-basic-arithmetic",
+    "title": "1. Basic R",
+    "section": "",
+    "text": "Calculate the sum of 15 and 30.\nSolution:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the + operator to add two numbers like a machine calculator.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n15 + 30"
+  },
+  {
+    "objectID": "beginner/Basics.html#exercise-2-variable-assignment",
+    "href": "beginner/Basics.html#exercise-2-variable-assignment",
+    "title": "1. Basic R",
+    "section": "Exercise 2: Variable Assignment",
+    "text": "Exercise 2: Variable Assignment\nAssign the value 100 to a variable named my_variable and print it.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the &lt;- (or =) operator to assign a value to a variable.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Assign value to a variable\nmy_variable &lt;- 100\n\n# or\nmy_variable = 100\n\n# Print the variable\nmy_variable"
+  },
+  {
+    "objectID": "beginner/Basics.html#exercise-3-creating-a-vector",
+    "href": "beginner/Basics.html#exercise-3-creating-a-vector",
+    "title": "1. Basic R",
+    "section": "Exercise 3: Creating a Vector",
+    "text": "Exercise 3: Creating a Vector\nCreate a vector named my_vector containing the numbers 1, 2, 3, 4, and 5.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the c() function to create a vector.\n\n\n\n\n\n\n\n\n\n\n\nTips\n\n\n\n\n\nAlternatively use the : function to create a vector.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Create a vector\nc(1, 2, 3, 4, 5)\n\n# or\n1:5"
+  },
+  {
+    "objectID": "beginner/Basics.html#exercise-4-basic-function-usage",
+    "href": "beginner/Basics.html#exercise-4-basic-function-usage",
+    "title": "1. Basic R",
+    "section": "Exercise 4: Basic Function Usage",
+    "text": "Exercise 4: Basic Function Usage\nFind the mean of the numbers 10, 20, 30, 40, and 50.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the mean() function to calculate the average of a set of numbers.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Calculate the mean\nnumbers &lt;- c(10, 20, 30, 40, 50)\nmean(numbers)"
+  },
+  {
+    "objectID": "beginner/Basics.html#exercise-5-conditional-statement",
+    "href": "beginner/Basics.html#exercise-5-conditional-statement",
+    "title": "1. Basic R",
+    "section": "Exercise 5: Conditional Statement",
+    "text": "Exercise 5: Conditional Statement\nWrite a conditional statement that checks if a number x is greater than 10. If it is, print “Greater than 10”; otherwise, print “10 or less”.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse an if statement to perform a conditional check.\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nSolution:\nx &lt;- 12\n\n# Conditional statement\nif (x &gt; 10) {\n  print(\"Greater than 10\")\n} else {\n  print(\"10 or less\")\n}"
+  },
+  {
+    "objectID": "contribute.html",
+    "href": "contribute.html",
+    "title": "How to contribute?",
+    "section": "",
+    "text": "This is the project of WeData, an association dedicated to the promotion of data science and computer science. We wanted a way of sharing exercises that was as simple, independent and free as possible for as many people as possible. Thanks to the arrival of webr and quarto-live, this was possible!\nNote: quarto-live is still in early stage and further improvement are comming."
+  },
+  {
+    "objectID": "contribute.html#all-contributions-are-welcome",
+    "href": "contribute.html#all-contributions-are-welcome",
+    "title": "How to contribute?",
+    "section": "All contributions are welcome!",
+    "text": "All contributions are welcome!\nThis site is based on collaboration and aims to enable anyone wishing to help create interactive exercises to do so. Here are the steps if you want to help build this website by creating exercises:\n\n1. Clone the repository\nGo to the website GitHub repository. After cloning it, your are good to go!\n\n\n2. Create your tutorial\nIn the folder corresponding to the exercises level (currently beginner, intermediate and advanced), create a folder with the name you want. INside it create your quarto file (.qmd) or markdown file (.md) and add at least the following information to your YAML (begining of the file):\n---\n1title: My exercises set\n2author: Me\n3date: \"2024-08-11\"\n4categories:\n  - Category 1\n  - ...\n5image: image.png\n---\n\n1\n\nCompulsary\n\n2\n\nCompulsary\n\n3\n\nCompulsary\n\n4\n\nOptional\n\n5\n\nOptional, but if added it is better to put everything inside a folder\n\n\nThen for quarto file you need to add the following code at the begining after the YAML but before anything in the file:\n{{&lt; include ../../_extensions/r-wasm/live/_knitr.qmd &gt;}}\n\n\n3. Write your tutorial\nYou can follow the tutorials from the official quarto-live website. Pay particular attention to the following chapters (at least the first one):\nFrom the “Exercises Grading” part: - Creating Exercises - Managing Environements - Grading Solutions - Gradin with {gradethis}\n\n\n4. Send your exercises\nPush your changes if your are a contributer or do a pull requests otherwise."
+  },
+  {
+    "objectID": "index.html#goal-of-this-website",
+    "href": "index.html#goal-of-this-website",
+    "title": "WeData’s ultimate exercises",
+    "section": "",
+    "text": "The aim of this website is to be a compendium of knowledge on R made by members of the WeData association. It should serve both as a reference for knowledge, and as an exercise interface. We hope to highlight some important themes in this book."
+  },
+  {
+    "objectID": "index.html#why-r",
+    "href": "index.html#why-r",
+    "title": "WeData’s ultimate exercises",
+    "section": "",
+    "text": "It is free\nData analysis and statics ecosystem\nBeautiful visualization capabilities\nAmazing reporting tools\nWeb application development\nVibrant and nice community\nWidely used in research\nKey tools in specific sectors"
+  },
+  {
+    "objectID": "index.html#why-this-website",
+    "href": "index.html#why-this-website",
+    "title": "WeData’s ultimate exercises",
+    "section": "",
+    "text": "Why this website? To complete existing resources with exercises. In fact, there are already numerous free or paid resources on R scattered on the internet. The main concern is not about knowing if a resource exists but about finding it. Rarely do collaborative projects try to bring together various R resources in the form of a book or website. Here are some notable examples I know of (there are probably more):\n\nThe big book of R\nBookdown\nPyofile (R and Python books)\n\nIt is amusing to find excellent resources hidden in Rmarkdown and Quarto galleries. We believe that despite the dissemination of resources, the community is doing a fantastic job trying to consolidate them, and I strongly encourage anyone interested in contributing to this effort to feed the sources mentioned earlier. However, another problem remains: there is a glaring lack of exercises and interactive resources. It’s important to note that there are platforms for doing R exercises online to some degree of interactivity. Notable cases include Exercism, Codewars and W3school (for a more comprehensive list, check our blog post). There is also the learnr package, which allows creating interactive R exercises using Rmarkdown. The system is great (at least locally), but when it comes to putting exercises online for use without installing R, it requires an active server, adding more work and concerns, particularly regarding hosting and managing a large number of requests. Our goal would be to create an exercise platform that does not require running R on a server. Is this possible? The answer is yes!\n\nThe advancements in web technologies over the past few years have given us hope to create online interactive exercise platforms without a server, and it was only recently that the idea of reusing a system like learnr within webr (the Quarto extension) surfaced. These developments are very encouraging and have inspired the creation of this platform.\n\nOur association is made up of passionate individuals with varying levels, goals, and interests. But I believe we can create an interactive resource that allows curious people to train. The objective will be to create exercise series and recommend existing resources to help users complete the exercises.\n\nThis is new territory for me, and I don’t know if it will work. Perhaps I’m missing essential elements, or web pages might be unbelievably slow or inefficient. But I believe it’s worth a try!"
+  },
+  {
+    "objectID": "beginner/basics/basics.html",
+    "href": "beginner/basics/basics.html",
+    "title": "1. Basic R",
+    "section": "",
+    "text": "Calculate the sum of 15 and 30.\nSolution:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the + operator to add two numbers like a machine calculator.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n15 + 30"
+  },
+  {
+    "objectID": "beginner/basics/basics.html#exercise-1-basic-arithmetic",
+    "href": "beginner/basics/basics.html#exercise-1-basic-arithmetic",
+    "title": "1. Basic R",
+    "section": "",
+    "text": "Calculate the sum of 15 and 30.\nSolution:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the + operator to add two numbers like a machine calculator.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n15 + 30"
+  },
+  {
+    "objectID": "beginner/basics/basics.html#exercise-2-variable-assignment",
+    "href": "beginner/basics/basics.html#exercise-2-variable-assignment",
+    "title": "1. Basic R",
+    "section": "Exercise 2: Variable Assignment",
+    "text": "Exercise 2: Variable Assignment\nAssign the value 100 to a variable named my_variable and print it.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the &lt;- (or =) operator to assign a value to a variable.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Assign value to a variable\nmy_variable &lt;- 100\n\n# or\nmy_variable = 100\n\n# Print the variable\nmy_variable"
+  },
+  {
+    "objectID": "beginner/basics/basics.html#exercise-3-creating-a-vector",
+    "href": "beginner/basics/basics.html#exercise-3-creating-a-vector",
+    "title": "1. Basic R",
+    "section": "Exercise 3: Creating a Vector",
+    "text": "Exercise 3: Creating a Vector\nCreate a vector named my_vector containing the numbers 1, 2, 3, 4, and 5.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the c() function to create a vector.\n\n\n\n\n\n\n\n\n\n\n\nTips\n\n\n\n\n\nAlternatively use the : function to create a vector.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Create a vector\nc(1, 2, 3, 4, 5)\n\n# or\n1:5"
+  },
+  {
+    "objectID": "beginner/basics/basics.html#exercise-4-basic-function-usage",
+    "href": "beginner/basics/basics.html#exercise-4-basic-function-usage",
+    "title": "1. Basic R",
+    "section": "Exercise 4: Basic Function Usage",
+    "text": "Exercise 4: Basic Function Usage\nFind the mean of the numbers 10, 20, 30, 40, and 50.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the mean() function to calculate the average of a set of numbers.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Calculate the mean\nnumbers &lt;- c(10, 20, 30, 40, 50)\nmean(numbers)"
+  },
+  {
+    "objectID": "beginner/basics/basics.html#exercise-5-conditional-statement",
+    "href": "beginner/basics/basics.html#exercise-5-conditional-statement",
+    "title": "1. Basic R",
+    "section": "Exercise 5: Conditional Statement",
+    "text": "Exercise 5: Conditional Statement\nWrite a conditional statement that checks if a number x is greater than 10. If it is, print “Greater than 10”; otherwise, print “10 or less”.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse an if statement to perform a conditional check.\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nSolution:\nx &lt;- 12\n\n# Conditional statement\nif (x &gt; 10) {\n  print(\"Greater than 10\")\n} else {\n  print(\"10 or less\")\n}"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Preface",
+    "section": "",
+    "text": "The aim of this book is to be a compendium of knowledge on R made by members of the WeData association. It should serve both as a reference for knowledge, and as an exercise interface. We hope to highlight some important themes in this book."
+  },
+  {
+    "objectID": "index.html#exercice-example-from-quarto-live",
+    "href": "index.html#exercice-example-from-quarto-live",
+    "title": "Preface",
+    "section": "Exercice example from quarto-live",
+    "text": "Exercice example from quarto-live\nquarto-live\nFilter the starwars dataset so that only the droid characters are included.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint 1\n\n\n\n\n\nConsider using the filter() function from dplyr.\nstarwars |&gt; filter(______)\n\n\n\n\n\n\n\n\n\n\n\nHint 2\n\n\n\n\n\nYou should filter the dataset using the species column.\nstarwars |&gt; filter(species == ______)\n\n\n\n\n\n\n\n\n\n\n\nFully worked solution:\n\n\n\n\n\nUse the filter() function from dplyr:\n1starwars |&gt;\n2    filter(species == \"Droid\")\n\n1\n\nTake the starwars dataset, and then,\n\n2\n\nFilter for the “Droid” species."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  }
+]

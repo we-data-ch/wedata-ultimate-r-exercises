@@ -1,0 +1,26 @@
+{
+  "about.qmd": {
+    "about.html": "de92aa2d"
+  },
+  "index.qmd": {
+    "index.html": "dabf884e"
+  },
+  "advanced.qmd": {
+    "advanced.html": "fcc5594d"
+  },
+  "beginner.qmd": {
+    "beginner.html": "e039fe40"
+  },
+  "intermediate.qmd": {
+    "intermediate.html": "3d1e6fa9"
+  },
+  "beginner/Basics.qmd": {
+    "Basics.html": "6df59076"
+  },
+  "contribute.qmd": {
+    "contribute.html": "850fe04b"
+  },
+  "beginner/basics/basics.qmd": {
+    "basics.html": "8c8c312a"
+  }
+}

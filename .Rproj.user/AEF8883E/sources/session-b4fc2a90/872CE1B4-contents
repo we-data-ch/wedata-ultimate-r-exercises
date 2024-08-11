@@ -1,0 +1,56 @@
+project:
+  type: website
+  output-dir: docs
+execute: 
+  freeze: auto
+format:
+  html:
+    theme:
+      light: [flatly, custom.scss]
+      dark: [darkly, custom-dark.scss]
+    include-in-header: "scripts/translate.html"
+
+  
+website:
+  title: "We Data"
+  description: "We Data exercise website"
+  favicon: "images/me.png"
+  google-analytics: "G-ECFW8LLBS7"
+  twitter-card:
+    creator: "@PEcodemo"
+  repo-actions: [edit, issue]
+  navbar:
+    title: false
+    logo: "images/primary.png"
+    # background: primary
+    search: true
+    left:
+      - href: index.qmd
+        text: Home
+      - href: beginner.qmd
+      - href: intermediate.qmd
+      - href: advanced.qmd
+      - about.qmd
+    right:
+      - icon: github
+        href: https://github.com/we-data-ch
+      - icon: youtube
+        href: https://www.youtube.com/@wedata_unige
+      - icon: twitter
+        href: https://twitter.com/wedata_unige
+      - icon: linkedin
+        href: https://www.linkedin.com/company/wedata-gen%C3%A8ve/
+  page-footer:
+    # background: primary
+    left: "{{< fa copyright >}} 2024, Vestin Hategekimana"
+    center:
+      - text: "<img src='/images/primary.png' width='auto' height='30px'>"
+    right:
+      - icon: github
+        href: https://github.com/we-data-ch
+      - icon: youtube
+        href: https://www.youtube.com/@wedata_unige
+      - icon: twitter
+        href: https://twitter.com/wedata_unige
+      - icon: linkedin
+        href: https://www.linkedin.com/company/wedata-gen%C3%A8ve/

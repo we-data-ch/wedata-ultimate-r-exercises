@@ -1,0 +1,16 @@
+[
+  {
+    "listing": "/intermediate.html",
+    "items": []
+  },
+  {
+    "listing": "/advanced.html",
+    "items": []
+  },
+  {
+    "listing": "/beginner.html",
+    "items": [
+      "/beginner/basics/basics.html"
+    ]
+  }
+]
