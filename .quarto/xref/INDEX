@@ -22,5 +22,11 @@
   },
   "beginner/basics/basics.qmd": {
     "basics.html": "8c8c312a"
+  },
+  "beginner/NCCR_MWQTA_2024_R_Day1/1_Introduction_to_R_language.qmd": {
+    "1_Introduction_to_R_language.html": "eb34b860"
+  },
+  "beginner/NCCR_MWQTA_2024_R_Day1/index.qmd": {
+    "index.html": "b2aa3af6"
   }
 }

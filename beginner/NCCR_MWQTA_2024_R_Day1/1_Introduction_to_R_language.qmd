@@ -1,0 +1,980 @@
+---
+title: "Methods Workshop in Quantitative Text Analysis Translated in R - Day 1"
+description: "Tutorial from the nccr on the move Workshop on quantitative text analysis"
+author:
+  - name: Jisu Kim
+    url: https://github.com/jisukimmmm
+  - name: Vestin Hategekimana (translator)
+    url: https://github.com/CyuHat
+date: "21/03/2024"
+engine: knitr
+format: live-html
+webr:
+  packages:
+    - dplyr
+    - ggplot2
+resources:
+  - data
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+# *Introduction to R language*
+
+This notebook is for students who are not familiar with R language.
+
+Note that **many more resources are available on the Web**. Check out this website for more: https://www.w3schools.com/r/default.asp
+
+## 1. Basic concepts
+
+R can be used in different text editors, here are from the most preferred to the least preferred:
+
+-   Rstudio
+
+-   Positron
+
+-   Visual Studio Code
+
+-   Jupyter lab/notebook
+
+-   Sublime text /Atom
+
+-   Neovim (only if you are experimented)
+
+R can be run in the following documents:
+
+-   Rscripts (.r)
+
+-   Rmarkdown notebook (.rmd)
+
+-   Quarto notebook (.qmd)
+
+-   Jupyter notebook (.ipynb)
+
+    -   You need to install the R kernel for Jupyter notebook uses the [following tutorial](https://github.com/IRkernel/IRkernel) or you can try the [ark kernel](https://github.com/posit-dev/ark).
+
+Run a line (in a script or notebook) using Ctrl/Cmd+Enter and run code cells (in a notebook) by using Ctrl/Cmd+Shift+Enter or pressing the "Play" button in the toolbar above on the "Run button" or on the cell.
+
+To **print out results**, simply write print() with parentheses, but it is not compulsory in R to output a result.
+
+```{webr}
+# Make "Hello World!" appear to the console
+print("Hello World!") 
+"Hello World!" # Just the text
+```
+
+*Line 1:* In R, comments begin with a #. This statement is ignored by the interpreter and serves as documentation for our code. The short cut for this is Ctrl+Maj+C or Cmd+Maj+C.
+
+*Line 2:* `print(“Hello World!”)` To print something on the console, print() function is used. This function also adds a newline after our message is printed (unlike in C). Note that in R you can also use the `cat()` function for a more readable version:
+
+```{webr}
+print("Hello\nWorld") # print as it is
+cat("Hello\nWorld!") # print a readable version
+```
+
+Note: To see the document related to the function or library in:
+
+-   RStudio: appears automatically
+
+-   VScode: appears automatically or Ctrl+Space or hover the function
+
+-   Jupyter lab/notebook: Shift+Tab.
+
+**Curly brackets**: Like many programming languages, R does not care about the spaces because it is always bound to brackets (parentheses, brackets or curly brackets). Indentation is only for aesthetic matter and users are free to indent their code following their taste (unlike Python or Nim that can have an indentation error). For example, the indentation of the second `print()` does not break the code since it is in the brackets:
+
+```{webr}
+if (3==3){
+  print("TRUE")
+} else {
+                  print("FALSE")
+}
+```
+
+**Rstudio:**
+
+-   Code is run inside an environment (R version, project and environment). It can always be stopped by pressing the "Stop" button or Ctrl+C shortcut (inside quarto/rmarkdown notebook or a script).
+
+**Jupyter lab/notebook:**
+
+-   Code is run in a separate process called the Kernel. The Kernel can be interrupted or restarted. Try running the following cell and then hit the "Stop" button in the toolbar above or by clicking the right button on the script in jupyter Lab.
+
+**Indexing** in R starts at 1, which means that the first element in a sequence has an index of 1, the second element has an index of 2, and so on as expected.
+
+```{webr}
+# Vector
+number_vector = c(1, 2, 3, 4, 5)
+# List
+number_list = list(1, 2, 3, 4, 5)
+
+# Vector's first element
+number_vector[1]
+# List's first element
+number_list[[1]]
+```
+
+Note: You need a double bracket to have access to a list element (see last lines of code).
+
+Tips: You can generate a continuous vector between two values using the sign `:` as follows:
+
+```{webr}
+1:10 # 1 to 10
+3:-8 # 3 to -8
+```
+
+You can also decide to use specific steps to get from one value to another using the `seq()` function:
+
+```{webr}
+seq(0, 10, 2) # From 0 to 10 by steps of 2
+seq(-5, 5, 5) # From-5 to 5 by steps of 5
+```
+
+**R reserved words**
+
+R has reserved words that you can use as a variable name (except if you surround it by \`). Otherwise, R is smart enough to know which element you are talking about even though, function, package and variable names have the same name.
+
+```{webr}
+# if, else, repeat, while, function, for, in, next, breaks, TRUE, FALSE, NULL, Inf, NA, NaN
+```
+
+## 2. Variables and types
+
+Variable names in R can contain alphanumerical characters `a-z`, `A-Z`, `0-9` and some special characters such as `_` and `.`. Variable names cannot start with a number (e.g., 22list), or cannot be R reserved words (see above), or cannot contain a space or `-`. If your variable does not respect this rule, you can always surround it with `` ` `` and it will works.
+
+Variables can contain different forms such as character (text), integer, or double (float). The variable can contain mix of these different forms.
+
+The assignment operators in R are `<-`, `->` and `=`. R is a dynamically typed language, so we do not need to specify the type of a variable when we create one!
+
+Assigning a value to a new variable already creates the variable:
+
+```{webr}
+# variable assignments
+x = 1.0
+y <- 2
+3L -> z # 3L is an integer
+```
+
+In the last line, we force the creation of integer by adding `L` after a number.
+
+Since value were assigned, the result does not appears. to see it you can just call the variable:
+
+```{webr}
+x
+y
+z
+```
+
+You can also have many of them in a single line using `;` to separate them.
+
+```{webr}
+x; y; z
+```
+
+Although not explicitly specified, a variable do have a type associated with it. The type is derived from the value it was assigned.
+
+```{webr}
+typeof(x) # double
+typeof(y) # double
+typeof(z) # integer
+```
+
+If we assign a new value to a variable, its type can change.
+
+```{webr}
+x = "cat"
+typeof(x)
+```
+
+Note: Integer: represents positive or negative whole numbers like 3 or -512. Floating point number (double): represents real numbers like 3.14159 or -2.5. Character string: text.
+
+If we try to use a variable that has not yet been defined we get an `Error`:
+
+```{webr}
+#| eval: false # it is not part of R but quarto to not run the code
+h
+```
+
+But we can assign the value to a new variable from an existing variable:
+
+```{webr}
+h <- x
+h
+```
+
+## 3. Operators and comparisons
+
+Most operators and comparisons in R work as one would expect:
+
+-   Arithmetic operators `+`, `-`, `*`, `/`, `%/%` (integer division), `^` power
+
+```{webr}
+1 + 2 # Addition
+1 - 2 # Substraction
+1 * 2 # Multiplication
+1 %/% 2 # Modulo
+```
+
+```{webr}
+1.0 + 2.0
+1.0 - 2.0
+1.0 * 2.0
+1.0 %/% 2.0
+```
+
+```{webr}
+# Integer division of float numbers
+3.0 %/% 2.0
+```
+
+```{webr}
+3^2 # 3 power of 2
+```
+
+-   The boolean operators are spelled out as words. They are useful for condition ("if it is true or false") and filtering data.
+
+```{webr}
+TRUE
+FALSE
+```
+
+-   Note the use of `&` (and), `!` (not) and `|` (or).
+
+```{webr}
+TRUE & FALSE # FALSE win
+```
+
+```{webr}
+!FALSE # Inverse
+```
+
+```{webr}
+TRUE | FALSE # TRUE win
+```
+
+-   Comparison operators can create booleans: `>`, `<`, `>=` (greater or equal), `<=` (less or equal), `==` equality.
+
+```{webr}
+2>1 # Is 2 bigger than 1?
+2<1 # Is 2 smaller than 1?
+```
+
+```{webr}
+2>2 # Is 2 bigger than 2?
+2<2 # Is 2 smaller than 2?
+```
+
+```{webr}
+2>=2 # Is 2 bigger than or equal 2?
+2<=2 # Is 2 smaller than or equal to 2?
+```
+
+-   Note:
+
+    -   and `(&`): means that both condition most be true to return `TRUE`
+
+    -   or `(|`): means that least one condition need to be true tu return `TRUE`
+
+```{webr}
+2>1 & 3>4 # is 2 bigger than 1 AND 3 bigger than 4?
+2>1 | 3>4 # is 2 bigger than 1 OR 3 bigger than 4?
+```
+
+It works with vectors:
+
+```{webr}
+c(0, 5, 10, 15) > 2
+```
+
+So it is possible to filter vectors
+
+```{webr}
+vector_to_filter <- c(3, 6, 9, 12)
+
+vector_to_filter[vector_to_filter > 5] # Keep all the value bigger than 5
+```
+
+There are other
+
+```{webr}
+# equality 
+setequal(c(1,2,3), c(3,4,5))
+# are the elements in the left in the vector on the right?
+c(1,2,3) %in% c(3,4,5)
+```
+
+## 4. Compound types: strings, list, sets, tuples and dictionaries
+
+### Strings
+
+Strings are the variable type that is used for storing text messages. To declare string variables, include quotes; either single or double. E.g:
+
+```{webr}
+s = "Hello world"
+typeof(s)
+```
+
+In R, characters are one element of a vector. To collect the length of a character, we need to use a specific function (since `length()` only return on 1 for characters).
+
+```{webr}
+# classic lenght
+nchar(s)
+# print the length of a string (i.e. the number of characters)
+length(s)
+```
+
+```{webr}
+# replace a substring in a string with somethign else
+s2 = gsub(s, "world", "test")
+s2
+```
+
+We can index a character in a string using `[]` after the function `strsplit(character, "")[[1]][1]`:
+
+```{webr}
+s3 = strsplit(s, "")[[1]]
+s3
+s3[1]
+```
+
+Note that in R `head()` allows to do an ordered selection (like `[]`) while `tail()` do the same backwards.
+
+```{webr}
+head(s3, 3)
+tail(s3, 1)
+```
+
+We can extract a part of a string using the syntax `[start:stop]`, which extracts characters between index `start` and `stop`:
+
+```{webr}
+s3[2:4]
+```
+
+### List
+
+Lists are very similar to vector, except that each element can be of any type.
+
+The syntax for creating lists in R is `list(...)`:
+
+```{webr}
+string_list = list('spring', 'summer', 'winter', 'fall')
+string_list
+```
+
+```{webr}
+integer_list = list(12, 3, 5, 3, 9, 6, 2)
+integer_list
+```
+
+```{webr}
+float_list = list(2.3, 4.6, 3.7, 8.3)
+float_list
+```
+
+To access variables in a list:
+
+```{webr}
+string_list <- list("a", "b", "c", "d")
+string_list[[1]] # note that indexing starts at 1 in R!
+```
+
+#### Adding, inserting, modifying, and removing elements from lists
+
+```{webr}
+# create a new empty list
+l <- list()
+
+# add elements using `append`
+l <- append(l, "A")
+l <- append(l, "d")
+
+l
+```
+
+We can modify lists by assigning new values to elements in the list. In technical jargon, lists are *mutable*.
+
+```{webr}
+l[[2]] <- "p"
+
+l
+```
+
+We can insert an element at a specific index using `append`
+
+```{webr}
+l <- append(l, "i", 0)
+l <- append(l, "n", 1)
+l <- append(l, "s", 2)
+l <- append(l, "e", 3)
+l <- append(l, "r", 4)
+l <- append(l, "t", 5)
+
+l
+```
+
+Remove elements with `remove`
+
+```{webr}
+l <- l[l != "A"]
+
+l
+```
+
+### List advanced
+
+Lists are not the best method for quick and concise calculations or operations. Vectors are more appropriate. This is because vectors always have the same type, so calculations are easier for the computer (which can anticipate all the steps and therefore optimize). Lists come in handy when we want to have a collection of elements that have different types and names.
+
+List are also like vectors, except that each element is a key-value pair. The syntax for lists is `list(key1 = value1, ...)`.
+
+```{webr}
+student <- list(hair = c("brown", "pink"), 
+                eye = "black", 
+                height = 172)
+
+class(student)
+student
+```
+
+To access keys:
+
+```{webr}
+names(student)
+```
+
+To access values of the keys:
+
+```{webr}
+unlist(student)
+```
+
+To access an item of a key:
+
+```{webr}
+student$eye
+# or
+student[["eye"]]
+```
+
+To change the value of a key:
+
+```{webr}
+student$eye <- 'blue'
+# or
+student[["eye"]]
+```
+
+To add a new entry:
+
+```{webr}
+student$nationality <- 'Spanish'
+# or
+student[["nationality"]] <- 'Spanish'
+```
+
+```{webr}
+student
+```
+
+### User Input
+
+You can take an user input using using the `readline()` function. Not that if you are using it in a chunk you still have to interact with the code in the console:
+
+1.  Run the chunk
+2.  Go to the console
+3.  Answer the question "what is you names: " with a text
+4.  Go back to the chunk
+
+```{webr}
+#| eval: false # Not an R code, but a Quarto instruction
+# Input 
+name <- readline(prompt="What is your name: ")
+paste("My name is", name)
+```
+
+## 5. Control Flow
+
+### Conditional statements: if, else if, else
+
+You can execute your code conditionally by dividing it into different parts and setting conditions for running each specific part.
+
+The R syntax for conditional execution of code use the keywords `if`, `else if`, `else`:
+
+-   You can play with this by changin the value of `statement1` and `statement2` by `TRUE` or `FALSE`
+
+```{webr}
+statement1 <- FALSE
+statement2 <- FALSE
+
+if (statement1) { # "if statement1 is TRUE" do the following:
+    "statement1 is TRUE"
+} else if (statement2) { # "otherwise if statement2 is TRUE" do the following:"
+    "statement2 is TRUE"
+} else { # "therwise do the following:"
+    "statement1 and statement2 are FALSE"
+}
+```
+
+## Loops
+
+In R, loops can be programmed in a number of different ways. The most common is the `for` loop, which is used together with iterable objects, such as lists. The basic syntax is:
+
+### **`for` loops**:
+
+```{webr}
+for (x in 1:3) {# for each element of the list print it
+    print(x)
+}
+```
+
+Note that in this case, the function `print()` is necessary.
+
+To iterate over key-value pairs of a list:
+
+```{webr}
+for (key in names(student)) { # for each key of the list print "[key] = [value]"
+    print(paste(key, "=", student[[key]]))
+}
+```
+
+### `while` loops:
+
+Instead of passing each element of a list, it is possible to set the condition that a code is executed as long as a specific condition is met. You can run the whole chunk to see it in action:
+
+```{webr}
+i <- 0
+
+while (i < 5) { # "while i is smaller than 5 run the following code:"
+    print(i) 
+    i <- i + 1 
+}
+
+"done" # Appears if done
+```
+
+Note that the `print("done")` statement is not part of the `while` loop body because of the difference in indentation.
+
+```{webr}
+# example of for loop and if statement: 
+# for each value in the list "integer_list" print a value that is greater or equal to 7
+integer_list <- c(5, 7, 9, 3, 8)
+
+for (x in integer_list) {
+    if (x >= 7) { 
+        print(x)
+    }
+}
+```
+
+## 6. Functions
+
+A function in R is defined using the keyword `function`, followed by a function name, a signature within parentheses `()`, and a curly brace `{`. The following code, with one additional level of indentation, is the function body. It return nothing but the function is available now.
+
+```{webr}
+square <- function(x) { # for a given value x do the following:
+    return(x^2) # Return the square of x.
+}
+```
+
+You can use your new function on any value:
+
+```{webr}
+square(4)
+square(10)
+```
+
+Note that you are not forced to use the return statement in the function, R will return the last value automatically:
+
+```{webr}
+square <- function(x) { # for a given value x do the following:
+    x^2 # Return the square of x.
+}
+
+square(4)
+```
+
+You can even make it shorter by removing the brackets and putting everything in a single line:
+
+```{webr}
+square <- function(x) x^2
+
+square(4)
+```
+
+## 7. Modules
+
+Most of the functionality in R is provided by *packages*. The R Standard Library is a large collection of packages that provides *cross-platform* implementations of common facilities such as access to the operating system, file I/O, string management, network communication, and much more.
+
+To use a package in an R program it first has to be installed. A quickest way is to do it here using the `install.packages` statement. For example, to install the package `ggplot2`, which is a useful package for plots, we can do:
+
+```{webr}
+#| eval: false
+install.packages("ggplot2")
+```
+
+To use a package in an R program it first has to be imported. A package can be imported using the `library` statement. For example, to import the package `ggplot2`, which contains many standard plotting functions, we can do:
+
+```{webr}
+library(ggplot2)
+```
+
+This includes the whole package and makes it available for use later in the program.
+
+Note that R can creat plot without packages. But ggplot2 bring beautiful and modular graphs. Let's try it! For instance, R have built-in datasets that we can use. For instance we can invoke the `cars` dataset by simply calling it if it is for a short usecase:
+
+```{webr}
+cars
+```
+
+Then we can then plot it using the `plot()` function:
+
+```{webr}
+plot(cars)
+```
+
+ggplot allow to do the same:
+
+```{webr}
+qplot(speed, dist, data = cars)
+```
+
+Once a package is imported, we can list the symbols it provides using the `ls` function:
+
+```{webr}
+ls("package:ggplot2")
+```
+
+The best way to learn about a package is to use its documentation:
+
+-   [Main page](https://ggplot2.tidyverse.org/)
+
+-   [Get started](https://ggplot2.tidyverse.org/articles/ggplot2.html)
+
+-   [References](https://ggplot2.tidyverse.org/reference/index.html) (list of functions and objects from the package)
+
+There are also great free ressources:
+
+-   [R graphic Cookbook](https://r-graphics.org/)
+
+-   [Data visualization](https://socviz.co/index.html#preface)
+
+There are also great examples...
+
+-   <https://r-graph-gallery.com/>
+
+... and cool extensions:
+
+-   <https://exts.ggplot2.tidyverse.org/gallery/>
+
+### Plotting with ggplot2
+
+```{webr}
+library(ggplot2)
+library(dplyr)
+```
+
+Let's create a sequence and plot it against its version plus 1:
+
+```{webr}
+x <- 1:10
+qplot(x, x+1)
+```
+
+Let's create a normal distribution of 500 values using `rnorm()` and plot it as an histogram:
+
+```{webr}
+data <- rnorm(500)    # 500 draws from the standard normal distribution
+qplot(data, geom="histogram")
+```
+
+## Manipulating data with dplyr
+
+It is possible to manipulate dataset (here called data frames) using base R functionalities. However, the dplyr make this manipulation easier. You need to install it firts with `install.package("dplyr")` then load the library with `library(dplyr)`:
+
+```{webr}
+library(dplyr)
+```
+
+To import a csv you can use the function `read.csv()` in base R, but the `read_csv()` in `dplyr` is faster and import everything as `tibble` table (an advanced kind of dataframe):
+
+```{webr}
+df <- read.csv("data/data.csv")
+```
+
+Note that to have access to the data, you do not need to write the full path, you can simply press the key Tab inside the quotation mark of a
+
+Display a dataframe:
+
+```{webr}
+df
+```
+
+Display the size of your dataframe:
+
+```{webr}
+dim(df) # this is number of (rows, columns)
+nrow(df) # Number of rows
+ncol(df) # Number of cols
+```
+
+Display the names of columns:
+
+```{webr}
+colnames(df)
+# or
+names(df)
+```
+
+Create a new column the base R way:
+
+```{webr}
+# compute the average between Open and Close
+df$mean_value <- (df$Open+df$Close)/2
+df$mean_value
+```
+
+Create a new column with Tidyverse (without pipe):
+
+```{webr}
+# axis=0 refer to columns 
+df$mean_value <- colMeans(select(df, Open, Close))
+df$mean_value
+```
+
+R has a super power as a functional programming language. It can use pipes (`|>` and `%>%`). Those allows to pass the result of an operation to the next operation and therfore chain multiple operations. It allows to have a more readable code, easier to write and more composable. You can use 2 kinds of pipes:
+
+-   `magrittr` pipe (`%>%`): Powerful (can do more than the next one), it needs to be installed through a package of the `Tidyverse` (`magrittr`, `dplyr`, `rvest`, ...).
+
+-   Base (`|>`): useful, do not need any libraries
+
+Since we will use the dplyr, we will use magrittr pipe (`%>%`). No need to write it, simply use the following shortcut `Ctrl+Maj+M` or `Cmd+Maj+M`. With a few try, it comes naturally. As said before the pipe use is to pass values through operations. For instance consider the following example printing the value of the variable a:
+
+```{webr}
+a <- "12"
+
+# Normal way
+print(a)
+
+# With a pipe
+a %>% print()
+
+```
+
+They both give the same result. However the pipe version is longer. The strength of the secon approach appear when we need more than one operation. For instance, imagine converting a to an integer before printing it:
+
+```{webr}
+# Normal way
+print(as.integer(a))
+
+# With pipes
+a %>% as.integer() %>% print()
+```
+
+The first one still looks more concise, but it is in fact slower and harder to write. You have to start by the `print()` statement (the end) and go backward until the beginning which is counter-intuitive. While with the pipe approach you can consider %\>% as a "and". Writting it looks like, "I start with the variable 'a' AND I convert it into an integer AND I print it".
+
+This method scale also really well. Lets take a more extreme example. With the following steps:
+
+1.  Translate "a" into an integer
+2.  Compute the log10
+3.  Compute the square root
+4.  Print it
+
+```{webr}
+# Normal way
+print(sqrt(log10(as.integer(a))))
+
+# with pipes
+a %>% 
+  as.integer() %>% 
+  log10() %>% 
+  sqrt() %>% 
+  print()
+```
+
+Note that in this code we can put expressions following a pipe in the next line for more readability. But the whole code is considered by R as only one line. So, you can run the code from whatever line and it will run the whole expression.
+
+It is even more complicated with the normal way and less readable. While with pipe you can read it like sentences connected by "AND". Generally, when operation start to stack, we desagreggate them into multiple steps like this:
+
+```{webr}
+a <- as.integer(a)
+a <- log10(a)
+a <- sqrt(a)
+print(a)
+```
+
+This approach is more readable. The issue with this approach is that we have changed the value of a multiple time. But if we want to go back in a step, we need to re-run all the step before. It seems like nothing, but in a longer code and more complex, you can easily be overwhelmed and lost track of the state of your variable. You could improve that by storing new values in different variables:
+
+```{webr}
+a <- 12
+
+a1 <- as.integer(a)
+a2 <- log10(a1)
+a3 <- sqrt(a2)
+print(a3)
+```
+
+But then we can create unecessary intermediate variables that have only no usage beside storing value that have no use in the rest of the code. Furthermore, both version are slower to write than the pipe version. Another advantage of the pipe function is that we can iteratively write the code and add and remove steps as needed. The when you are satisfied with the result, you can store it in a final variable:
+
+```{webr}
+result <- 
+  a %>% 
+  as.integer() %>% 
+  log10() %>% 
+  sqrt() %>% 
+  print()
+```
+
+The pipes in dplyr allows to manipulate data frames steps by steps in a readable manner. But function from the tidyverse bring another strength. They always return data frame, makin the iteratino even easier since you keep everything, so modifying a single column won't stop you to do other manipulation with other columns in the same chain. Let's take the earlier example from the `df` dataframe and compute the mean of `Open` and `Close` columns.
+
+```{webr}
+# compute the average between Open and Close
+df$mean_value <- (df$Open+df$Close)/2
+
+# With pipe
+df %>% 
+  mutate(mean_value = (Open+Close)/2)
+```
+
+The last expression return a data frame and added the new column to the end. Again you are free to put the new result in a new object. Then you can select specific rows:
+
+```{webr}
+# Filtering
+df %>% 
+  filter(Close > Open) # keep row when Close is bigger than Open
+```
+
+We can combine it with the previous operation to chain everything. The new dataset has a new column `mean_value` and is filterd to keep row when Close is bigger than Open:
+
+```{webr}
+# Filtering after mutating
+df %>% 
+  mutate(mean_value = (Open+Close)/2) %>% 
+  filter(Close > Open)
+```
+
+You can display the summary statistic of a given variable using the summary() function.
+
+```{webr}
+summary(df$High)
+```
+
+You can do the same with the whole data frame:
+
+```{webr}
+summary(df)
+```
+
+You can also request specific statistics using the corresponding functions:
+
+```{webr}
+mean(df$Volume)
+median(df$Volume)
+min(df$Volume)
+max(df$Volume)
+quantile(df$Volume)
+quantile(df$Volume, 0.95)
+```
+
+Chaining is useful when we need to answer a specific question without changing the data frame. For instance, you can find the date when `Volume` was highest:
+
+```{webr}
+df %>% 
+  filter(Volume == max(Volume)) %>% 
+  select(Date)
+```
+
+But sometimes, it is faster to use base R for simple isolated operations. For instance, the Date column in df is note in the date format but in text format. We can change it in one line:
+
+```{webr}
+# Check the type of Date
+class(df$Date)
+
+# Change the type of Date as a date
+df$Date <- as.Date(df$Date)
+
+# Check the type of Date
+class(df$Date) 
+```
+
+If you want to extract the specific value and not a data frame, you can use the `pull()` function instead of `select()`:
+
+```{webr}
+df %>% 
+  filter(Volume == max(Volume)) %>% 
+  pull(Date)
+```
+
+Plots are very easy in ggplot2 with `qplot()`! But there is another notation that is more used, the layered one:
+
+```{webr}
+# Easy way
+qplot(Date, Open, data = df, geom = "line")
+
+# Layered way
+df %>% 
+  ggplot(aes(x=Date, y=Open)) +
+  geom_line()
+```
+
+It looks longer, but it is more flexible. It works like layers. Here is a short explanation of each part: - `ggplot()` initiate te figure - `aes()` map the column to different dimensions (x/y axis, color, line type, size, etc.) - `geom_*()` create a type of geometry - `geom_line()` create line using value from `x` and `y`
+
+The `aes()` part is quite movable. You can decide to put it in a different place to update the graph:
+
+```{webr}
+# Different place, same result
+df %>% 
+  ggplot(aes(x=Date)) +
+  geom_line(aes(y=Open))
+```
+
+We get the same result. The advantage of using such an approach is that we can really be flexible in the parameter that we are using and also the number of layer that we can create:
+
+```{webr}
+df %>% 
+  ggplot(aes(x=Date)) + 
+  geom_line(aes(y=Open, color="Open")) +
+  geom_line(aes(y=High, color="High")) +
+  geom_line(aes(y=Low, color="Low")) + 
+  geom_line(aes(y=Close, color="Close")) +
+  theme_bw() # Add a new theme
+```
+
+Just by changing the geom, we can have a large variety of plots. For instance here is a boxplot:
+
+```{webr}
+df %>% 
+  ggplot(aes(x=Close)) + 
+  geom_boxplot()
+```
+
+Note that the parameters are not compulsary as long as we keep theme in the righ order (x then y):
+
+```{webr}
+# Parameters
+df %>% 
+  ggplot(aes(x=Close)) + 
+  geom_boxplot()
+
+# No parameters
+df %>% 
+  ggplot(aes(Close)) + 
+  geom_boxplot()
+```
+
+Keeping the same structure, we can have different plots by changing the geom:
+
+```{webr}
+# Boxplot
+df %>% 
+  ggplot(aes(Close)) + 
+  geom_boxplot()
+  
+# Histogram
+df %>% 
+  ggplot(aes(Close)) + 
+  geom_histogram()
+
+# Density
+df %>% 
+  ggplot(aes(Close)) + 
+  geom_density()
+```
+
+ggplot2 is a whole subject by itself and the Tidyverse ecosystem (dplyr, ggplot2, readr, ...) is an even bigger topic. We won't talk about it here, but in future tutorials.
