@@ -30,9 +30,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev libxml2-dev libssl-dev
-
-      - name: Update R-CMD-check to v2
-        uses: r-lib/actions/check-r-package@v2
       
       - name: Install dependencies with renv
         uses: r-lib/actions/setup-renv@v2
