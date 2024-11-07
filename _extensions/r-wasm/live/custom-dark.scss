@@ -1,4 +1,13 @@
 /*-- scss:defaults --*/
+.card {
+  display: flex;
+  flex-direction: row;
+  //// align-items: flex-start; /* Align items to the start of the flex container (top) */
+  // border: 1px solid #ccc;
+  // border-radius: 10px;
+  // padding: 10px;
+  // margin: 10px;
+}
 
 // main colors
 $white: #fff;
