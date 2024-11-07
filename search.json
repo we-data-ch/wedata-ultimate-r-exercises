@@ -42,6 +42,83 @@
     "text": "Advanced\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "",
+    "text": "This work is a translation of the a Python tutorial from the following repository: https://github.com/jisukimmmm/NCCR_MWQTA_2024\nIt was then transformed in an interactive tutorial."
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#basic-syntax-and-operations",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#basic-syntax-and-operations",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "Basic Syntax and Operations:",
+    "text": "Basic Syntax and Operations:\n\n1. Calculate the area of a triangle:\nWrite a program to calculate the area of a triangle given its base and height.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nThe area of a triangle is calculated using the formula: (base * height) / 2\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nbase &lt;- 10\nheight &lt;- 3\n\ntriangle &lt;- base * height / 2\n\npaste(\"This is the area:\", triangle)\n\n\n\n\n\n\n2. Speed Conversion\nCreate a program that converts kilometers per hour to meters per second.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nTo convert km/h to m/s: 1. Multiply by 1000 to convert km to m 2. Divide by 3600 to convert hours to seconds\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nkmph &lt;- 100\nms &lt;- kmph * 1000 / 3600\npaste(\"The answer is\", ms)\n\n\n\n\n\n\n3. String Reversal\nWrite an R script that takes a string as input and prints its reverse.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse strsplit() to split the string into characters, rev() to reverse them, and paste() with collapse to join them back.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nmy_text &lt;- \"This is a text\"\nrev_text &lt;- paste(rev(strsplit(my_text, NULL)[[1]]), collapse = \"\")\nrev_text"
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#conditional-statements-and-loops",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#conditional-statements-and-loops",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "Conditional Statements and Loops:",
+    "text": "Conditional Statements and Loops:\n\n1. Leap Year Check\nCreate a program that checks whether a given year is a leap year or not.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nA year is a leap year if: - It’s divisible by 4 AND not divisible by 100 - OR it’s divisible by 400 Use the modulo operator %% to check divisibility\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nyear &lt;- 3000\nif ((year %% 4 == 0 && year %% 100 != 0) | (year %% 400 == 0)) {\n  \"This is a leap year\"\n} else {\n  \"This is not a leap year\"\n}\n\n\n\n\n\n\n2. Sum of Multiples\nWrite an R script to find the sum of all numbers between 1 and 1000 that are divisible by both 3 and 5.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nCreate a sequence from 1 to 1000\nUse vector operations with modulo to find numbers divisible by both 3 and 5\nUse sum() to add them up\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nnumbers &lt;- 1:1000\nbag &lt;- numbers[numbers %% 3 == 0 & numbers %% 5 == 0]\nsum(bag)\n\n\n\n\n\n\n3. Geometric Progression\nImplement a program to print the first 10 terms of the geometric progression series: 2, 6, 18, 54, …\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nCreate a numeric vector to store the series\nFirst term is given\nEach subsequent term is previous term multiplied by common ratio\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\ncommon_ratio &lt;- 3\ngp_series &lt;- 2\n\nfor (i in 2:10) {\n  gp_series[i] &lt;- gp_series[i-1] * common_ratio\n}\ngp_series"
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#lists-and-list-operations",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#lists-and-list-operations",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "Lists and List Operations:",
+    "text": "Lists and List Operations:\n\n1. Largest and Smallest Elements\nCreate a program to find the largest and smallest elements in a list.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse R’s built-in functions: - min() for smallest element - max() for largest element\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nnumber_list &lt;- c(2, 5, 1, 67, 4, 7)\nmini &lt;- min(number_list)\nmaxi &lt;- max(number_list)\npaste(\"Min:\", mini, \"Max:\", maxi)\n\n\n\n\n\n\n2. List Intersection\nWrite an R script to find the intersection of two lists.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the intersect() function to find common elements between two vectors\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nlist1 &lt;- c(1, 2, 3, 4, 5)\nlist2 &lt;- c(4, 5, 6, 7, 8)\nintersection &lt;- intersect(list1, list2)\nintersection\n\n\n\n\n\n\n3. Program to shuffle a deck of cards (x)\nImplement a program to shuffle a deck of cards represented as a list.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse the sample() function to randomly shuffle elements in a vector. First create a vector with all cards.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\ndeck &lt;- c(\"A\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"10\", \"J\", \"Q\", \"K\")\nshuffled_deck &lt;- sample(deck)\n\nprint(shuffled_deck)"
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#strings-and-string-operations",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#strings-and-string-operations",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "Strings and String Operations:",
+    "text": "Strings and String Operations:\n\n1. Capitalize the first letter of each word (x)\nWrite an R script to capitalize the first letter of each word in a sentence.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nThe tools::toTitleCase() function can capitalize the first letter of each word in a string.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nsentence &lt;- \"this is a sentence\"\ncapitalized_sentence &lt;- tools::toTitleCase(sentence)\n\nprint(capitalized_sentence)\n\n\n\n\n\n\n2. Most Frequent Character (x)\nCreate a program to find the most frequent character in a given string.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nSplit the string into characters using strsplit()\nCreate a frequency table with table()\nSort in descending order and get the first element\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nstring &lt;- \"this is a string\"\nmost_frequent_char &lt;- names(sort(table(strsplit(string, NULL)[[1]]), \n                               decreasing = TRUE))[1]\nmost_frequent_char\n\n\n\n\n\n\n3. Check if a string contains only digits\nImplement a program to check if a given string contains only digits.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nUse grepl() function with a regular expression pattern\nThe pattern ^[0-9]+$ means:\n\n^ start of string\n[0-9] any digit\n+ one or more occurrences\n$ end of string\n\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nstring &lt;- \"123456\"\n\nis_digits &lt;- grepl(\"^[0-9]+$\", string)\n\nprint(paste(\"Does the string contain only digits?\", is_digits))"
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#functions",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#functions",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "Functions:",
+    "text": "Functions:\n\n1. Perfect Square Check\nCreate a function to check whether a given number is a perfect square or not.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nTake the square root of the number\nCheck if the square root is equal to its floor value\nReturn TRUE/FALSE accordingly\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nis_perfect_square &lt;- function(x) {\n  sqrt_x &lt;- sqrt(x)\n  return(sqrt_x == floor(sqrt_x))\n}\n\n# Test the function\nis_perfect_square(16)  # Should return TRUE\nis_perfect_square(15)  # Should return FALSE\n\n\n\n\n\n\n2. Reverse the elements of a vector\nImplement a function to reverse the elements of a list in place.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nYou can use R’s built-in rev() function to reverse a list or vector. Alternatively, you could write a loop that swaps elements from the beginning and end moving towards the middle.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nreverse_list &lt;- function(lst) {\n  return(rev(lst))\n}\n\n# Test the function\nmy_list &lt;- c(1, 2, 3, 4, 5)\nreversed &lt;- reverse_list(my_list)\nprint(reversed)\n\n\n\n\n\n\n3. Calculate the mean of a list of numbers\nCreate a function to calculate the mean (average) of a list of numbers.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nThe mean is calculated by summing all numbers and dividing by the count of numbers. In R, you can use the built-in mean() function or implement it using sum() and length().\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\ncalculate_mean &lt;- function(numbers) {\n  return(mean(numbers))\n}\n\n# Test the function\nnumbers &lt;- c(1, 2, 3, 4, 5)\navg &lt;- calculate_mean(numbers)\nprint(paste(\"The mean is:\", avg))"
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#file-handling",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#file-handling",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "File Handling:",
+    "text": "File Handling:\n\n1. CSV Data Analysis (x)\nCreate a program to read a CSV file containing student scores and calculate their average.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nUse readr::read_csv() to read the CSV file\nAccess the score column using $\nCalculate mean using mean()\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\n# Method 1\nstudent_scores &lt;- read.csv(\"data/student_scores.csv\")\nmean(student_scores$score)\n\n# Method 2\nlibrary(readr)\nstudent_scores &lt;- read_csv(\"data/student_scores.csv\")\nmean(student_scores$score)\n\n\n\n\n\n\n2. Find lines containing a specific word in a text file (x)\nWrite a Python script to find and print all lines containing a specific word in a text file.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse readLines() to read the file content and grep() to search for matching lines. The grep() function with value=TRUE returns the actual matching lines.\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nfind_lines_with_word &lt;- function(file_path, word) {\n  lines &lt;- readLines(file_path)\n  matching_lines &lt;- grep(word, lines, value = TRUE)\n  return(matching_lines)\n}\n\n# Example usage\n# find_lines_with_word(\"example.txt\", \"specific_word\")\n\n\n\n\n\n\n3. Count words in a text file\nImplement a program to count the number of words in a text file.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nBreak this down into steps: 1. Read the file using readLines() 2. Split the text into words using strsplit() with whitespace as delimiter 3. Count the total words using length()\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\ncount_words_in_file &lt;- function(file_path) {\n  lines &lt;- readLines(file_path)\n  words &lt;- unlist(strsplit(lines, \"\\\\s+\"))\n  return(length(words))\n}\n\n# Example usage\n# count_words_in_file(\"example.txt\")"
+  },
+  {
+    "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#plotting",
+    "href": "beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html#plotting",
+    "title": "Methods Workshop in Quantitative Text Analysis Translated in R",
+    "section": "Plotting:",
+    "text": "Plotting:\n\n1. Histogram\nHistogram of Student Scores: Create a histogram showing the distribution of student scores.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\n\nLoad ggplot2\nUse geom_histogram()\nSet appropriate binwidth\nAdd proper labels\n\n\n\n\n\n\n\n\n\n\n\n\nSolution:\n\n\n\n\n\nlibrary(ggplot2)\nggplot(student_scores, aes(x = score)) +\n  geom_histogram(binwidth = 5) +\n  labs(title = \"Histogram of Student Scores\", \n       x = \"Score\", \n       y = \"Frequency\")\n\n\n\n\n\n\n2. Create a Boxplot of Student Scores\nBoxplot of Student Scores: Generate a boxplot to visualize the spread and central tendency of student scores.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse ggplot() with geom_boxplot(). The data should be mapped to the y-axis since we want a vertical boxplot. Don’t forget to add appropriate labels.\n\n\n\n\n\n\n\n\n\n\n\nSolution\n\n\n\n\n\nggplot(student_scores, aes(y = score)) +\n  geom_boxplot() +\n  labs(title = \"Boxplot of Student Scores\", y = \"Score\")\n\n\n\n\n\n\n3. Create a Scatter Plot of Student Scores\nScatter Plot of Student Scores: Create a scatter plot to explore the relationship between student scores and student IDs.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse ggplot() with geom_point(). Map student_id to x-axis and score to y-axis. Remember to include appropriate axis labels.\n\n\n\n\n\n\n\n\n\n\n\nSolution\n\n\n\n\n\nggplot(student_scores, aes(x = student_id, y = score)) +\n  geom_point() +\n  labs(title = \"Scatter Plot of Student Scores\", x = \"Student ID\", y = \"Score\")"
+  },
+  {
+    "objectID": "contribute.html",
+    "href": "contribute.html",
+    "title": "How to contribute?",
+    "section": "",
+    "text": "This is the project of WeData, an association dedicated to the promotion of data science and computer science. We wanted a way of sharing exercises that was as simple, independent and free as possible for as many people as possible. Thanks to the arrival of webr and quarto-live, this was possible!\nNote: quarto-live is still in early stage and further improvement are comming."
+  },
+  {
+    "objectID": "contribute.html#all-contributions-are-welcome",
+    "href": "contribute.html#all-contributions-are-welcome",
+    "title": "How to contribute?",
+    "section": "All contributions are welcome!",
+    "text": "All contributions are welcome!\nThis site is based on collaboration and aims to enable anyone wishing to help create interactive exercises to do so. Here are the steps if you want to help build this website by creating exercises:\n\n1. Clone the repository\nGo to the website GitHub repository. After cloning it, your are good to go!\n\n\n2. Create your tutorial\nIn the folder corresponding to the exercises level (currently beginner, intermediate and advanced), create a folder with the name you want. INside it create your quarto file (.qmd) or markdown file (.md) and add at least the following information to your YAML (begining of the file):\n---\n1title: My exercises set\n2author: Me\n3date: \"2024-08-11\"\n4description: \"My description...\"\n5categories:\n  - Category 1\n  - ...\n6image: image.png\n---\n\n1\n\nCompulsary\n\n2\n\nCompulsary\n\n3\n\nCompulsary\n\n4\n\nOptional\n\n5\n\nOptional\n\n6\n\nOptional, but if added it is better to put everything inside a folder\n\n\nThen for quarto file you need to add the following code at the begining after the YAML but before anything in the file:\n{{&lt; include ../../_extensions/r-wasm/live/_knitr.qmd &gt;}}\n\n\n3. Write your tutorial\nYou can follow the tutorials from the official quarto-live website. Pay particular attention to the following chapters (at least the first one):\nFrom the “Exercises Grading” part:\nCreating Exercises - Managing Environements - Grading Solutions - Gradin with {gradethis}\n\n\n4. Send your exercises\nPush your changes if your are a contributer or do a pull requests otherwise."
+  },
+  {
+    "objectID": "beginner.html",
+    "href": "beginner.html",
+    "title": "Beginner",
+    "section": "",
+    "text": "Beginner\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMethods Workshop in Quantitative Text Analysis Translated in R\n\n\n\n\n\n\n\n\n\n\n\nSep 3, 2025\n\n\nJisu Kim, Vestin Hategekimana (translator)\n\n\n\n\n\n\n\n\n\n\n\n\nMethods Workshop in Quantitative Text Analysis Translated in R - Day 1\n\n\n\n\n\nTutorial from the nccr on the move Workshop on quantitative text analysis\n\n\n\n\n\nSep 3, 2025\n\n\nJisu Kim, Vestin Hategekimana (translator)\n\n\n\n\n\n\n\n\n\n\n\n\n1. Basic R\n\n\n\n\n\nExercises for absolute beginners O.o\n\n\n\n\n\nVestin Hategekimana\n\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "beginner/basics/basics.html",
     "href": "beginner/basics/basics.html",
     "title": "1. Basic R",
@@ -82,27 +159,6 @@
     "title": "1. Basic R",
     "section": "Exercise 5: Conditional Statement",
     "text": "Exercise 5: Conditional Statement\nWrite a conditional statement that checks if a number x is greater than 10. If it is, print “Greater than 10”; otherwise, print “10 or less”.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHint\n\n\n\n\n\nUse an if statement to perform a conditional check.\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n\n\nSolution:\nx &lt;- 12\n\n# Conditional statement\nif (x &gt; 10) {\n  print(\"Greater than 10\")\n} else {\n  print(\"10 or less\")\n}"
-  },
-  {
-    "objectID": "beginner.html",
-    "href": "beginner.html",
-    "title": "Beginner",
-    "section": "",
-    "text": "Beginner\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMethods Workshop in Quantitative Text Analysis Translated in R - Day 1\n\n\n\n\n\nTutorial from the nccr on the move Workshop on quantitative text analysis\n\n\n\n\n\nSep 3, 2025\n\n\nJisu Kim, Vestin Hategekimana (translator)\n\n\n\n\n\n\n\n\n\n\n\n\n1. Basic R\n\n\n\n\n\nExercises for absolute beginners O.o\n\n\n\n\n\nVestin Hategekimana\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "contribute.html",
-    "href": "contribute.html",
-    "title": "How to contribute?",
-    "section": "",
-    "text": "This is the project of WeData, an association dedicated to the promotion of data science and computer science. We wanted a way of sharing exercises that was as simple, independent and free as possible for as many people as possible. Thanks to the arrival of webr and quarto-live, this was possible!\nNote: quarto-live is still in early stage and further improvement are comming."
-  },
-  {
-    "objectID": "contribute.html#all-contributions-are-welcome",
-    "href": "contribute.html#all-contributions-are-welcome",
-    "title": "How to contribute?",
-    "section": "All contributions are welcome!",
-    "text": "All contributions are welcome!\nThis site is based on collaboration and aims to enable anyone wishing to help create interactive exercises to do so. Here are the steps if you want to help build this website by creating exercises:\n\n1. Clone the repository\nGo to the website GitHub repository. After cloning it, your are good to go!\n\n\n2. Create your tutorial\nIn the folder corresponding to the exercises level (currently beginner, intermediate and advanced), create a folder with the name you want. INside it create your quarto file (.qmd) or markdown file (.md) and add at least the following information to your YAML (begining of the file):\n---\n1title: My exercises set\n2author: Me\n3date: \"2024-08-11\"\n4description: \"My description...\"\n5categories:\n  - Category 1\n  - ...\n6image: image.png\n---\n\n1\n\nCompulsary\n\n2\n\nCompulsary\n\n3\n\nCompulsary\n\n4\n\nOptional\n\n5\n\nOptional\n\n6\n\nOptional, but if added it is better to put everything inside a folder\n\n\nThen for quarto file you need to add the following code at the begining after the YAML but before anything in the file:\n{{&lt; include ../../_extensions/r-wasm/live/_knitr.qmd &gt;}}\n\n\n3. Write your tutorial\nYou can follow the tutorials from the official quarto-live website. Pay particular attention to the following chapters (at least the first one):\nFrom the “Exercises Grading” part:\nCreating Exercises - Managing Environements - Grading Solutions - Gradin with {gradethis}\n\n\n4. Send your exercises\nPush your changes if your are a contributer or do a pull requests otherwise."
   },
   {
     "objectID": "beginner/NCCR_MWQTA_2024_R_Day1/1_Introduction_to_R_language.html",
