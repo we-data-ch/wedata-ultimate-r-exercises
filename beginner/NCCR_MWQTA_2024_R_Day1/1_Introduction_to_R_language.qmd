@@ -19,6 +19,12 @@ resources:
 
 {{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
 
+# Preface
+
+This work is a translation of the a Python tutorial from the following repository: [https://github.com/jisukimmmm/NCCR_MWQTA_2024](https://github.com/jisukimmmm/NCCR_MWQTA_2024)
+
+It was then transformed in an interactive tutorial.
+
 # *Introduction to R language*
 
 This notebook is for students who are not familiar with R language.
@@ -58,6 +64,7 @@ Run a line (in a script or notebook) using Ctrl/Cmd+Enter and run code cells (in
 To **print out results**, simply write print() with parentheses, but it is not compulsory in R to output a result.
 
 ```{webr}
+#| autorun: false
 # Make "Hello World!" appear to the console
 print("Hello World!") 
 "Hello World!" # Just the text
@@ -68,6 +75,7 @@ print("Hello World!")
 *Line 2:* `print(“Hello World!”)` To print something on the console, print() function is used. This function also adds a newline after our message is printed (unlike in C). Note that in R you can also use the `cat()` function for a more readable version:
 
 ```{webr}
+#| autorun: false
 print("Hello\nWorld") # print as it is
 cat("Hello\nWorld!") # print a readable version
 ```
@@ -83,6 +91,7 @@ Note: To see the document related to the function or library in:
 **Curly brackets**: Like many programming languages, R does not care about the spaces because it is always bound to brackets (parentheses, brackets or curly brackets). Indentation is only for aesthetic matter and users are free to indent their code following their taste (unlike Python or Nim that can have an indentation error). For example, the indentation of the second `print()` does not break the code since it is in the brackets:
 
 ```{webr}
+#| autorun: false
 if (3==3){
   print("TRUE")
 } else {
@@ -101,6 +110,7 @@ if (3==3){
 **Indexing** in R starts at 1, which means that the first element in a sequence has an index of 1, the second element has an index of 2, and so on as expected.
 
 ```{webr}
+#| autorun: false
 # Vector
 number_vector = c(1, 2, 3, 4, 5)
 # List
@@ -117,6 +127,7 @@ Note: You need a double bracket to have access to a list element (see last lines
 Tips: You can generate a continuous vector between two values using the sign `:` as follows:
 
 ```{webr}
+#| autorun: false
 1:10 # 1 to 10
 3:-8 # 3 to -8
 ```
@@ -124,6 +135,7 @@ Tips: You can generate a continuous vector between two values using the sign `:`
 You can also decide to use specific steps to get from one value to another using the `seq()` function:
 
 ```{webr}
+#| autorun: false
 seq(0, 10, 2) # From 0 to 10 by steps of 2
 seq(-5, 5, 5) # From-5 to 5 by steps of 5
 ```
@@ -133,6 +145,7 @@ seq(-5, 5, 5) # From-5 to 5 by steps of 5
 R has reserved words that you can use as a variable name (except if you surround it by \`). Otherwise, R is smart enough to know which element you are talking about even though, function, package and variable names have the same name.
 
 ```{webr}
+#| autorun: false
 # if, else, repeat, while, function, for, in, next, breaks, TRUE, FALSE, NULL, Inf, NA, NaN
 ```
 
@@ -147,6 +160,7 @@ The assignment operators in R are `<-`, `->` and `=`. R is a dynamically typed l
 Assigning a value to a new variable already creates the variable:
 
 ```{webr}
+#| autorun: false
 # variable assignments
 x = 1.0
 y <- 2
@@ -158,6 +172,7 @@ In the last line, we force the creation of integer by adding `L` after a number.
 Since value were assigned, the result does not appears. to see it you can just call the variable:
 
 ```{webr}
+#| autorun: false
 x
 y
 z
@@ -166,12 +181,14 @@ z
 You can also have many of them in a single line using `;` to separate them.
 
 ```{webr}
+#| autorun: false
 x; y; z
 ```
 
 Although not explicitly specified, a variable do have a type associated with it. The type is derived from the value it was assigned.
 
 ```{webr}
+#| autorun: false
 typeof(x) # double
 typeof(y) # double
 typeof(z) # integer
@@ -180,6 +197,7 @@ typeof(z) # integer
 If we assign a new value to a variable, its type can change.
 
 ```{webr}
+#| autorun: false
 x = "cat"
 typeof(x)
 ```
@@ -189,6 +207,7 @@ Note: Integer: represents positive or negative whole numbers like 3 or -512. Flo
 If we try to use a variable that has not yet been defined we get an `Error`:
 
 ```{webr}
+#| autorun: false
 #| eval: false # it is not part of R but quarto to not run the code
 h
 ```
@@ -196,6 +215,7 @@ h
 But we can assign the value to a new variable from an existing variable:
 
 ```{webr}
+#| autorun: false
 h <- x
 h
 ```
@@ -207,6 +227,7 @@ Most operators and comparisons in R work as one would expect:
 -   Arithmetic operators `+`, `-`, `*`, `/`, `%/%` (integer division), `^` power
 
 ```{webr}
+#| autorun: false
 1 + 2 # Addition
 1 - 2 # Substraction
 1 * 2 # Multiplication
@@ -214,6 +235,7 @@ Most operators and comparisons in R work as one would expect:
 ```
 
 ```{webr}
+#| autorun: false
 1.0 + 2.0
 1.0 - 2.0
 1.0 * 2.0
@@ -221,17 +243,20 @@ Most operators and comparisons in R work as one would expect:
 ```
 
 ```{webr}
+#| autorun: false
 # Integer division of float numbers
 3.0 %/% 2.0
 ```
 
 ```{webr}
+#| autorun: false
 3^2 # 3 power of 2
 ```
 
 -   The boolean operators are spelled out as words. They are useful for condition ("if it is true or false") and filtering data.
 
 ```{webr}
+#| autorun: false
 TRUE
 FALSE
 ```
@@ -239,30 +264,36 @@ FALSE
 -   Note the use of `&` (and), `!` (not) and `|` (or).
 
 ```{webr}
+#| autorun: false
 TRUE & FALSE # FALSE win
 ```
 
 ```{webr}
+#| autorun: false
 !FALSE # Inverse
 ```
 
 ```{webr}
+#| autorun: false
 TRUE | FALSE # TRUE win
 ```
 
 -   Comparison operators can create booleans: `>`, `<`, `>=` (greater or equal), `<=` (less or equal), `==` equality.
 
 ```{webr}
+#| autorun: false
 2>1 # Is 2 bigger than 1?
 2<1 # Is 2 smaller than 1?
 ```
 
 ```{webr}
+#| autorun: false
 2>2 # Is 2 bigger than 2?
 2<2 # Is 2 smaller than 2?
 ```
 
 ```{webr}
+#| autorun: false
 2>=2 # Is 2 bigger than or equal 2?
 2<=2 # Is 2 smaller than or equal to 2?
 ```
@@ -274,6 +305,7 @@ TRUE | FALSE # TRUE win
     -   or `(|`): means that least one condition need to be true tu return `TRUE`
 
 ```{webr}
+#| autorun: false
 2>1 & 3>4 # is 2 bigger than 1 AND 3 bigger than 4?
 2>1 | 3>4 # is 2 bigger than 1 OR 3 bigger than 4?
 ```
@@ -281,12 +313,14 @@ TRUE | FALSE # TRUE win
 It works with vectors:
 
 ```{webr}
+#| autorun: false
 c(0, 5, 10, 15) > 2
 ```
 
 So it is possible to filter vectors
 
 ```{webr}
+#| autorun: false
 vector_to_filter <- c(3, 6, 9, 12)
 
 vector_to_filter[vector_to_filter > 5] # Keep all the value bigger than 5
@@ -295,6 +329,7 @@ vector_to_filter[vector_to_filter > 5] # Keep all the value bigger than 5
 There are other
 
 ```{webr}
+#| autorun: false
 # equality 
 setequal(c(1,2,3), c(3,4,5))
 # are the elements in the left in the vector on the right?
@@ -308,6 +343,7 @@ c(1,2,3) %in% c(3,4,5)
 Strings are the variable type that is used for storing text messages. To declare string variables, include quotes; either single or double. E.g:
 
 ```{webr}
+#| autorun: false
 s = "Hello world"
 typeof(s)
 ```
@@ -315,6 +351,7 @@ typeof(s)
 In R, characters are one element of a vector. To collect the length of a character, we need to use a specific function (since `length()` only return on 1 for characters).
 
 ```{webr}
+#| autorun: false
 # classic lenght
 nchar(s)
 # print the length of a string (i.e. the number of characters)
@@ -322,6 +359,7 @@ length(s)
 ```
 
 ```{webr}
+#| autorun: false
 # replace a substring in a string with somethign else
 s2 = gsub(s, "world", "test")
 s2
@@ -330,6 +368,7 @@ s2
 We can index a character in a string using `[]` after the function `strsplit(character, "")[[1]][1]`:
 
 ```{webr}
+#| autorun: false
 s3 = strsplit(s, "")[[1]]
 s3
 s3[1]
@@ -338,6 +377,7 @@ s3[1]
 Note that in R `head()` allows to do an ordered selection (like `[]`) while `tail()` do the same backwards.
 
 ```{webr}
+#| autorun: false
 head(s3, 3)
 tail(s3, 1)
 ```
@@ -345,6 +385,7 @@ tail(s3, 1)
 We can extract a part of a string using the syntax `[start:stop]`, which extracts characters between index `start` and `stop`:
 
 ```{webr}
+#| autorun: false
 s3[2:4]
 ```
 
@@ -355,16 +396,19 @@ Lists are very similar to vector, except that each element can be of any type.
 The syntax for creating lists in R is `list(...)`:
 
 ```{webr}
+#| autorun: false
 string_list = list('spring', 'summer', 'winter', 'fall')
 string_list
 ```
 
 ```{webr}
+#| autorun: false
 integer_list = list(12, 3, 5, 3, 9, 6, 2)
 integer_list
 ```
 
 ```{webr}
+#| autorun: false
 float_list = list(2.3, 4.6, 3.7, 8.3)
 float_list
 ```
@@ -372,6 +416,7 @@ float_list
 To access variables in a list:
 
 ```{webr}
+#| autorun: false
 string_list <- list("a", "b", "c", "d")
 string_list[[1]] # note that indexing starts at 1 in R!
 ```
@@ -379,6 +424,7 @@ string_list[[1]] # note that indexing starts at 1 in R!
 #### Adding, inserting, modifying, and removing elements from lists
 
 ```{webr}
+#| autorun: false
 # create a new empty list
 l <- list()
 
@@ -392,6 +438,7 @@ l
 We can modify lists by assigning new values to elements in the list. In technical jargon, lists are *mutable*.
 
 ```{webr}
+#| autorun: false
 l[[2]] <- "p"
 
 l
@@ -400,6 +447,7 @@ l
 We can insert an element at a specific index using `append`
 
 ```{webr}
+#| autorun: false
 l <- append(l, "i", 0)
 l <- append(l, "n", 1)
 l <- append(l, "s", 2)
@@ -413,6 +461,7 @@ l
 Remove elements with `remove`
 
 ```{webr}
+#| autorun: false
 l <- l[l != "A"]
 
 l
@@ -425,6 +474,7 @@ Lists are not the best method for quick and concise calculations or operations. 
 List are also like vectors, except that each element is a key-value pair. The syntax for lists is `list(key1 = value1, ...)`.
 
 ```{webr}
+#| autorun: false
 student <- list(hair = c("brown", "pink"), 
                 eye = "black", 
                 height = 172)
@@ -436,18 +486,21 @@ student
 To access keys:
 
 ```{webr}
+#| autorun: false
 names(student)
 ```
 
 To access values of the keys:
 
 ```{webr}
+#| autorun: false
 unlist(student)
 ```
 
 To access an item of a key:
 
 ```{webr}
+#| autorun: false
 student$eye
 # or
 student[["eye"]]
@@ -456,6 +509,7 @@ student[["eye"]]
 To change the value of a key:
 
 ```{webr}
+#| autorun: false
 student$eye <- 'blue'
 # or
 student[["eye"]]
@@ -464,12 +518,14 @@ student[["eye"]]
 To add a new entry:
 
 ```{webr}
+#| autorun: false
 student$nationality <- 'Spanish'
 # or
 student[["nationality"]] <- 'Spanish'
 ```
 
 ```{webr}
+#| autorun: false
 student
 ```
 
@@ -483,6 +539,7 @@ You can take an user input using using the `readline()` function. Not that if yo
 4.  Go back to the chunk
 
 ```{webr}
+#| autorun: false
 #| eval: false # Not an R code, but a Quarto instruction
 # Input 
 name <- readline(prompt="What is your name: ")
@@ -500,6 +557,7 @@ The R syntax for conditional execution of code use the keywords `if`, `else if`,
 -   You can play with this by changin the value of `statement1` and `statement2` by `TRUE` or `FALSE`
 
 ```{webr}
+#| autorun: false
 statement1 <- FALSE
 statement2 <- FALSE
 
@@ -519,6 +577,7 @@ In R, loops can be programmed in a number of different ways. The most common is 
 ### **`for` loops**:
 
 ```{webr}
+#| autorun: false
 for (x in 1:3) {# for each element of the list print it
     print(x)
 }
@@ -529,6 +588,7 @@ Note that in this case, the function `print()` is necessary.
 To iterate over key-value pairs of a list:
 
 ```{webr}
+#| autorun: false
 for (key in names(student)) { # for each key of the list print "[key] = [value]"
     print(paste(key, "=", student[[key]]))
 }
@@ -539,6 +599,7 @@ for (key in names(student)) { # for each key of the list print "[key] = [value]"
 Instead of passing each element of a list, it is possible to set the condition that a code is executed as long as a specific condition is met. You can run the whole chunk to see it in action:
 
 ```{webr}
+#| autorun: false
 i <- 0
 
 while (i < 5) { # "while i is smaller than 5 run the following code:"
@@ -552,6 +613,7 @@ while (i < 5) { # "while i is smaller than 5 run the following code:"
 Note that the `print("done")` statement is not part of the `while` loop body because of the difference in indentation.
 
 ```{webr}
+#| autorun: false
 # example of for loop and if statement: 
 # for each value in the list "integer_list" print a value that is greater or equal to 7
 integer_list <- c(5, 7, 9, 3, 8)
@@ -568,6 +630,7 @@ for (x in integer_list) {
 A function in R is defined using the keyword `function`, followed by a function name, a signature within parentheses `()`, and a curly brace `{`. The following code, with one additional level of indentation, is the function body. It return nothing but the function is available now.
 
 ```{webr}
+#| autorun: false
 square <- function(x) { # for a given value x do the following:
     return(x^2) # Return the square of x.
 }
@@ -576,6 +639,7 @@ square <- function(x) { # for a given value x do the following:
 You can use your new function on any value:
 
 ```{webr}
+#| autorun: false
 square(4)
 square(10)
 ```
@@ -583,6 +647,7 @@ square(10)
 Note that you are not forced to use the return statement in the function, R will return the last value automatically:
 
 ```{webr}
+#| autorun: false
 square <- function(x) { # for a given value x do the following:
     x^2 # Return the square of x.
 }
@@ -593,6 +658,7 @@ square(4)
 You can even make it shorter by removing the brackets and putting everything in a single line:
 
 ```{webr}
+#| autorun: false
 square <- function(x) x^2
 
 square(4)
@@ -605,6 +671,7 @@ Most of the functionality in R is provided by *packages*. The R Standard Library
 To use a package in an R program it first has to be installed. A quickest way is to do it here using the `install.packages` statement. For example, to install the package `ggplot2`, which is a useful package for plots, we can do:
 
 ```{webr}
+#| autorun: false
 #| eval: false
 install.packages("ggplot2")
 ```
@@ -612,6 +679,7 @@ install.packages("ggplot2")
 To use a package in an R program it first has to be imported. A package can be imported using the `library` statement. For example, to import the package `ggplot2`, which contains many standard plotting functions, we can do:
 
 ```{webr}
+#| autorun: false
 library(ggplot2)
 ```
 
@@ -620,24 +688,28 @@ This includes the whole package and makes it available for use later in the prog
 Note that R can creat plot without packages. But ggplot2 bring beautiful and modular graphs. Let's try it! For instance, R have built-in datasets that we can use. For instance we can invoke the `cars` dataset by simply calling it if it is for a short usecase:
 
 ```{webr}
+#| autorun: false
 cars
 ```
 
 Then we can then plot it using the `plot()` function:
 
 ```{webr}
+#| autorun: false
 plot(cars)
 ```
 
 ggplot allow to do the same:
 
 ```{webr}
+#| autorun: false
 qplot(speed, dist, data = cars)
 ```
 
 Once a package is imported, we can list the symbols it provides using the `ls` function:
 
 ```{webr}
+#| autorun: false
 ls("package:ggplot2")
 ```
 
@@ -666,6 +738,7 @@ There are also great examples...
 ### Plotting with ggplot2
 
 ```{webr}
+#| autorun: false
 library(ggplot2)
 library(dplyr)
 ```
@@ -673,6 +746,7 @@ library(dplyr)
 Let's create a sequence and plot it against its version plus 1:
 
 ```{webr}
+#| autorun: false
 x <- 1:10
 qplot(x, x+1)
 ```
@@ -680,6 +754,7 @@ qplot(x, x+1)
 Let's create a normal distribution of 500 values using `rnorm()` and plot it as an histogram:
 
 ```{webr}
+#| autorun: false
 data <- rnorm(500)    # 500 draws from the standard normal distribution
 qplot(data, geom="histogram")
 ```
@@ -689,12 +764,14 @@ qplot(data, geom="histogram")
 It is possible to manipulate dataset (here called data frames) using base R functionalities. However, the dplyr make this manipulation easier. You need to install it firts with `install.package("dplyr")` then load the library with `library(dplyr)`:
 
 ```{webr}
+#| autorun: false
 library(dplyr)
 ```
 
 To import a csv you can use the function `read.csv()` in base R, but the `read_csv()` in `dplyr` is faster and import everything as `tibble` table (an advanced kind of dataframe):
 
 ```{webr}
+#| autorun: false
 df <- read.csv("data/data.csv")
 ```
 
@@ -703,12 +780,14 @@ Note that to have access to the data, you do not need to write the full path, yo
 Display a dataframe:
 
 ```{webr}
+#| autorun: false
 df
 ```
 
 Display the size of your dataframe:
 
 ```{webr}
+#| autorun: false
 dim(df) # this is number of (rows, columns)
 nrow(df) # Number of rows
 ncol(df) # Number of cols
@@ -717,6 +796,7 @@ ncol(df) # Number of cols
 Display the names of columns:
 
 ```{webr}
+#| autorun: false
 colnames(df)
 # or
 names(df)
@@ -725,6 +805,7 @@ names(df)
 Create a new column the base R way:
 
 ```{webr}
+#| autorun: false
 # compute the average between Open and Close
 df$mean_value <- (df$Open+df$Close)/2
 df$mean_value
@@ -733,6 +814,7 @@ df$mean_value
 Create a new column with Tidyverse (without pipe):
 
 ```{webr}
+#| autorun: false
 # axis=0 refer to columns 
 df$mean_value <- colMeans(select(df, Open, Close))
 df$mean_value
@@ -747,6 +829,7 @@ R has a super power as a functional programming language. It can use pipes (`|>`
 Since we will use the dplyr, we will use magrittr pipe (`%>%`). No need to write it, simply use the following shortcut `Ctrl+Maj+M` or `Cmd+Maj+M`. With a few try, it comes naturally. As said before the pipe use is to pass values through operations. For instance consider the following example printing the value of the variable a:
 
 ```{webr}
+#| autorun: false
 a <- "12"
 
 # Normal way
@@ -760,6 +843,7 @@ a %>% print()
 They both give the same result. However the pipe version is longer. The strength of the secon approach appear when we need more than one operation. For instance, imagine converting a to an integer before printing it:
 
 ```{webr}
+#| autorun: false
 # Normal way
 print(as.integer(a))
 
@@ -777,6 +861,7 @@ This method scale also really well. Lets take a more extreme example. With the f
 4.  Print it
 
 ```{webr}
+#| autorun: false
 # Normal way
 print(sqrt(log10(as.integer(a))))
 
@@ -793,6 +878,7 @@ Note that in this code we can put expressions following a pipe in the next line 
 It is even more complicated with the normal way and less readable. While with pipe you can read it like sentences connected by "AND". Generally, when operation start to stack, we desagreggate them into multiple steps like this:
 
 ```{webr}
+#| autorun: false
 a <- as.integer(a)
 a <- log10(a)
 a <- sqrt(a)
@@ -802,6 +888,7 @@ print(a)
 This approach is more readable. The issue with this approach is that we have changed the value of a multiple time. But if we want to go back in a step, we need to re-run all the step before. It seems like nothing, but in a longer code and more complex, you can easily be overwhelmed and lost track of the state of your variable. You could improve that by storing new values in different variables:
 
 ```{webr}
+#| autorun: false
 a <- 12
 
 a1 <- as.integer(a)
@@ -813,6 +900,7 @@ print(a3)
 But then we can create unecessary intermediate variables that have only no usage beside storing value that have no use in the rest of the code. Furthermore, both version are slower to write than the pipe version. Another advantage of the pipe function is that we can iteratively write the code and add and remove steps as needed. The when you are satisfied with the result, you can store it in a final variable:
 
 ```{webr}
+#| autorun: false
 result <- 
   a %>% 
   as.integer() %>% 
@@ -824,6 +912,7 @@ result <-
 The pipes in dplyr allows to manipulate data frames steps by steps in a readable manner. But function from the tidyverse bring another strength. They always return data frame, makin the iteratino even easier since you keep everything, so modifying a single column won't stop you to do other manipulation with other columns in the same chain. Let's take the earlier example from the `df` dataframe and compute the mean of `Open` and `Close` columns.
 
 ```{webr}
+#| autorun: false
 # compute the average between Open and Close
 df$mean_value <- (df$Open+df$Close)/2
 
@@ -835,6 +924,7 @@ df %>%
 The last expression return a data frame and added the new column to the end. Again you are free to put the new result in a new object. Then you can select specific rows:
 
 ```{webr}
+#| autorun: false
 # Filtering
 df %>% 
   filter(Close > Open) # keep row when Close is bigger than Open
@@ -843,6 +933,7 @@ df %>%
 We can combine it with the previous operation to chain everything. The new dataset has a new column `mean_value` and is filterd to keep row when Close is bigger than Open:
 
 ```{webr}
+#| autorun: false
 # Filtering after mutating
 df %>% 
   mutate(mean_value = (Open+Close)/2) %>% 
@@ -852,18 +943,21 @@ df %>%
 You can display the summary statistic of a given variable using the summary() function.
 
 ```{webr}
+#| autorun: false
 summary(df$High)
 ```
 
 You can do the same with the whole data frame:
 
 ```{webr}
+#| autorun: false
 summary(df)
 ```
 
 You can also request specific statistics using the corresponding functions:
 
 ```{webr}
+#| autorun: false
 mean(df$Volume)
 median(df$Volume)
 min(df$Volume)
@@ -875,6 +969,7 @@ quantile(df$Volume, 0.95)
 Chaining is useful when we need to answer a specific question without changing the data frame. For instance, you can find the date when `Volume` was highest:
 
 ```{webr}
+#| autorun: false
 df %>% 
   filter(Volume == max(Volume)) %>% 
   select(Date)
@@ -883,6 +978,7 @@ df %>%
 But sometimes, it is faster to use base R for simple isolated operations. For instance, the Date column in df is note in the date format but in text format. We can change it in one line:
 
 ```{webr}
+#| autorun: false
 # Check the type of Date
 class(df$Date)
 
@@ -896,6 +992,7 @@ class(df$Date)
 If you want to extract the specific value and not a data frame, you can use the `pull()` function instead of `select()`:
 
 ```{webr}
+#| autorun: false
 df %>% 
   filter(Volume == max(Volume)) %>% 
   pull(Date)
@@ -904,6 +1001,7 @@ df %>%
 Plots are very easy in ggplot2 with `qplot()`! But there is another notation that is more used, the layered one:
 
 ```{webr}
+#| autorun: false
 # Easy way
 qplot(Date, Open, data = df, geom = "line")
 
@@ -918,6 +1016,7 @@ It looks longer, but it is more flexible. It works like layers. Here is a short 
 The `aes()` part is quite movable. You can decide to put it in a different place to update the graph:
 
 ```{webr}
+#| autorun: false
 # Different place, same result
 df %>% 
   ggplot(aes(x=Date)) +
@@ -927,6 +1026,7 @@ df %>%
 We get the same result. The advantage of using such an approach is that we can really be flexible in the parameter that we are using and also the number of layer that we can create:
 
 ```{webr}
+#| autorun: false
 df %>% 
   ggplot(aes(x=Date)) + 
   geom_line(aes(y=Open, color="Open")) +
@@ -939,6 +1039,7 @@ df %>%
 Just by changing the geom, we can have a large variety of plots. For instance here is a boxplot:
 
 ```{webr}
+#| autorun: false
 df %>% 
   ggplot(aes(x=Close)) + 
   geom_boxplot()
@@ -947,6 +1048,7 @@ df %>%
 Note that the parameters are not compulsary as long as we keep theme in the righ order (x then y):
 
 ```{webr}
+#| autorun: false
 # Parameters
 df %>% 
   ggplot(aes(x=Close)) + 
@@ -961,6 +1063,7 @@ df %>%
 Keeping the same structure, we can have different plots by changing the geom:
 
 ```{webr}
+#| autorun: false
 # Boxplot
 df %>% 
   ggplot(aes(Close)) + 
