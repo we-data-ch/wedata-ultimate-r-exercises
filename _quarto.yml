@@ -10,7 +10,6 @@ format:
       dark: [darkly, custom-dark.scss]
     include-in-header: "scripts/translate.html"
 
-  
 website:
   title: "We Data"
   description: "We Data exercise website"

@@ -1,0 +1,742 @@
+---
+title: Methods Workshop in Quantitative Text Analysis Translated in R
+author:
+  - name: Jisu Kim
+    url: https://github.com/jisukimmmm
+  - name: Vestin Hategekimana (translator)
+    url: https://github.com/CyuHat
+date: "21/03/2024"
+engine: knitr
+format: live-html
+webr:
+  packages:
+    - dplyr
+    - ggplot2
+    - readr
+resources:
+  - data
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+# Preface
+
+This work is a translation of the a Python tutorial from the following repository: [https://github.com/jisukimmmm/NCCR_MWQTA_2024](https://github.com/jisukimmmm/NCCR_MWQTA_2024)
+
+It was then transformed in an interactive tutorial.
+
+# Introduction to R language - exercises & answers
+
+## Basic Syntax and Operations:
+
+### 1. Calculate the area of a triangle:
+
+Write a program to calculate the area of a triangle given its base and height.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_1
+# answer:
+base <- 10
+height <- 3
+```
+
+::: { .hint exercise="ex_1"}
+::: { .callout-note collapse="false"}
+## Hint
+The area of a triangle is calculated using the formula: (base * height) / 2
+:::
+:::
+
+::: { .solution exercise="ex_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+base <- 10
+height <- 3
+
+triangle <- base * height / 2
+
+paste("This is the area:", triangle)
+```
+:::
+:::
+
+### 2. Speed Conversion
+
+Create a program that converts kilometers per hour to meters per second.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_2
+# answer:
+kmph <- 100
+```
+
+::: { .hint exercise="ex_2"}
+::: { .callout-note collapse="false"}
+## Hint
+To convert km/h to m/s:
+1. Multiply by 1000 to convert km to m
+2. Divide by 3600 to convert hours to seconds
+:::
+:::
+
+::: { .solution exercise="ex_2" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+kmph <- 100
+ms <- kmph * 1000 / 3600
+paste("The answer is", ms)
+```
+:::
+:::
+
+### 3. String Reversal
+
+Write an R script that takes a string as input and prints its reverse.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_3
+# answer:
+my_text <- "This is a text"
+```
+
+::: { .hint exercise="ex_3"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `strsplit()` to split the string into characters, `rev()` to reverse them, and `paste()` with `collapse` to join them back.
+:::
+:::
+
+::: { .solution exercise="ex_3" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+my_text <- "This is a text"
+rev_text <- paste(rev(strsplit(my_text, NULL)[[1]]), collapse = "")
+rev_text
+```
+:::
+:::
+
+## Conditional Statements and Loops:
+
+### 1. Leap Year Check
+
+Create a program that checks whether a given year is a leap year or not.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_4
+# answer:
+year <- 3000
+```
+
+::: { .hint exercise="ex_4"}
+::: { .callout-note collapse="false"}
+## Hint
+A year is a leap year if:
+- It's divisible by 4 AND not divisible by 100
+- OR it's divisible by 400
+Use the modulo operator `%%` to check divisibility
+:::
+:::
+
+::: { .solution exercise="ex_4" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+year <- 3000
+if ((year %% 4 == 0 && year %% 100 != 0) | (year %% 400 == 0)) {
+  "This is a leap year"
+} else {
+  "This is not a leap year"
+}
+```
+:::
+:::
+
+### 2. Sum of Multiples
+
+Write an R script to find the sum of all numbers between 1 and 1000 that are divisible by both 3 and 5.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_5
+# answer:
+numbers <- 1:1000
+```
+
+::: { .hint exercise="ex_5"}
+::: { .callout-note collapse="false"}
+## Hint
+1. Create a sequence from 1 to 1000
+2. Use vector operations with modulo to find numbers divisible by both 3 and 5
+3. Use `sum()` to add them up
+:::
+:::
+
+::: { .solution exercise="ex_5" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+numbers <- 1:1000
+bag <- numbers[numbers %% 3 == 0 & numbers %% 5 == 0]
+sum(bag)
+```
+:::
+:::
+
+### 3. Geometric Progression
+
+Implement a program to print the first 10 terms of the geometric progression series: 2, 6, 18, 54, ...
+
+```{webr}
+#| autorun: false
+#| exercise: ex_6
+# answer:
+common_ratio <- 3
+gp_series <- 2
+```
+
+::: { .hint exercise="ex_6"}
+::: { .callout-note collapse="false"}
+## Hint
+1. Create a numeric vector to store the series
+2. First term is given
+3. Each subsequent term is previous term multiplied by common ratio
+:::
+:::
+
+::: { .solution exercise="ex_6" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+common_ratio <- 3
+gp_series <- 2
+
+for (i in 2:10) {
+  gp_series[i] <- gp_series[i-1] * common_ratio
+}
+gp_series
+```
+:::
+:::
+
+## Lists and List Operations:
+
+### 1. Largest and Smallest Elements
+
+Create a program to find the largest and smallest elements in a list.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_7
+# answer:
+number_list <- c(2, 5, 1, 67, 4, 7)
+```
+
+::: { .hint exercise="ex_7"}
+::: { .callout-note collapse="false"}
+## Hint
+Use R's built-in functions:
+- `min()` for smallest element
+- `max()` for largest element
+:::
+:::
+
+::: { .solution exercise="ex_7" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+number_list <- c(2, 5, 1, 67, 4, 7)
+mini <- min(number_list)
+maxi <- max(number_list)
+paste("Min:", mini, "Max:", maxi)
+```
+:::
+:::
+
+### 2. List Intersection
+
+Write an R script to find the intersection of two lists.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_8
+# answer:
+list1 <- c(1, 2, 3, 4, 5)
+list2 <- c(4, 5, 6, 7, 8)
+
+```
+
+::: { .hint exercise="ex_8"}
+::: { .callout-note collapse="false"}
+## Hint
+Use the `intersect()` function to find common elements between two vectors
+:::
+:::
+
+::: { .solution exercise="ex_8" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+list1 <- c(1, 2, 3, 4, 5)
+list2 <- c(4, 5, 6, 7, 8)
+intersection <- intersect(list1, list2)
+intersection
+```
+:::
+:::
+
+### 3. Program to shuffle a deck of cards (x)
+
+Implement a program to shuffle a deck of cards represented as a list.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_9
+# answer:
+
+```
+
+::: { .hint exercise="ex_9"}
+::: { .callout-note collapse="false"}
+## Hint
+Use the `sample()` function to randomly shuffle elements in a vector. First create a vector with all cards.
+:::
+:::
+
+::: { .solution exercise="ex_9" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+deck <- c("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K")
+shuffled_deck <- sample(deck)
+
+print(shuffled_deck)
+```
+:::
+:::
+
+## Strings and String Operations:
+
+### 1. Capitalize the first letter of each word (x)
+
+Write an R script to capitalize the first letter of each word in a sentence.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_10
+# answer:
+sentence <- "this is a sentence"
+```
+
+::: { .hint exercise="ex_10"}
+::: { .callout-note collapse="false"}
+## Hint
+The `tools::toTitleCase()` function can capitalize the first letter of each word in a string.
+:::
+:::
+
+::: { .solution exercise="ex_10" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+sentence <- "this is a sentence"
+capitalized_sentence <- tools::toTitleCase(sentence)
+
+print(capitalized_sentence)
+```
+:::
+:::
+
+### 2. Most Frequent Character (x)
+
+Create a program to find the most frequent character in a given string.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_11
+# answer:
+string <- "this is a string"
+```
+
+::: { .hint exercise="ex_11"}
+::: { .callout-note collapse="false"}
+## Hint
+1. Split the string into characters using `strsplit()`
+2. Create a frequency table with `table()`
+3. Sort in descending order and get the first element
+:::
+:::
+
+::: { .solution exercise="ex_11" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+string <- "this is a string"
+most_frequent_char <- names(sort(table(strsplit(string, NULL)[[1]]), 
+                               decreasing = TRUE))[1]
+most_frequent_char
+```
+:::
+:::
+
+### 3. Check if a string contains only digits
+
+Implement a program to check if a given string contains only digits.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_12
+# answer:
+string <- "123456"
+```
+
+::: { .hint exercise="ex_12"}
+::: { .callout-note collapse="false"}
+## Hint
+- Use `grepl()` function with a regular expression pattern
+- The pattern `^[0-9]+$` means:
+  - `^` start of string
+  - `[0-9]` any digit
+  - `+` one or more occurrences
+  - `$` end of string
+:::
+:::
+
+::: { .solution exercise="ex_12" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+string <- "123456"
+
+is_digits <- grepl("^[0-9]+$", string)
+
+print(paste("Does the string contain only digits?", is_digits))
+```
+:::
+:::
+
+## Functions:
+
+### 1. Perfect Square Check
+
+Create a function to check whether a given number is a perfect square or not.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_13
+# answer:
+is_perfect_square <- function(x) {
+  # ...
+}
+```
+
+::: { .hint exercise="ex_13"}
+::: { .callout-note collapse="false"}
+## Hint
+1. Take the square root of the number
+2. Check if the square root is equal to its floor value
+3. Return TRUE/FALSE accordingly
+:::
+:::
+
+::: { .solution exercise="ex_13" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+is_perfect_square <- function(x) {
+  sqrt_x <- sqrt(x)
+  return(sqrt_x == floor(sqrt_x))
+}
+
+# Test the function
+is_perfect_square(16)  # Should return TRUE
+is_perfect_square(15)  # Should return FALSE
+```
+:::
+:::
+
+### 2. Reverse the elements of a vector
+
+Implement a function to reverse the elements of a list in place.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_14
+# answer:
+
+```
+
+::: { .hint exercise="ex_14"}
+::: { .callout-note collapse="false"}
+## Hint
+You can use R's built-in `rev()` function to reverse a list or vector. Alternatively, you could write a loop that swaps elements from the beginning and end moving towards the middle.
+:::
+:::
+
+::: { .solution exercise="ex_14" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+reverse_list <- function(lst) {
+  return(rev(lst))
+}
+
+# Test the function
+my_list <- c(1, 2, 3, 4, 5)
+reversed <- reverse_list(my_list)
+print(reversed)
+```
+:::
+:::
+
+### 3. Calculate the mean of a list of numbers
+
+Create a function to calculate the mean (average) of a list of numbers.
+
+```{webr}
+#| autorun: false
+#| exercise: ex_15
+# answer:
+
+```
+
+::: { .hint exercise="ex_15"}
+::: { .callout-note collapse="false"}
+## Hint
+The mean is calculated by summing all numbers and dividing by the count of numbers. In R, you can use the built-in `mean()` function or implement it using `sum()` and `length()`.
+:::
+:::
+
+::: { .solution exercise="ex_15" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+calculate_mean <- function(numbers) {
+  return(mean(numbers))
+}
+
+# Test the function
+numbers <- c(1, 2, 3, 4, 5)
+avg <- calculate_mean(numbers)
+print(paste("The mean is:", avg))
+```
+:::
+:::
+
+## File Handling:
+
+### 1. CSV Data Analysis (x)
+
+Create a program to read a CSV file containing student scores and calculate their average.
+
+```{webr}
+#| autorun: false
+#| envir: myenv
+#| exercise: ex_16
+# answer:
+
+```
+
+::: { .hint exercise="ex_16"}
+::: { .callout-note collapse="false"}
+## Hint
+1. Use `readr::read_csv()` to read the CSV file
+2. Access the score column using `$`
+3. Calculate mean using `mean()`
+:::
+:::
+
+::: { .solution exercise="ex_16" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Method 1
+student_scores <- read.csv("data/student_scores.csv")
+mean(student_scores$score)
+
+# Method 2
+library(readr)
+student_scores <- read_csv("data/student_scores.csv")
+mean(student_scores$score)
+```
+:::
+:::
+
+### 2. Find lines containing a specific word in a text file (x)
+
+Write a Python script to find and print all lines containing a specific word in a text file.
+
+```{webr}
+#| autorun: false
+#| envir: myenv
+#| exercise: ex_17
+# answer:
+
+```
+
+::: { .hint exercise="ex_17"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `readLines()` to read the file content and `grep()` to search for matching lines. The `grep()` function with `value=TRUE` returns the actual matching lines.
+:::
+:::
+
+::: { .solution exercise="ex_17" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+find_lines_with_word <- function(file_path, word) {
+  lines <- readLines(file_path)
+  matching_lines <- grep(word, lines, value = TRUE)
+  return(matching_lines)
+}
+
+# Example usage
+# find_lines_with_word("example.txt", "specific_word")
+```
+:::
+:::
+
+### 3. Count words in a text file
+
+Implement a program to count the number of words in a text file.
+
+```{webr}
+#| autorun: false
+#| envir: myenv
+#| exercise: ex_18
+# answer:
+
+```
+
+::: { .hint exercise="ex_18"}
+::: { .callout-note collapse="false"}
+## Hint
+Break this down into steps:
+1. Read the file using `readLines()`
+2. Split the text into words using `strsplit()` with whitespace as delimiter
+3. Count the total words using `length()`
+:::
+:::
+
+::: { .solution exercise="ex_18" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+count_words_in_file <- function(file_path) {
+  lines <- readLines(file_path)
+  words <- unlist(strsplit(lines, "\\s+"))
+  return(length(words))
+}
+
+# Example usage
+# count_words_in_file("example.txt")
+```
+:::
+:::
+
+## Plotting:
+
+### 1. Histogram
+
+Histogram of Student Scores: Create a histogram showing the distribution of student scores.
+
+```{webr}
+#| autorun: false
+#| envir: myenv
+#| exercise: ex_19
+# answer:
+
+```
+
+::: { .hint exercise="ex_19"}
+::: { .callout-note collapse="false"}
+## Hint
+1. Load ggplot2
+2. Use `geom_histogram()`
+3. Set appropriate binwidth
+4. Add proper labels
+:::
+:::
+
+::: { .solution exercise="ex_19" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+library(ggplot2)
+ggplot(student_scores, aes(x = score)) +
+  geom_histogram(binwidth = 5) +
+  labs(title = "Histogram of Student Scores", 
+       x = "Score", 
+       y = "Frequency")
+```
+:::
+:::
+
+### 2. Create a Boxplot of Student Scores
+
+Boxplot of Student Scores: Generate a boxplot to visualize the spread and central tendency of student scores.
+
+```{webr}
+#| autorun: false
+#| envir: myenv
+#| exercise: ex_20
+# answer:
+
+```
+
+::: { .hint exercise="ex_20"}
+::: { .callout-note collapse="false"}
+## Hint 
+Use `ggplot()` with `geom_boxplot()`. The data should be mapped to the y-axis since we want a vertical boxplot. Don't forget to add appropriate labels.
+:::
+:::
+
+::: { .solution exercise="ex_20" }
+::: { .callout-tip collapse="false"}
+## Solution
+```r
+ggplot(student_scores, aes(y = score)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Student Scores", y = "Score")
+```
+:::
+:::
+
+### 3. Create a Scatter Plot of Student Scores
+
+Scatter Plot of Student Scores: Create a scatter plot to explore the relationship between student scores and student IDs.
+
+```{webr}
+#| autorun: false
+#| envir: myenv
+#| exercise: ex_21
+# answer:
+ibrary(ggplot2)
+ggplot(student_scores)
+```
+
+::: { .hint exercise="ex_21"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `ggplot()` with `geom_point()`. Map student_id to x-axis and score to y-axis. Remember to include appropriate axis labels.
+:::
+:::
+
+::: { .solution exercise="ex_21" }
+::: { .callout-tip collapse="false"}
+## Solution
+```r
+ggplot(student_scores, aes(x = student_id, y = score)) +
+  geom_point() +
+  labs(title = "Scatter Plot of Student Scores", x = "Student ID", y = "Score")
+```
+:::
+:::
