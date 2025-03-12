@@ -3,7 +3,7 @@ title: "R Language Basics I"
 author: "David Munoz Tord"
 description: "Fundamentals of R programming covering introductory concepts to data frames"
 engine: knitr
-date: "12/03/2025"
+date: "03/12/2025"
 format: live-html
 ---
 
