@@ -1,5 +1,5 @@
 ---
-title: "1. Basic R"
+title: "R Language Basics: 0"
 author: "Vestin Hategekimana"
 description: "Exercises for absolute beginners O.o"
 engine: knitr

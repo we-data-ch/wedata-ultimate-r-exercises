@@ -1,0 +1,1040 @@
+---
+title: "R Language Basics I"
+author: "Created from Accel2R Materials"
+description: "Fundamentals of R programming covering introductory concepts to data frames"
+engine: knitr
+format: live-html
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Introduction to R
+
+R is a powerful programming language for statistical computing and data analysis. Originally developed by statisticians Ross Ihaka and Robert Gentleman at the University of Auckland in the 1990s, R has become a leading tool for data science, statistical analysis, and data visualization.
+
+Think of R as the Swiss Army knife of the data world – it may not look as flashy as some newer tools, but it's powerful, reliable, and has a tool for every statistical job imaginable!
+
+### Key Features of R:
+
+- **Statistical Focus**: R was built specifically for statistical analysis and offers a vast array of statistical methods and tests. It's like having a statistical superhero at your fingertips!
+- **Graphics Capabilities**: Excellent for creating high-quality visualizations with packages like ggplot2. Your data deserves a glow-up too!
+- **Extensibility**: Thousands of packages available through CRAN (Comprehensive R Archive Network) extend R's functionality. It's like the App Store for statistics nerds!
+- **Open Source**: Free and open-source, with a strong community of users and developers. In a world of expensive software, R is like Robin Hood – taking powerful statistical capabilities from the wealthy software giants and giving them to everyone.
+- **Interactive Environment**: The R console provides immediate feedback, making it ideal for data exploration. It's like having a conversation with your data!
+
+### The R Console and Basic Operations
+
+When you start R, you're presented with a console where you can enter commands. The console interprets each command and returns results immediately.
+
+R functions as a sophisticated calculator, capable of handling basic arithmetic operations and much more. Here are some basic operations you can perform:
+
+```r
+# Addition: Like when Darth Vader and Luke Skywalker finally team up
+5 + 3  # Returns 8
+
+# Subtraction: Like when you realize how much Starbucks costs monthly
+10 - 4  # Returns 6
+
+# Multiplication: What happens to your problems when you tell your mom
+6 * 7  # Returns 42 (also the answer to the ultimate question of life, the universe, and everything)
+
+# Division: Sharing pizza with friends
+20 / 5  # Returns 4
+
+# Exponentiation (Power): Like when a superhero discovers their abilities
+2^3  # Returns 8
+```
+
+### Exercise 1: Basic R Operations
+
+Perform the following operations in R:
+1. Add 25 and 75
+2. Multiply 10 by 5
+3. Divide 100 by 4
+
+```{webr}
+#| exercise: ex_intro_1
+
+```
+
+::: { .hint exercise="ex_intro_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use the standard arithmetic operators: `+` for addition, `*` for multiplication, and `/` for division. Even Jar Jar Binks could do this!
+:::
+:::
+
+::: { .solution exercise="ex_intro_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Addition
+25 + 75
+
+# Multiplication
+10 * 5
+
+# Division
+100 / 4
+```
+:::
+:::
+
+### Comments and Output in R
+
+R allows you to add comments to your code to explain what it does. Comments start with the `#` symbol and are ignored by R when executing code, like how everyone ignores the terms and conditions before clicking "I agree."
+
+R automatically prints the result of a calculation or command if it's not assigned to a variable. This feature is useful for quick calculations and checking intermediate results.
+
+You can also explicitly print values using the `print()` function, which is especially useful when working with scripts where automatic printing doesn't occur.
+
+```r
+# This is a comment that R ignores (like when your cat ignores you)
+
+# Automatic printing example
+42  # R will output 42, the answer to everything according to "The Hitchhiker's Guide to the Galaxy"
+
+# Print function example
+print("Help me Obi-Wan Kenobi, you're my only hope")  # Explicitly prints the message
+```
+
+### Exercise 2: Printing and Comments
+
+Practice printing values and adding comments to your code.
+
+```{webr}
+#| exercise: ex_intro_2
+
+```
+
+::: { .hint exercise="ex_intro_2"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `#` to add comments. R will automatically print the result of an expression if it's not assigned to a variable. You can also use the `print()` function, which is like using a megaphone for your data.
+:::
+:::
+
+::: { .solution exercise="ex_intro_2" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# This is a comment - it's like whispering to your code
+
+# Automatic printing
+42  # The answer to life, the universe, and everything
+
+# Print function
+print("I find your lack of comments disturbing")
+
+# Multiple operations
+2 + 2  # This is the way
+print(10 * 5)  # May the force be with you
+```
+:::
+:::
+
+## Names and Assignment
+
+In R, you can store values in variables for later use. This is done using the assignment operator, which can be either `<-` or `=`. The `<-` operator is more commonly used in R programming.
+
+### Variable Assignment
+
+When you assign a value to a variable, R stores that value in memory. You can then use the variable name to refer to that value in subsequent operations. It's like giving a name to your pet dragon so you can call it later.
+
+```r
+# Assign value 10 to variable x
+x <- 10
+
+# Use x in a calculation
+x + 5  # Returns 15
+
+# Reassign x to a new value
+x <- 20
+x  # Now returns 20, because x had a change of heart
+```
+
+While both `<-` and `=` work for assignment in most contexts, `<-` is preferred in R programming because it clearly distinguishes assignment from the `==` equality test and because it works in all contexts. It's like the difference between "your" and "you're" - both sound the same, but using the wrong one can lead to confusion!
+
+### Variable Names
+
+Good variable names are essential for readable code. In R:
+
+- Variable names can contain letters, numbers, dots (`.`), and underscores (`_`)
+- Names must start with a letter or a dot not followed by a number
+- Names are case-sensitive (`jedi` and `Jedi` are different variables)
+- Names should be descriptive of what they contain
+
+```r
+# Valid variable names
+age_of_yoda <- 900
+harry.potter <- "The Boy Who Lived"
+vader_rage_level <- 95
+
+# Invalid variable names (would cause errors)
+# 2fast2furious <- "Great movie"  # Can't start with a number
+# iron-man <- "Tony Stark"      # Can't contain hyphens
+```
+
+### Exercise 3: Variable Assignment
+
+Create variables for the following:
+1. Assign the value 42 to a variable named `answer_to_everything`
+2. Assign the text "May the Force be with you" to a variable named `jedi_greeting`
+3. Assign the result of 25 * 4 to a variable named `lightsaber_power`
+
+```{webr}
+#| exercise: ex_assign_1
+
+```
+
+::: { .hint exercise="ex_assign_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use the assignment operator `<-` to assign values to variables. Even a young padawan can master this skill!
+:::
+:::
+
+::: { .solution exercise="ex_assign_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Assign numeric value
+answer_to_everything <- 42
+
+# Assign text (character) value
+jedi_greeting <- "May the Force be with you"
+
+# Assign result of calculation
+lightsaber_power <- 25 * 4
+
+# Print the variables
+answer_to_everything
+jedi_greeting
+lightsaber_power
+```
+:::
+:::
+
+### Data Types in R
+
+R has several basic data types:
+
+1. **Numeric**: Decimal numbers (`1.5`, `42.0`) - like counting how many times Thanos snaps
+2. **Integer**: Whole numbers (`1L`, `42L`, where the `L` indicates an integer) - like counting Stormtroopers
+3. **Character**: Text, enclosed in quotes (`"hello"`, `'R is fun'`) - like famous movie quotes
+4. **Logical**: Boolean values (`TRUE` or `FALSE`) - like asking "Is Darth Vader Luke's father?"
+5. **Complex**: Complex numbers with real and imaginary parts (`1+2i`) - like quantum physics that powers Iron Man's suit
+6. **Date**: Date values (`as.Date("2023-01-15")`) - like keeping track of when the Death Star was destroyed
+
+You can check the type of any variable using the `class()` function.
+
+```r
+# Numeric
+death_star_diameter <- 160.0
+class(death_star_diameter)  # Returns "numeric"
+
+# Integer
+stormtrooper_count <- 10000L
+class(stormtrooper_count)  # Returns "integer"
+
+# Character
+yoda_quote <- "Do or do not, there is no try"
+class(yoda_quote)  # Returns "character"
+
+# Logical
+is_vader_lukes_father <- TRUE
+class(is_vader_lukes_father)  # Returns "logical"
+
+# Date
+alderaan_destruction <- as.Date("1977-05-25")
+class(alderaan_destruction)  # Returns "Date"
+```
+
+### Exercise 4: Variable Types
+
+Create variables of different types and check their class:
+
+```{webr}
+#| exercise: ex_assign_2
+
+```
+
+::: { .hint exercise="ex_assign_2"}
+::: { .callout-note collapse="false"}
+## Hint
+Use the `class()` function to check the type of a variable. Create variables of different types and check their class. It's like figuring out if someone is a Jedi, Sith, or just a regular human.
+:::
+:::
+
+::: { .solution exercise="ex_assign_2" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Numeric variable
+millennium_falcon_speed <- 1050
+class(millennium_falcon_speed)
+
+# Integer variable (note the L suffix)
+rebel_fighters <- 30L
+class(rebel_fighters)
+
+# Character variable
+vader_quote <- "I am your father"
+class(vader_quote)
+
+# Logical variable
+han_shot_first <- TRUE
+class(han_shot_first)
+
+# Date variable
+endgame_release <- as.Date("2019-04-26")
+class(endgame_release)
+```
+:::
+:::
+
+## Vectors
+
+Vectors are one of the most basic and important data structures in R. A vector is a sequence of data elements of the same type. It's like a collection of values stored together - think of it as your collection of Star Wars action figures, but all of the same type (all Jedi, all Sith, etc.).
+
+### Creating Vectors
+
+There are several ways to create vectors in R:
+
+1. **Using the `c()` function** (combine function):
+   ```r
+   # Create a numeric vector
+   jedi_power_levels <- c(80, 95, 75, 99, 60)
+   
+   # Create a character vector
+   hogwarts_houses <- c("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin")
+   ```
+
+2. **Using the colon operator `:` for sequences**:
+   ```r
+   # Create a sequence from 1 to 10
+   countdown_to_blastoff <- 10:1  # Contains 10, 9, 8, ..., 1
+   ```
+
+3. **Using the `seq()` function for more complex sequences**:
+   ```r
+   # Create a sequence from 0 to 1 with 0.1 steps
+   lightsaber_power_settings <- seq(0, 1, by = 0.1)  # 0, 0.1, 0.2, ..., 1
+   ```
+
+4. **Using the `rep()` function to repeat values**:
+   ```r
+   # Repeat "I am Groot" five times
+   groot_dialogue <- rep("I am Groot", times = 5)  # I am Groot, I am Groot, I am Groot...
+   ```
+
+### Vector Types
+
+All elements in a vector must be of the same type. The main vector types are:
+
+- **Numeric vectors**: contain numbers (`c(3.14, 2.718, 1.618)`) - like the scores in Olympic lightsaber throwing
+- **Integer vectors**: contain whole numbers (`c(1L, 2L, 3L)`) - like counting Infinity Stones
+- **Character vectors**: contain text (`c("Luke", "Leia", "Han")`) - like your favorite Star Wars characters
+- **Logical vectors**: contain `TRUE` or `FALSE` values (`c(TRUE, FALSE, TRUE)`) - like whether each Avenger survived "the snap"
+- **Date vectors**: contain date values - like important Star Wars movie release dates
+
+### Exercise 5: Creating Vectors
+
+Create vectors using different methods:
+
+```{webr}
+#| exercise: ex_vector_1
+
+```
+
+::: { .hint exercise="ex_vector_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `c()` to combine values into a vector. Use `:` for a sequence of consecutive numbers. It's not rocket science... well, maybe it is if you're building vectors for the Death Star trajectory.
+:::
+:::
+
+::: { .solution exercise="ex_vector_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Create a numeric vector using c()
+jedi_council_power <- c(95, 88, 92, 99, 85)
+jedi_council_power
+
+# Create a sequence using :
+order_66_victims <- 1:10
+order_66_victims
+
+# Create a character vector
+rebel_alliance <- c("Luke", "Leia", "Han", "Chewie", "R2-D2")
+rebel_alliance
+
+# Create a logical vector
+survived_death_star <- c(TRUE, TRUE, TRUE, FALSE, TRUE)
+survived_death_star
+```
+:::
+:::
+
+### Vector Operations
+
+R is designed to work efficiently with vectors. Most operations are "vectorized," meaning they apply to each element of the vector automatically. This is like having Force powers that affect multiple objects at once!
+
+#### Arithmetic with Vectors
+
+When you perform arithmetic operations on vectors, R applies the operation to each element:
+
+```r
+# Vector addition
+c(1, 2, 3) + c(4, 5, 6)  # Returns c(5, 7, 9)
+
+# Vector multiplication - like calculating damage multipliers in a video game
+c(1, 2, 3) * 2  # Returns c(2, 4, 6)
+```
+
+#### Vector Recycling
+
+If vectors have different lengths, R "recycles" the shorter vector to match the length of the longer one:
+
+```r
+# Vector of length 3 plus vector of length 1
+# Like adding a power-up to each character in a game
+c(1, 2, 3) + 10  # Returns c(11, 12, 13)
+
+# Vector of length 3 plus vector of length 2
+# Like trying to pair Jedi with lightsabers when you don't have enough lightsabers
+c(1, 2, 3) + c(10, 20)  # Returns c(11, 22, 13), with warning
+```
+
+#### Vector Functions
+
+R has many built-in functions for working with vectors:
+
+```r
+x <- c(2, 4, 6, 8, 10)  # Midi-chlorian counts for different Jedi
+
+length(x)    # Returns 5 (number of Jedi)
+sum(x)       # Returns 30 (total midi-chlorian count)
+mean(x)      # Returns 6 (average midi-chlorian count)
+median(x)    # Returns 6 (median midi-chlorian count)
+min(x)       # Returns 2 (lowest midi-chlorian count)
+max(x)       # Returns 10 (highest midi-chlorian count)
+sort(x)      # Returns sorted vector (arranging Jedi by power)
+rev(x)       # Returns reversed vector (from most to least powerful)
+```
+
+### Exercise 6: Vector Operations
+
+Perform operations on vectors:
+
+```{webr}
+#| exercise: ex_vector_2
+# Pre-defined vectors
+jedi_power <- c(80, 85, 95, 75, 90)
+sith_power <- c(85, 80, 90, 95, 85)
+```
+
+::: { .hint exercise="ex_vector_2"}
+::: { .callout-note collapse="false"}
+## Hint
+You can perform arithmetic operations on vectors element-by-element. Use functions like `length()`, `sum()`, `mean()`, etc. to get information about vectors. It's like comparing the power levels of Jedi and Sith!
+:::
+:::
+
+::: { .solution exercise="ex_vector_2" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Pre-defined vectors
+jedi_power <- c(80, 85, 95, 75, 90)
+sith_power <- c(85, 80, 90, 95, 85)
+
+# Vector addition - combined power
+jedi_power + sith_power
+
+# Vector multiplication - power amplification
+jedi_power * 1.5
+
+# Vector length - how many Jedi
+length(jedi_power)
+
+# Sum of vector elements - total Jedi power
+sum(jedi_power)
+
+# Mean of vector elements - average Sith power
+mean(sith_power)
+
+# Min and max - weakest and strongest Jedi
+min(jedi_power)
+max(jedi_power)
+
+# Who is more powerful in each matchup?
+jedi_power > sith_power
+```
+:::
+:::
+
+## Operators
+
+Operators are symbols that tell R to perform specific mathematical or logical operations. R has a rich set of operators that allow you to perform various calculations and comparisons.
+
+### Arithmetic Operators
+
+Arithmetic operators perform mathematical calculations:
+
+| Operator | Description | Example | Result |
+|----------|-------------|---------|--------|
+| `+` | Addition | `5 + 3` | `8` (like combining forces) |
+| `-` | Subtraction | `5 - 3` | `2` (like losing health points) |
+| `*` | Multiplication | `5 * 3` | `15` (like power-ups) |
+| `/` | Division | `5 / 3` | `1.666667` (like sharing loot) |
+| `^` | Exponentiation | `5 ^ 3` | `125` (like leveling up) |
+| `%%` | Modulus (remainder) | `5 %% 3` | `2` (like leftover pizza slices) |
+| `%/%` | Integer Division | `5 %/% 3` | `1` (like whole portions in Jakku) |
+
+These operators can work on single values or vectors, applying the operation to each element of the vector.
+
+```r
+# Vector arithmetic
+c(1, 2, 3) + c(4, 5, 6)  # Returns c(5, 7, 9)
+c(1, 2, 3) * 2           # Returns c(2, 4, 6)
+```
+
+### Exercise 7: Arithmetic Operators
+
+Use various arithmetic operators in R:
+
+```{webr}
+#| exercise: ex_operators_1
+
+```
+
+::: { .hint exercise="ex_operators_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Common arithmetic operators in R include: `+` (addition), `-` (subtraction), `*` (multiplication), `/` (division), `^` (exponentiation), `%%` (modulo), `%/%` (integer division). Use the Force, young padawan!
+:::
+:::
+
+::: { .solution exercise="ex_operators_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Addition (combining rebel forces)
+10 + 5
+
+# Subtraction (stormtroopers lost in battle)
+10 - 5
+
+# Multiplication (cloning troopers)
+10 * 5
+
+# Division (sharing rations)
+10 / 3
+
+# Exponentiation (power amplification)
+2 ^ 3
+
+# Modulo (remainder after dividing portions)
+10 %% 3
+
+# Integer division (whole portions only)
+10 %/% 3
+```
+:::
+:::
+
+### Comparison Operators
+
+Comparison operators compare values and return logical (TRUE/FALSE) results:
+
+| Operator | Description | Example | Result |
+|----------|-------------|---------|--------|
+| `==` | Equal to | `yoda_age == 900` | `TRUE` |
+| `!=` | Not equal to | `yoda_species != "human"` | `TRUE` |
+| `<` | Less than | `luke_power < vader_power` | `TRUE` (initially) |
+| `>` | Greater than | `falcon_speed > tie_fighter_speed` | `TRUE` |
+| `<=` | Less than or equal to | `han_solo_coolness <= chewbacca_coolness` | `FALSE` |
+| `>=` | Greater than or equal to | `death_star_size >= alderaan_size` | `TRUE` (unfortunately) |
+
+These operators are essential for filtering data and controlling program flow with conditionals.
+
+### Logical Operators
+
+Logical operators combine logical (TRUE/FALSE) values:
+
+| Operator | Description | Example | Result |
+|----------|-------------|---------|--------|
+| `&` | Element-wise AND | `c(TRUE, FALSE) & c(TRUE, TRUE)` | `c(TRUE, FALSE)` |
+| `|` | Element-wise OR | `c(TRUE, FALSE) | c(FALSE, TRUE)` | `c(TRUE, TRUE)` |
+| `!` | NOT | `!TRUE` | `FALSE` |
+| `&&` | AND (single value) | `is_jedi && has_lightsaber` | Depends on values |
+| `||` | OR (single value) | `is_jedi || is_sith` | Depends on values |
+
+The element-wise operators (`&`, `|`) work on vectors, while the single-value operators (`&&`, `||`) only evaluate the first element of vectors.
+
+```r
+# Element-wise AND
+jedi_skills <- c(TRUE, FALSE, TRUE)
+force_sensitive <- c(TRUE, TRUE, FALSE)
+can_use_force <- jedi_skills & force_sensitive  # Returns c(TRUE, FALSE, FALSE)
+
+# Single-value AND (uses only first element)
+is_a_jedi <- jedi_skills && force_sensitive  # Returns TRUE
+```
+
+### Exercise 8: Comparison Operators
+
+Use comparison operators and logical operators:
+
+```{webr}
+#| exercise: ex_operators_2
+vader_power <- 95
+luke_power <- 85
+```
+
+::: { .hint exercise="ex_operators_2"}
+::: { .callout-note collapse="false"}
+## Hint
+Comparison operators include: `==` (equal), `!=` (not equal), `>` (greater than), `<` (less than), `>=` (greater than or equal), `<=` (less than or equal).
+Logical operators include: `&` (AND), `|` (OR), `!` (NOT). Use them to compare the power levels of Vader and Luke!
+:::
+:::
+
+::: { .solution exercise="ex_operators_2" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+vader_power <- 95
+luke_power <- 85
+
+# Comparison operators
+vader_power == luke_power  # Are they equally powerful?
+vader_power != luke_power  # Are they different in power?
+vader_power > luke_power   # Is Vader more powerful?
+luke_power < vader_power   # Is Luke less powerful?
+vader_power >= 90  # Is Vader's power at least 90?
+luke_power <= 80   # Is Luke's power at most 80?
+
+# Logical operators
+(vader_power > 90) & (luke_power > 80)  # Are both powerful?
+(vader_power > 100) | (luke_power > 80)  # Is at least one very powerful?
+!(vader_power == luke_power)  # Are they not equal in power?
+```
+:::
+:::
+
+## Factors and Lists
+
+### Factors
+
+Factors are a special type of vector used to represent categorical data. They are particularly useful in statistical modeling and data visualization. Think of them as sorting your Star Wars action figures by type: Jedi, Sith, droids, etc.
+
+#### Creating Factors
+
+Factors are created using the `factor()` function. By default, R will sort the levels alphabetically, but you can specify a custom order if needed.
+
+```r
+# Create a basic factor
+jedi_or_sith <- factor(c("Jedi", "Sith", "Sith", "Jedi", "Jedi"))
+jedi_or_sith  # Levels: Jedi Sith
+
+# Specify custom levels (including order)
+force_alignment <- factor(c("Light", "Dark", "Grey", "Light", "Dark"), 
+                     levels = c("Light", "Grey", "Dark"))
+force_alignment  # Levels: Light Grey Dark
+```
+
+#### Working with Factors
+
+Factors are useful for:
+
+1. **Ensuring data consistency**: Only values in the defined levels are allowed (no "Gungan" in your Jedi/Sith classification)
+2. **Controlling the order of categories**: Important for plots and tables (Light side always comes first!)
+3. **Efficient storage**: Factors store integers internally with a lookup table
+4. **Statistical modeling**: Proper handling of categorical variables
+
+Common functions used with factors:
+
+```r
+# Get the levels of a factor
+levels(jedi_or_sith)  # Returns "Jedi" "Sith"
+
+# Count occurrences of each level
+table(jedi_or_sith)  # Shows frequency table - how many Jedi vs Sith
+
+# Convert factor to numeric
+as.numeric(force_alignment)  # Returns the underlying integer codes
+
+# Convert factor to character
+as.character(force_alignment)  # Returns the original strings
+```
+
+### Exercise 9: Creating and Working with Factors
+
+Create and manipulate factors:
+
+```{webr}
+#| exercise: ex_factors_1
+
+```
+
+::: { .hint exercise="ex_factors_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Factors are used to represent categorical data. Use the `factor()` function to create factors. You can specify the levels using the `levels` parameter. It's like organizing your Marvel heroes by team affiliation!
+:::
+:::
+
+::: { .solution exercise="ex_factors_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Create a vector of Star Wars species
+species <- c("Human", "Wookiee", "Droid", "Human", "Twi'lek", "Droid", "Human")
+
+# Convert to factor
+species_factor <- factor(species)
+species_factor
+
+# Check levels
+levels(species_factor)
+
+# Create Hogwarts houses factor with specified levels
+hogwarts_houses <- factor(c("Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw", "Gryffindor"), 
+                 levels = c("Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"))
+hogwarts_houses
+
+# Count occurrences
+table(species_factor)
+table(hogwarts_houses)
+```
+:::
+:::
+
+### Lists
+
+Lists are a versatile data structure in R that can hold elements of different types, including other lists. This makes them ideal for hierarchical or heterogeneous data. Think of a list as your utility belt - it can hold all sorts of gadgets (data types) at once!
+
+#### Creating Lists
+
+Lists are created using the `list()` function. Each element can have a name for easier access.
+
+```r
+# Create a basic list
+batmans_utility_belt <- list(100, "Batarang", TRUE, c(1, 2, 3))
+
+# Create a named list
+han_solo <- list(
+  name = "Han Solo",
+  age = 32,
+  ships = c("Millennium Falcon", "Stolen Imperial Shuttle"),
+  is_scoundrel = TRUE
+)
+```
+
+#### Accessing List Elements
+
+There are multiple ways to access elements in a list:
+
+1. **Using double square brackets `[[]]`** for a single element:
+   ```r
+   han_solo[[1]]        # Returns "Han Solo"
+   han_solo[["name"]]   # Returns "Han Solo"
+   ```
+
+2. **Using the dollar sign `$`** for named elements:
+   ```r
+   han_solo$name        # Returns "Han Solo"
+   han_solo$ships[1]    # Returns "Millennium Falcon"
+   ```
+
+3. **Using single square brackets `[]`** to get a sublist:
+   ```r
+   han_solo[1:2]        # Returns a list with name and age
+   han_solo["ships"]    # Returns a list with just the ships element
+   ```
+
+#### Modifying Lists
+
+Lists are mutable, so you can change them after creation:
+
+```r
+# Add a new element
+han_solo$friends <- c("Luke", "Leia", "Chewie")
+
+# Change an existing element
+han_solo$age <- 35
+
+# Remove an element
+han_solo$is_scoundrel <- NULL  # Han's grown up a bit
+```
+
+### Exercise 10: Working with Lists
+
+Create and manipulate lists:
+
+```{webr}
+#| exercise: ex_lists_1
+
+```
+
+::: { .hint exercise="ex_lists_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Lists can contain elements of different types. Use the `list()` function to create lists. Access elements using `[[]]` or `$` for named elements. Think of it as creating a character profile for your favorite superhero or villain!
+:::
+:::
+
+::: { .solution exercise="ex_lists_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Create a list with different types
+darth_vader <- list(
+  name = "Anakin Skywalker",
+  sith_name = "Darth Vader",
+  age = 45,
+  midi_chlorian_count = c(27000, 23000, 20000),  # decreasing over time
+  is_lukes_father = TRUE
+)
+
+# Display the list
+darth_vader
+
+# Access elements
+darth_vader[[1]]  # First element
+darth_vader$sith_name  # Element by name
+darth_vader$midi_chlorian_count[1]  # Element within element
+
+# Add element to list
+darth_vader$famous_line <- "I am your father"
+darth_vader
+```
+:::
+:::
+
+## Data Frames
+
+Data frames are the most common data structure for tabular data in R. They're similar to tables in a database, spreadsheets, or CSV files. Think of them as the Galactic Senate records - neatly organized information about various entities.
+
+### Key Features of Data Frames
+
+- Rectangular data (rows and columns)
+- Each column can be a different data type
+- All columns must have the same length
+- Each column has a name
+- Rows can be named (but often aren't)
+
+### Creating Data Frames
+
+Data frames are created using the `data.frame()` function:
+
+```r
+# Create a data frame of Star Wars characters
+star_wars_chars <- data.frame(
+  name = c("Luke", "Leia", "Han", "Chewie"),
+  species = c("Human", "Human", "Human", "Wookiee"),
+  force_sensitive = c(TRUE, TRUE, FALSE, FALSE),
+  age = c(19, 19, 29, 200)
+)
+```
+
+You can also create data frames from external sources using functions like:
+- `read.csv()` - read from CSV files
+- `read.table()` - read from text files
+- `read_excel()` - read from Excel files (requires the readxl package)
+
+### Examining Data Frames
+
+R provides several functions to examine data frames:
+
+```r
+# View the structure of a data frame
+str(star_wars_chars)
+
+# Show the first few rows
+head(star_wars_chars)
+
+# Show the last few rows
+tail(star_wars_chars)
+
+# Get a summary of the data frame
+summary(star_wars_chars)
+
+# Get the dimensions (rows, columns)
+dim(star_wars_chars)
+
+# Get the column names
+names(star_wars_chars)
+```
+
+### Exercise 11: Creating Data Frames
+
+Create a data frame to store structured data:
+
+```{webr}
+#| exercise: ex_df_1
+
+```
+
+::: { .hint exercise="ex_df_1"}
+::: { .callout-note collapse="false"}
+## Hint
+A data frame is a table-like structure where each column can contain data of a different type. Use the `data.frame()` function to create data frames. It's like creating your own superhero database!
+:::
+:::
+
+::: { .solution exercise="ex_df_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Create a data frame of Avengers
+avengers <- data.frame(
+  name = c("Iron Man", "Captain America", "Thor", "Hulk"),
+  real_name = c("Tony Stark", "Steve Rogers", "Thor Odinson", "Bruce Banner"),
+  age = c(40, 95, 1500, 42),
+  is_original = c(TRUE, TRUE, TRUE, TRUE)
+)
+
+# Display the data frame
+avengers
+
+# Structure of data frame
+str(avengers)
+
+# Summary statistics
+summary(avengers)
+```
+:::
+:::
+
+### Accessing Data Frame Elements
+
+You can access elements of a data frame in several ways:
+
+#### 1. Using column names with the `$` operator:
+
+```r
+# Get an entire column
+star_wars_chars$name  # Returns c("Luke", "Leia", "Han", "Chewie")
+
+# Get a specific element
+star_wars_chars$age[2]  # Returns 19 (Leia's age)
+```
+
+#### 2. Using square brackets `[row, column]`:
+
+```r
+# Get a specific cell (row 2, column 3)
+star_wars_chars[2, 3]  # Returns TRUE (Leia's force sensitivity)
+
+# Get multiple rows/columns
+star_wars_chars[1:2, c("name", "age")]  # First two characters, name and age only
+
+# Get all rows of a column
+star_wars_chars[, "name"]  # All names
+
+# Get all columns for a row
+star_wars_chars[2, ]  # All data for Leia
+```
+
+#### 3. Filtering data frames with logical conditions:
+
+```r
+# Get rows where age is over 25
+star_wars_chars[star_wars_chars$age > 25, ]
+
+# Get rows where character is force sensitive
+star_wars_chars[star_wars_chars$force_sensitive == TRUE, ]
+
+# Combine conditions
+star_wars_chars[star_wars_chars$species == "Human" & star_wars_chars$force_sensitive == TRUE, ]
+```
+
+### Modifying Data Frames
+
+Data frames can be modified after creation:
+
+```r
+# Add a new column
+star_wars_chars$weapon <- c("Lightsaber", "Blaster", "Blaster", "Bowcaster")
+
+# Change a value
+star_wars_chars$age[3] <- 30
+
+# Add a new row
+new_character <- data.frame(
+  name = "Yoda",
+  species = "Unknown",
+  force_sensitive = TRUE,
+  age = 900,
+  weapon = "Lightsaber"
+)
+star_wars_chars <- rbind(star_wars_chars, new_character)
+```
+
+### Exercise 12: Accessing Data Frames
+
+Access and manipulate data frames:
+
+```{webr}
+#| exercise: ex_df_2
+# Pre-defined data frame
+star_trek_crew <- data.frame(
+  name = c("Kirk", "Spock", "McCoy", "Uhura", "Scotty"),
+  role = c("Captain", "Science Officer", "Doctor", "Communications", "Engineer"),
+  species = c("Human", "Vulcan", "Human", "Human", "Human"),
+  age = c(35, 40, 38, 32, 45),
+  stardate_joined = as.Date(c("2265-01-15", "2265-01-15", "2265-02-10", 
+                         "2265-01-20", "2265-03-05"))
+)
+```
+
+::: { .hint exercise="ex_df_2"}
+::: { .callout-note collapse="false"}
+## Hint
+Access data frame columns using `$` notation or by specifying rows and columns with `[row, column]` notation. Filter rows using logical conditions. It's like accessing the Starfleet database!
+:::
+:::
+
+::: { .solution exercise="ex_df_2" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Pre-defined data frame
+star_trek_crew <- data.frame(
+  name = c("Kirk", "Spock", "McCoy", "Uhura", "Scotty"),
+  role = c("Captain", "Science Officer", "Doctor", "Communications", "Engineer"),
+  species = c("Human", "Vulcan", "Human", "Human", "Human"),
+  age = c(35, 40, 38, 32, 45),
+  stardate_joined = as.Date(c("2265-01-15", "2265-01-15", "2265-02-10", 
+                         "2265-01-20", "2265-03-05"))
+)
+
+# Display the full data frame
+star_trek_crew
+
+# Access column by name
+star_trek_crew$name
+
+# Access specific rows and columns
+star_trek_crew[2, 3]  # Row 2, Column 3 (Spock's species)
+star_trek_crew[1:3, c("name", "role")]  # First three crew, name and role only
+
+# Filter data frame
+non_humans <- star_trek_crew[star_trek_crew$species != "Human", ]
+non_humans
+
+# Calculate average age
+mean(star_trek_crew$age)
+
+# Sort data frame by age
+star_trek_crew[order(star_trek_crew$age), ]
+
+# Find the oldest crew member
+star_trek_crew[which.max(star_trek_crew$age), ]
+```
+:::
+::: 
