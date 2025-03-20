@@ -184,19 +184,8 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.49",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "evaluate",
-        "highr",
-        "methods",
-        "tools",
-        "xfun",
-        "yaml"
-      ],
-      "Hash": "9fcb189926d93c636dea94fbe4f44480"
+      "Version": "1.50",
+      "Source": "Repository"
     },
     "lifecycle": {
       "Package": "lifecycle",
@@ -266,25 +255,7 @@
     "rmarkdown": {
       "Package": "rmarkdown",
       "Version": "2.29",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "bslib",
-        "evaluate",
-        "fontawesome",
-        "htmltools",
-        "jquerylib",
-        "jsonlite",
-        "knitr",
-        "methods",
-        "tinytex",
-        "tools",
-        "utils",
-        "xfun",
-        "yaml"
-      ],
-      "Hash": "df99277f63d01c34e95e3d2f06a79736"
+      "Source": "Repository"
     },
     "sass": {
       "Package": "sass",
@@ -326,9 +297,7 @@
     "yaml": {
       "Package": "yaml",
       "Version": "2.3.10",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "51dab85c6c98e50a18d7551e9d49f76c"
+      "Source": "Repository"
     }
   }
 }

@@ -1,5 +1,5 @@
 ---
-title: "R Language Basics I"
+title: "R Language Basics: I"
 author: "David Munoz Tord"
 description: "Fundamentals of R programming covering introductory concepts to data frames"
 engine: knitr

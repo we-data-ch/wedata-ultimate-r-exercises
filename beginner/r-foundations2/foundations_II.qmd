@@ -1,0 +1,619 @@
+---
+title: "R Language Basics: II"
+author: "David Munoz Tord"
+description: "Advanced R programming concepts covering functions, control structures, and data manipulation"
+engine: knitr
+date: "03/20/2025"
+format: live-html
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Functions: Your Code's Superpower
+
+Functions in R are like the Force - they give you the power to create reusable code that can be called upon whenever needed. Think of them as your personal Jedi powers that you can use over and over again!
+
+### Creating Functions
+
+Functions are created using the `function()` keyword, followed by arguments in parentheses and the function body in curly braces. It's like creating your own lightsaber - you need the right components and the right technique!
+
+```r
+# Basic function structure
+calculate_power <- function(base_power, multiplier) {
+  total_power <- base_power * multiplier
+  return(total_power)
+}
+
+# Using the function
+jedi_power <- calculate_power(80, 1.5)  # Returns 120
+```
+
+### Function Arguments
+
+Functions can have:
+- Required arguments (like a lightsaber - you need it!)
+- Default arguments (like having a backup blaster)
+- Optional arguments (like that thermal detonator you hope you won't need)
+
+```r
+# Function with default arguments
+calculate_force_power <- function(base_power, multiplier = 1.5, is_dark_side = FALSE) {
+  if (is_dark_side) {
+    total_power <- base_power * multiplier * 1.2  # Dark side bonus!
+  } else {
+    total_power <- base_power * multiplier
+  }
+  return(total_power)
+}
+
+# Using with different arguments
+light_side <- calculate_force_power(80)  # Uses defaults
+dark_side <- calculate_force_power(80, is_dark_side = TRUE)  # Override default
+```
+
+### Exercise 1: Creating Functions
+
+Create a function that calculates a character's total power level based on their base stats and equipment:
+
+```{webr}
+#| exercise: ex_functions_1
+
+```
+
+::: { .hint exercise="ex_functions_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Create a function that takes base stats and equipment bonuses as arguments. Remember to use the `function()` keyword and `return()` statement. It's like creating your own power calculator!
+:::
+:::
+
+::: { .solution exercise="ex_functions_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Create a function to calculate total power
+calculate_character_power <- function(base_power, weapon_bonus = 0, armor_bonus = 0) {
+  total_power <- base_power + weapon_bonus + armor_bonus
+  return(total_power)
+}
+
+# Test the function
+jedi_power <- calculate_character_power(80, 20, 10)  # Base 80 + Lightsaber 20 + Robes 10
+sith_power <- calculate_character_power(85, 25, 15)  # Base 85 + Red Lightsaber 25 + Armor 15
+
+# Print results
+print(paste("Jedi Power Level:", jedi_power))
+print(paste("Sith Power Level:", sith_power))
+```
+:::
+:::
+
+## Control Structures: The Force of Decision Making
+
+Control structures in R are like the Jedi Council - they help you make decisions and control the flow of your code. They're essential for creating complex programs that can adapt to different situations.
+
+### If-Else Statements
+
+The `if-else` structure lets you make decisions based on conditions:
+
+```r
+# Basic if-else
+check_force_power <- function(power_level) {
+  if (power_level > 100) {
+    return("Master Jedi Level")
+  } else if (power_level > 50) {
+    return("Padawan Level")
+  } else {
+    return("Force Sensitive")
+  }
+}
+
+# Using if-else
+power_status <- check_force_power(120)  # Returns "Master Jedi Level"
+```
+
+### Loops: The Repetitive Force
+
+Loops are like having a clone army - they let you repeat actions multiple times!
+
+#### For Loops
+
+```r
+# Basic for loop
+for (i in 1:5) {
+  print(paste("Training Day", i))
+}
+
+# For loop with a vector
+jedi_council <- c("Yoda", "Mace Windu", "Obi-Wan")
+for (master in jedi_council) {
+  print(paste(master, "is on the council"))
+}
+```
+
+#### While Loops
+
+```r
+# While loop example
+power_level <- 50
+while (power_level < 100) {
+  print(paste("Current power level:", power_level))
+  power_level <- power_level + 10
+}
+```
+
+### Exercise 2: Control Structures
+
+Create a program that simulates a Jedi training session:
+
+```{webr}
+#| exercise: ex_control_1
+
+```
+
+::: { .hint exercise="ex_control_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use if-else statements to check power levels and loops to simulate training sessions. Think of it as creating your own Jedi training program!
+:::
+:::
+
+::: { .solution exercise="ex_control_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Function to simulate Jedi training
+simulate_training <- function(initial_power, training_days) {
+  current_power <- initial_power
+  
+  for (day in 1:training_days) {
+    # Random power increase (like meditation success)
+    power_increase <- sample(1:10, 1)
+    current_power <- current_power + power_increase
+    
+    # Check power level and give feedback
+    if (current_power >= 100) {
+      print(paste("Day", day, ": Master Jedi achieved! Power level:", current_power))
+    } else if (current_power >= 50) {
+      print(paste("Day", day, ": Padawan level reached! Power level:", current_power))
+    } else {
+      print(paste("Day", day, ": Still training... Power level:", current_power))
+    }
+  }
+  
+  return(current_power)
+}
+
+# Run the simulation
+final_power <- simulate_training(30, 10)
+print(paste("Final power level:", final_power))
+```
+:::
+:::
+
+## String Operations: The Power of Words
+
+String operations in R are like having a universal translator - they help you manipulate and transform text in various ways.
+
+### Basic String Operations
+
+```r
+# String concatenation
+first_name <- "Luke"
+last_name <- "Skywalker"
+full_name <- paste(first_name, last_name)  # Returns "Luke Skywalker"
+
+# String length
+nchar(full_name)  # Returns 13
+
+# Substring extraction
+substr(full_name, 1, 4)  # Returns "Luke"
+
+# Case conversion
+toupper(full_name)  # Returns "LUKE SKYWALKER"
+tolower(full_name)  # Returns "luke skywalker"
+```
+
+### Regular Expressions
+
+Regular expressions are like having a Force-powered search tool:
+
+```r
+# Basic pattern matching
+jedi_names <- c("Luke Skywalker", "Obi-Wan Kenobi", "Yoda", "Mace Windu")
+grep("Sky", jedi_names)  # Returns 1 (position of "Luke Skywalker")
+
+# Pattern replacement
+gsub("Sky", "Force", full_name)  # Returns "Luke Forcewalker"
+
+# Pattern matching with more detail
+grepl("^[A-Z]", jedi_names)  # Returns TRUE for names starting with capital letter
+```
+
+### Exercise 3: String Operations
+
+Create a function that processes Jedi names and titles:
+
+```{webr}
+#| exercise: ex_strings_1
+
+```
+
+::: { .hint exercise="ex_strings_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use string functions like `paste()`, `substr()`, `gsub()`, and regular expressions to manipulate text. It's like creating your own Jedi name generator!
+:::
+:::
+
+::: { .solution exercise="ex_strings_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Function to process Jedi names
+process_jedi_name <- function(first_name, last_name, rank = "Padawan") {
+  # Create full name
+  full_name <- paste(first_name, last_name)
+  
+  # Add rank title
+  titled_name <- paste(rank, full_name)
+  
+  # Count characters
+  name_length <- nchar(full_name)
+  
+  # Create Jedi code name (first 3 letters of first name + last 2 of last name)
+  code_name <- paste(
+    substr(first_name, 1, 3),
+    substr(last_name, nchar(last_name)-1, nchar(last_name)),
+    sep = ""
+  )
+  
+  # Convert to uppercase for dramatic effect
+  code_name <- toupper(code_name)
+  
+  # Return results as a list
+  return(list(
+    full_name = full_name,
+    titled_name = titled_name,
+    name_length = name_length,
+    code_name = code_name
+  ))
+}
+
+# Test the function
+jedi_info <- process_jedi_name("Luke", "Skywalker", "Master")
+print(jedi_info)
+```
+:::
+:::
+
+## Date and Time Operations: The Force of Time
+
+Working with dates and times in R is like having a time-traveling DeLorean - it helps you manipulate temporal data with precision!
+
+### Basic Date Operations
+
+```r
+# Creating dates
+birth_date <- as.Date("1977-05-25")  # Star Wars release date
+current_date <- Sys.Date()
+
+# Date arithmetic
+days_since_release <- current_date - birth_date
+
+# Formatting dates
+format(birth_date, "%B %d, %Y")  # Returns "May 25, 1977"
+
+# Extracting components
+year <- format(birth_date, "%Y")
+month <- format(birth_date, "%m")
+day <- format(birth_date, "%d")
+```
+
+### Time Operations
+
+```r
+# Working with times
+current_time <- Sys.time()
+
+# Formatting times
+format(current_time, "%H:%M:%S")  # Returns current time in HH:MM:SS format
+
+# Time differences
+time_diff <- difftime(current_time, birth_date, units = "hours")
+```
+
+### Exercise 4: Date and Time Operations
+
+Create a function that calculates various time-based statistics for a Jedi's training period:
+
+```{webr}
+#| exercise: ex_dates_1
+
+```
+
+::: { .hint exercise="ex_dates_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `as.Date()`, `Sys.Date()`, and date arithmetic functions to work with dates. Think of it as creating a Jedi training timeline!
+:::
+:::
+
+::: { .solution exercise="ex_dates_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Function to analyze Jedi training period
+analyze_training_period <- function(start_date, end_date) {
+  # Convert dates if they're strings
+  start <- as.Date(start_date)
+  end <- as.Date(end_date)
+  
+  # Calculate various time differences
+  total_days <- as.numeric(end - start)
+  total_weeks <- floor(total_days / 7)
+  total_months <- floor(total_days / 30)
+  
+  # Format dates nicely
+  formatted_start <- format(start, "%B %d, %Y")
+  formatted_end <- format(end, "%B %d, %Y")
+  
+  # Create a summary
+  summary <- list(
+    start_date = formatted_start,
+    end_date = formatted_end,
+    total_days = total_days,
+    total_weeks = total_weeks,
+    total_months = total_months,
+    training_intensity = if(total_days < 30) "Intensive" else "Standard"
+  )
+  
+  return(summary)
+}
+
+# Test the function
+training_stats <- analyze_training_period("2024-01-01", "2024-03-01")
+print(training_stats)
+```
+:::
+:::
+
+## Missing Values: The Dark Side of Data
+
+Missing values in R are like the dark side of the Force - they're mysterious and need special handling!
+
+### Working with Missing Values
+
+```r
+# Creating vectors with missing values
+power_readings <- c(80, NA, 95, NA, 88)
+
+# Checking for missing values
+is.na(power_readings)  # Returns logical vector
+
+# Counting missing values
+sum(is.na(power_readings))  # Returns 2
+
+# Removing missing values
+clean_readings <- na.omit(power_readings)
+
+# Replacing missing values
+power_readings[is.na(power_readings)] <- 0  # Replace with 0
+power_readings[is.na(power_readings)] <- mean(power_readings, na.rm = TRUE)  # Replace with mean
+```
+
+### Exercise 5: Handling Missing Values
+
+Create a function that processes a dataset with missing values:
+
+```{webr}
+#| exercise: ex_missing_1
+
+```
+
+::: { .hint exercise="ex_missing_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `is.na()`, `na.omit()`, and other functions to handle missing values. Think of it as cleaning up corrupted data from a damaged holocron!
+:::
+:::
+
+::: { .solution exercise="ex_missing_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Function to process dataset with missing values
+process_force_readings <- function(readings) {
+  # Count missing values
+  missing_count <- sum(is.na(readings))
+  
+  # Calculate statistics before cleaning
+  original_mean <- mean(readings, na.rm = TRUE)
+  original_sd <- sd(readings, na.rm = TRUE)
+  
+  # Create cleaned dataset (remove NAs)
+  clean_readings <- na.omit(readings)
+  
+  # Calculate statistics after cleaning
+  clean_mean <- mean(clean_readings)
+  clean_sd <- sd(clean_readings)
+  
+  # Create a summary
+  summary <- list(
+    original_data = readings,
+    missing_count = missing_count,
+    original_stats = list(mean = original_mean, sd = original_sd),
+    clean_stats = list(mean = clean_mean, sd = clean_sd),
+    clean_data = clean_readings
+  )
+  
+  return(summary)
+}
+
+# Test the function
+force_data <- c(80, NA, 95, NA, 88, 92, NA, 85)
+results <- process_force_readings(force_data)
+print(results)
+```
+:::
+:::
+
+## Formatting: Making Your Data Look Good
+
+Formatting in R is like having a protocol droid - it helps you present your data in a clean and organized way!
+
+### Number Formatting
+
+```r
+# Basic number formatting
+pi_value <- pi
+format(pi_value, digits = 2)  # Returns "3.1"
+format(pi_value, digits = 4)  # Returns "3.142"
+
+# Currency formatting
+price <- 42.99
+format(price, nsmall = 2, prefix = "$")  # Returns "$42.99"
+
+# Scientific notation
+large_number <- 1234567
+format(large_number, scientific = TRUE)  # Returns "1.234567e+06"
+```
+
+### Exercise 6: Data Formatting
+
+Create a function that formats various types of data:
+
+```{webr}
+#| exercise: ex_format_1
+
+```
+
+::: { .hint exercise="ex_format_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `format()` function with different parameters to format numbers and text. Think of it as creating your own data presentation protocol!
+:::
+:::
+
+::: { .solution exercise="ex_format_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Function to format various types of data
+format_data <- function(value, type = "number") {
+  if (type == "number") {
+    # Format as regular number
+    return(format(value, digits = 2))
+  } else if (type == "currency") {
+    # Format as currency
+    return(format(value, nsmall = 2, prefix = "$"))
+  } else if (type == "percentage") {
+    # Format as percentage
+    return(paste(format(value * 100, digits = 1), "%"))
+  } else if (type == "scientific") {
+    # Format in scientific notation
+    return(format(value, scientific = TRUE))
+  } else {
+    return("Invalid format type")
+  }
+}
+
+# Test the function
+print(format_data(3.14159, "number"))      # Returns "3.14"
+print(format_data(42.99, "currency"))      # Returns "$42.99"
+print(format_data(0.42, "percentage"))     # Returns "42.0%"
+print(format_data(1234567, "scientific"))  # Returns "1.234567e+06"
+```
+:::
+:::
+
+## Capstone Project: The Ultimate Force Challenge
+
+Now it's time to combine all your Jedi training into one epic challenge! Create a comprehensive program that processes and analyzes Jedi training data.
+
+### Exercise 7: Jedi Training Analytics System
+
+Create a complete system for analyzing Jedi training data:
+
+```{webr}
+#| exercise: ex_capstone_1
+
+```
+
+::: { .hint exercise="ex_capstone_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Combine functions, control structures, string operations, date handling, and data formatting to create a comprehensive system. Think of it as building your own Jedi Archives!
+:::
+:::
+
+::: { .solution exercise="ex_capstone_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Create a comprehensive Jedi training analytics system
+jedi_analytics_system <- function() {
+  # Sample data
+  training_data <- data.frame(
+    name = c("Luke", "Leia", "Rey", "Anakin", "Obi-Wan"),
+    start_date = as.Date(c("2024-01-01", "2024-01-15", "2024-02-01", 
+                          "2024-02-15", "2024-03-01")),
+    initial_power = c(30, 35, 40, 45, 50),
+    current_power = c(85, 80, 75, 90, 95),
+    training_days = c(60, 45, 30, 45, 30),
+    completed_trials = c(5, 4, 3, 6, 5)
+  )
+  
+  # Function to calculate training statistics
+  calculate_stats <- function(data) {
+    # Calculate power increase
+    data$power_increase <- data$current_power - data$initial_power
+    
+    # Calculate daily power increase
+    data$daily_increase <- data$power_increase / data$training_days
+    
+    # Calculate trial completion rate
+    data$trial_rate <- data$completed_trials / data$training_days
+    
+    return(data)
+  }
+  
+  # Function to format report
+  format_report <- function(data) {
+    # Calculate overall statistics
+    avg_power_increase <- mean(data$power_increase)
+    max_power_increase <- max(data$power_increase)
+    avg_trial_rate <- mean(data$trial_rate)
+    
+    # Create formatted report
+    report <- list(
+      summary_stats = list(
+        average_power_increase = format_data(avg_power_increase, "number"),
+        max_power_increase = format_data(max_power_increase, "number"),
+        average_trial_rate = format_data(avg_trial_rate, "percentage")
+      ),
+      individual_progress = data.frame(
+        name = data$name,
+        power_increase = format_data(data$power_increase, "number"),
+        daily_increase = format_data(data$daily_increase, "number"),
+        trial_rate = format_data(data$trial_rate, "percentage")
+      )
+    )
+    
+    return(report)
+  }
+  
+  # Process the data
+  processed_data <- calculate_stats(training_data)
+  final_report <- format_report(processed_data)
+  
+  return(final_report)
+}
+
+# Run the analytics system
+results <- jedi_analytics_system()
+print(results)
+```
+:::
+:::
+</rewritten_file> 
