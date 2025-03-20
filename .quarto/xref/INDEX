@@ -34,5 +34,11 @@
   },
   "beginner/r-foundations/r-foundations.qmd": {
     "r-foundations.html": "742e0ea0"
+  },
+  "beginner/r-foundations/foundations_I.qmd": {
+    "foundations_I.html": "e231b59a"
+  },
+  "beginner/r-foundations2/foundations_II.qmd": {
+    "foundations_II.html": "465c8cf1"
   }
 }
