@@ -1,0 +1,1468 @@
+---
+title: "Tidyverse: I"
+author: "David Munoz Tord"
+description: "Learn the tidyverse superpowers for data manipulation and transformation"
+engine: knitr
+date: "05/05/2025"
+format: live-html
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Introduction: Welcome to the Tidyverse!
+
+Imagine you're a data wizard with a magic wand. The tidyverse is your spellbook, and each package is a different magical incantation you can use to transform and manipulate data! 🧙‍♂️✨
+
+```r
+# Load the tidyverse - it's like summoning ALL your magic powers at once!
+library(tidyverse)
+```
+
+The tidyverse is a collection of R packages that share a common philosophy and are designed to work together harmoniously. Think of it as the Avengers of data science - each package has its own superpower, but together they're unstoppable!
+
+### The Core Tidyverse Packages
+
+```r
+# The main tidyverse packages - your magical toolkit
+library(dplyr)    # Data manipulation - like having telekinesis for data!
+library(ggplot2)  # Data visualization - painting with data!
+library(tidyr)    # Data tidying - Marie Kondo for your datasets!
+library(readr)    # Data import - your portal to other data dimensions!
+library(purrr)    # Functional programming - clone yourself to do multiple tasks!
+library(tibble)   # Modern dataframes - your magical workbench!
+library(stringr)  # String manipulation - speak the language of text!
+library(forcats)  # Factor handling - taming wild categorical variables!
+```
+
+### The Magic Pipe: %>%
+
+The pipe operator `%>%` is like your magic wand - it allows you to chain spells together in a logical sequence! It takes the output from one function and feeds it as the input to the next function.
+
+```r
+# Without the pipe - nested spells that are hard to read
+round(mean(c(1, 2, 3, NA), na.rm = TRUE), digits = 2)
+
+# With the pipe - a clear sequence of magical steps
+c(1, 2, 3, NA) %>% 
+  mean(na.rm = TRUE) %>%
+  round(digits = 2)
+```
+
+💡 **Pro Tip**: You can use the keyboard shortcut <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> (Windows) or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> (Mac) to insert the pipe.
+
+### Package Name Prefixes
+
+When casting spells, sometimes you need to be specific about which spellbook you're using:
+
+```r
+# Different packages may have functions with the same name
+stats::filter() # Time series filtering
+dplyr::filter() # Row filtering for dataframes
+
+# Each tidyverse package has consistent prefixes
+readr::read_csv()   # Reading CSV files
+readr::write_csv()  # Writing CSV files
+stringr::str_detect() # String detection
+forcats::fct_relevel() # Factor releveling
+```
+
+### Exercise 1: Your First Tidyverse Spell
+
+Let's start with a simple spell - creating and exploring a tibble:
+
+```{webr}
+#| exercise: ex_intro_1
+
+```
+
+::: { .hint exercise="ex_intro_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `tibble()` to create a magical data table, then try exploring it with `glimpse()`. It's like having X-ray vision for your data!
+:::
+:::
+
+::: { .solution exercise="ex_intro_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse spellbook
+library(tidyverse)
+
+# Create a magical creature dataset
+magical_creatures <- tibble(
+  creature = c("Dragon", "Unicorn", "Phoenix", "Griffin", "Mermaid"),
+  magic_power = c(95, 80, 90, 75, 60),
+  habitat = c("Mountains", "Forest", "Volcano", "Sky", "Ocean"),
+  lifespan = c(1000, 500, 1500, 300, 200)
+)
+
+# Look at our magical dataset
+magical_creatures
+
+# Use the glimpse spell to see through its structure
+glimpse(magical_creatures)
+
+# Check the data type - it's a tibble, not a plain dataframe!
+class(magical_creatures)
+
+# Use the pipe to chain operations
+magical_creatures %>%
+  filter(magic_power > 70) %>%
+  arrange(desc(lifespan))
+```
+:::
+:::
+
+## Tibbles: The Modern Data Workbench
+
+Tibbles are modern reimagined dataframes - they're like regular dataframes but with superpowers! They don't change variable names or types, they don't create row names, and they make printing large datasets much more pleasant.
+
+### Why Use Tibbles?
+
+Regular dataframes have some quirks that tibbles fix:
+- They don't automatically convert strings to factors
+- They don't mangle variable names
+- They show only the first 10 rows and all columns that fit on screen
+- They have consistent subsetting behavior
+- They give you better error messages
+
+```r
+# Create a tibble from scratch - building your workbench!
+wizards <- tibble(
+  name = c("Gandalf", "Dumbledore", "Merlin", "Dr. Strange"),
+  specialty = c("Fireworks", "Transfiguration", "Time Magic", "Reality Warping"),
+  power_level = c(95, 90, 99, 85)
+)
+
+# Convert existing dataframe to tibble - upgrade your workbench!
+data(mtcars)
+mtcars_tibble <- as_tibble(mtcars, rownames = "car_model")
+
+# Creating a tibble row-by-row (like SAS CARDS/DATALINES)
+spells <- tribble(
+  ~spell_name,    ~power, ~element,    ~casting_time,
+  "Fireball",       80,   "Fire",       3,
+  "Ice Lance",      65,   "Water",      1,
+  "Earthquake",     90,   "Earth",      5,
+  "Lightning Bolt", 75,   "Air",        2
+)
+spells
+```
+
+### Tibble Subsetting
+
+Tibbles maintain consistent output types, which helps prevent errors in your code:
+
+```r
+# Single bracket [ ] always returns a tibble
+wizards["name"]        # Still a tibble with 1 column
+wizards[1:2, "name"]   # Still a tibble with 1 column
+
+# Double bracket [[ ]] or $ extracts a single column as a vector
+wizards[["name"]]      # Character vector
+wizards$name           # Character vector
+```
+
+### Exercise 2: Tibble Transformation
+
+Transform this plain old dataframe into a shiny new tibble:
+
+```{webr}
+#| exercise: ex_tibbles_1
+
+```
+
+::: { .hint exercise="ex_tibbles_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `as_tibble()` to convert a dataframe to a tibble. For extra magic, use `rownames_to_column()` to preserve row names!
+:::
+:::
+
+::: { .solution exercise="ex_tibbles_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse
+library(tidyverse)
+
+# Create a regular dataframe - the old rusty workbench
+data(iris)
+head(iris)
+
+# Convert to tibble with as_tibble()
+iris_tibble <- as_tibble(iris)
+iris_tibble
+
+# Another way - if your dataframe has rownames you want to keep
+data(mtcars)
+mtcars_tibble <- as_tibble(mtcars, rownames = "car_model")
+
+# Or using rownames_to_column()
+mtcars_tibble2 <- mtcars %>% 
+  rownames_to_column("car_model") %>%
+  as_tibble()
+
+# Print to see the difference
+mtcars_tibble
+
+# Create a tibble from scratch with tribble
+potion_ingredients <- tribble(
+  ~potion,         ~ingredient,        ~amount, ~unit,
+  "Health Potion", "Red Mushroom",     3,       "pieces",
+  "Health Potion", "Spring Water",     100,     "ml",
+  "Mana Potion",   "Blue Flower",      2,       "pieces",
+  "Mana Potion",   "Moon Water",       100,     "ml",
+  "Strength Potion","Dragon Scale",    1,       "piece",
+  "Strength Potion","Volcano Ash",     50,      "g"
+)
+potion_ingredients
+```
+:::
+:::
+
+## Data Import & Export: Opening Portals to Other Dimensions
+
+The tidyverse makes it super easy to import and export data from various file formats. It's like having a magical portal that connects to many different data dimensions!
+
+### Reading Data with readr
+
+The readr package provides a fast and friendly way to read rectangular data files:
+
+```r
+# Reading data - opening a portal!
+# CSV files
+my_data <- read_csv("data.csv")
+
+# TSV files
+my_tsv_data <- read_tsv("data.tsv")
+
+# Fixed width files
+my_fixed_data <- read_fwf("data.txt", 
+                         col_positions = fwf_widths(c(10, 5, 8)))
+
+# Delimited files with any delimiter
+my_delim_data <- read_delim("data.txt", delim = "|")
+```
+
+### Controlling Column Types
+
+You can specify the types of columns you're reading to ensure your data comes through the portal correctly:
+
+```r
+# Specify column types
+potions_data <- read_csv("potions.csv",
+  col_types = cols(
+    name = col_character(),
+    power = col_double(),
+    ingredients = col_integer(),
+    is_legendary = col_logical(),
+    discovery_date = col_date(format = "%Y-%m-%d")
+  )
+)
+
+# Preview the column specification without reading the file
+spec_csv("potions.csv")
+```
+
+### Writing Data
+
+Sending your magical creations to other dimensions is just as easy:
+
+```r
+# Writing data
+write_csv(my_data, "new_data.csv")
+write_tsv(my_data, "new_data.tsv")
+write_delim(my_data, "new_data.txt", delim = "|")
+
+# Save R objects
+saveRDS(my_data, "my_data.rds")
+```
+
+### Other File Formats
+
+The tidyverse ecosystem can also connect with other magical realms:
+
+```r
+# Excel files (requires readxl package)
+library(readxl)
+excel_data <- read_excel("spellbook.xlsx", sheet = "Potions")
+
+# Writing Excel files (requires writexl package)
+library(writexl)
+write_xlsx(my_data, "spellbook.xlsx")
+
+# SAS files (requires haven package)
+library(haven)
+sas_data <- read_sas("wizard_data.sas7bdat")
+```
+
+### Exercise 3: Data Portal Mastery
+
+Practice your portal creation skills by importing and exporting data:
+
+```{webr}
+#| exercise: ex_import_1
+
+```
+
+::: { .hint exercise="ex_import_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `read_csv()` to import CSV data and `write_csv()` to export it. Don't forget to peek at your data with `head()` or `glimpse()`!
+:::
+:::
+
+::: { .solution exercise="ex_import_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse
+library(tidyverse)
+
+# Create some sample data to export
+potion_recipes <- tibble(
+  potion_name = c("Invisibility", "Strength", "Healing", "Flying", "Wisdom"),
+  primary_ingredient = c("Ghost Orchid", "Dragon Scale", "Phoenix Tear", "Eagle Feather", "Ancient Scroll"),
+  brewing_time_hours = c(12, 3, 8, 24, 72),
+  potency = c(8, 7, 10, 6, 9)
+)
+
+# Export our potion recipes to CSV
+write_csv(potion_recipes, "potion_recipes.csv")
+
+# Now import it back
+imported_potions <- read_csv("potion_recipes.csv")
+
+# Let's check if our portal worked correctly
+identical(potion_recipes, imported_potions)
+
+# Take a peek at our imported data
+glimpse(imported_potions)
+
+# Create a custom column specification
+my_col_types <- cols(
+  potion_name = col_character(),
+  primary_ingredient = col_character(),
+  brewing_time_hours = col_integer(),
+  potency = col_double()
+)
+
+# Import with specification
+imported_potions_spec <- read_csv("potion_recipes.csv", col_types = my_col_types)
+glimpse(imported_potions_spec)
+```
+:::
+:::
+
+## Subsetting and Sorting: Finding What You Need
+
+Subsetting and sorting data is like having a magical filter and organizer for your data. With just a few spell words, you can find exactly what you need!
+
+### Filtering Rows with `filter()`
+
+`filter()` allows you to select rows based on their values - it's like having a magic sieve that only lets through the data you want!
+
+```r
+# Load a dataset to play with
+data(starwars, package = "dplyr")
+starwars_tibble <- as_tibble(starwars)
+
+# Filter for humans only - separating humans from aliens!
+humans <- starwars_tibble %>% 
+  filter(species == "Human")
+
+# Multiple conditions - finding very tall droids!
+tall_droids <- starwars_tibble %>% 
+  filter(species == "Droid", height > 100)
+  
+# More complex conditions with logical operators
+powerful_humans <- starwars_tibble %>%
+  filter(species == "Human" & (mass > 80 | height > 180))
+  
+# Excluding values
+non_droids <- starwars_tibble %>%
+  filter(species != "Droid")
+  
+# Checking for multiple values
+tatooine_naboo <- starwars_tibble %>%
+  filter(homeworld %in% c("Tatooine", "Naboo"))
+```
+
+### Slicing Rows
+
+Sometimes you want to select rows by position rather than by values:
+
+```r
+# Get the first 5 rows
+starwars_tibble %>% slice(1:5)
+
+# Get specific rows
+starwars_tibble %>% slice(c(1, 3, 5))
+
+# Get the last 5 rows
+starwars_tibble %>% slice_tail(n = 5)
+
+# Get 3 random rows
+starwars_tibble %>% slice_sample(n = 3)
+
+# Get 10% of the rows randomly
+starwars_tibble %>% slice_sample(prop = 0.1)
+
+# Get the 3 tallest characters
+starwars_tibble %>% slice_max(height, n = 3)
+
+# Get the 3 lightest characters with known mass
+starwars_tibble %>% slice_min(mass, n = 3, na.rm = TRUE)
+```
+
+### Selecting Columns with `select()`
+
+`select()` lets you focus on just the variables you need - it's like having a magical lens that only shows you what's important!
+
+```r
+# Select only certain columns - focusing your magical lens!
+names_heights <- starwars_tibble %>% 
+  select(name, height, mass)
+
+# Remove columns - banishing unwanted information!
+no_homeworld <- starwars_tibble %>% 
+  select(-homeworld, -species)
+  
+# Select columns by position
+first_three <- starwars_tibble %>%
+  select(1:3)
+  
+# Use helper functions to select columns matching patterns
+measurements <- starwars_tibble %>%
+  select(starts_with("h"), contains("mass"))
+  
+# Select columns by data type
+numeric_cols <- starwars_tibble %>%
+  select(where(is.numeric))
+  
+# Rename columns while selecting
+renamed <- starwars_tibble %>%
+  select(character_name = name, height, weight = mass)
+```
+
+### Selection Helpers
+
+There are many helper functions that make selecting variables easier:
+
+```r
+# Different ways to select variables
+starwars_tibble %>% select(starts_with("h"))  # Starts with "h"
+starwars_tibble %>% select(ends_with("s"))    # Ends with "s"
+starwars_tibble %>% select(contains("o"))     # Contains "o"
+starwars_tibble %>% select(matches("..r."))   # Matches regex pattern
+starwars_tibble %>% select(everything())      # All columns
+starwars_tibble %>% select(last_col())        # Last column
+```
+
+### Arranging Rows with `arrange()`
+
+`arrange()` allows you to reorder your rows based on the values of selected columns:
+
+```r
+# Sort by height - from shortest to tallest!
+by_height <- starwars_tibble %>% 
+  arrange(height)
+
+# Sort by descending mass - heaviest first!
+by_mass_desc <- starwars_tibble %>% 
+  arrange(desc(mass))
+  
+# Multiple sort criteria - sort by species, then by height within species
+by_species_height <- starwars_tibble %>%
+  arrange(species, height)
+  
+# Sort by species descending, then by height ascending
+complex_sort <- starwars_tibble %>%
+  arrange(desc(species), height)
+```
+
+### Renaming and Relocating Columns
+
+Tidyverse also provides tools to rename or reposition your variables:
+
+```r
+# Rename columns
+starwars_tibble %>%
+  rename(character = name, weight = mass)
+  
+# Rename using a function (convert to uppercase)
+starwars_tibble %>%
+  rename_with(toupper)
+  
+# Rename only some columns
+starwars_tibble %>%
+  rename_with(toupper, starts_with("h"))
+  
+# Move columns to different positions
+starwars_tibble %>%
+  relocate(species, homeworld, .before = name)
+  
+starwars_tibble %>%
+  relocate(name, species, .after = last_col())
+```
+
+### Exercise 4: The Magic of Subsetting
+
+Use your magical powers to find and sort specific creatures:
+
+```{webr}
+#| exercise: ex_subset_1
+
+```
+
+::: { .hint exercise="ex_subset_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `filter()` to find rows meeting certain conditions, `select()` to choose columns, and `arrange()` to sort. Combine them with the magical `%>%` pipe!
+:::
+:::
+
+::: { .solution exercise="ex_subset_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse
+library(tidyverse)
+
+# We'll use the built-in starwars dataset
+data(starwars, package = "dplyr")
+starwars_tibble <- as_tibble(starwars)
+
+# Find all characters taller than 200 cm
+giants <- starwars_tibble %>% 
+  filter(height > 200)
+giants
+
+# Select only the name, homeworld, and species of characters from Tatooine
+tatooine_chars <- starwars_tibble %>% 
+  filter(homeworld == "Tatooine") %>%
+  select(name, species, height, mass)
+tatooine_chars
+
+# Find the 5 heaviest characters with known mass
+heaviest_chars <- starwars_tibble %>% 
+  filter(!is.na(mass)) %>%
+  arrange(desc(mass)) %>%
+  slice(1:5)
+heaviest_chars
+
+# Find all humans and sort them by height (tallest first)
+sorted_humans <- starwars_tibble %>% 
+  filter(species == "Human") %>%
+  arrange(desc(height))
+sorted_humans
+
+# Find characters from the same homeworld as Luke Skywalker
+luke_homeworld <- starwars_tibble %>%
+  filter(name == "Luke Skywalker") %>%
+  pull(homeworld)
+
+luke_neighbors <- starwars_tibble %>%
+  filter(homeworld == luke_homeworld) %>%
+  select(name, species, height) %>%
+  arrange(species, desc(height))
+luke_neighbors
+
+# Complex pipeline combining multiple operations
+starwars_analysis <- starwars_tibble %>%
+  # Keep only characters with complete height and mass data
+  filter(!is.na(height), !is.na(mass)) %>%
+  # Calculate BMI
+  mutate(bmi = mass / ((height / 100)^2)) %>%
+  # Select relevant columns
+  select(name, species, gender, height, mass, bmi) %>%
+  # Sort by BMI
+  arrange(desc(bmi)) %>%
+  # Take top 10
+  slice_head(n = 10)
+starwars_analysis
+```
+:::
+:::
+
+## Creating Variables: Brewing New Data Potions
+
+Sometimes you need to create new variables based on existing ones. This is like brewing a new potion by combining ingredients you already have!
+
+### Transforming Variables with `mutate()`
+
+`mutate()` lets you create new variables while preserving existing ones - it's like adding new magical properties to your potion without changing its base ingredients!
+
+```r
+# Add a new column - brewing a new data potion!
+starwars_bmi <- starwars_tibble %>% 
+  filter(!is.na(height), !is.na(mass)) %>%
+  mutate(bmi = mass / ((height / 100)^2))
+
+# Create multiple columns at once - advanced potion brewing!
+starwars_stats <- starwars_tibble %>% 
+  mutate(
+    height_m = height / 100,
+    height_ft = height / 30.48,
+    heavy = mass > 100
+  )
+```
+
+### Conditional Transformations
+
+You can create variables with values that depend on conditions:
+
+```r
+# Simple if-else condition
+starwars_tibble %>%
+  mutate(size_category = if_else(height > 180, "Tall", "Short", missing = "Unknown"))
+
+# Multiple conditions with case_when
+starwars_tibble %>%
+  mutate(
+    size_category = case_when(
+      is.na(height) ~ "Unknown",
+      height > 200 ~ "Very Tall",
+      height > 180 ~ "Tall",
+      height > 160 ~ "Average",
+      TRUE ~ "Short"
+    )
+  )
+```
+
+### Working Across Multiple Columns
+
+Apply the same transformation to multiple columns at once:
+
+```r
+# Apply the same function to multiple columns
+starwars_tibble %>%
+  mutate(across(c(height, mass), ~ . / mean(., na.rm = TRUE)))
+
+# Apply different functions to different columns
+starwars_tibble %>%
+  mutate(across(where(is.numeric), ~ round(., 1)))
+
+# Apply multiple functions to the same columns
+starwars_tibble %>%
+  mutate(across(
+    c(height, mass),
+    list(
+      centered = ~ . - mean(., na.rm = TRUE),
+      scaled = ~ . / sd(., na.rm = TRUE)
+    )
+  ))
+```
+
+### Replacing or Creating New Data Frames
+
+Sometimes you want to completely replace your variables instead of adding to them:
+
+```r
+# Replace variables with transmute
+starwars_tibble %>%
+  transmute(
+    name,
+    height_in_meters = height / 100,
+    weight_in_pounds = mass * 2.2
+  )
+```
+
+### Special Transformation Functions
+
+The tidyverse provides many functions for common transformations:
+
+```r
+# Ranking
+starwars_tibble %>%
+  mutate(
+    height_rank = min_rank(height),
+    height_dense_rank = dense_rank(height),
+    height_percent_rank = percent_rank(height)
+  )
+
+# Offset values
+starwars_tibble %>%
+  mutate(
+    next_mass = lead(mass),
+    prev_mass = lag(mass)
+  )
+
+# Cumulative calculations
+starwars_tibble %>%
+  mutate(
+    cumulative_mass = cumsum(mass),
+    running_avg = cummean(mass)
+  )
+```
+
+### Exercise 5: Potion Brewing with `mutate()`
+
+Brew some new variables from existing data:
+
+```{webr}
+#| exercise: ex_mutate_1
+
+```
+
+::: { .hint exercise="ex_mutate_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `mutate()` to create new columns based on existing ones. You can create as many new columns as you want in a single `mutate()` spell!
+:::
+:::
+
+::: { .solution exercise="ex_mutate_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse
+library(tidyverse)
+
+# Let's create a magical creatures dataset
+creatures <- tibble(
+  name = c("Dragon", "Griffin", "Phoenix", "Unicorn", "Basilisk"),
+  age = c(250, 75, 500, 150, 200),
+  max_age = c(1000, 300, 2000, 500, 800),
+  weight_kg = c(2500, 450, 15, 350, 800),
+  magical_power = c(95, 75, 90, 80, 85)
+)
+
+# Now let's brew some new potions... I mean variables!
+creatures_enhanced <- creatures %>%
+  mutate(
+    # Calculate age as percentage of maximum lifespan
+    age_percentage = (age / max_age) * 100,
+    
+    # Classify creatures as ancient (over 50% of lifespan) or young
+    age_category = if_else(age_percentage > 50, "Ancient", "Young"),
+    
+    # Calculate power-to-weight ratio (magical efficiency)
+    power_efficiency = magical_power / weight_kg * 100,
+    
+    # Create a magical threat level
+    threat_level = case_when(
+      magical_power > 90 & weight_kg > 1000 ~ "Extreme",
+      magical_power > 80 | weight_kg > 500 ~ "High",
+      magical_power > 70 ~ "Moderate",
+      TRUE ~ "Low"
+    ),
+    
+    # Power rank compared to other creatures
+    power_rank = min_rank(desc(magical_power)),
+    
+    # Normalized power (percentage of max)
+    power_normalized = magical_power / max(magical_power) * 100,
+    
+    # Estimated years left to live
+    years_remaining = max_age - age,
+    
+    # Calculate a weighted magical score
+    magical_score = (magical_power * 0.6) + (power_efficiency * 0.4)
+  )
+
+# Let's see our enhanced creatures dataset!
+creatures_enhanced %>%
+  arrange(power_rank)
+```
+:::
+:::
+
+## Summaries: Distilling Magical Essences
+
+Summarizing data is like distilling the essence of your dataset down to its most powerful components. It reveals the hidden patterns and secrets!
+
+### Summarizing with `summarize()`
+
+`summarize()` (or `summarise()`, if you prefer British spelling) reduces your dataset to a single row of summary statistics:
+
+```r
+# Calculate basic summaries - distilling the essence!
+height_summary <- starwars_tibble %>%
+  summarize(
+    avg_height = mean(height, na.rm = TRUE),
+    max_height = max(height, na.rm = TRUE),
+    min_height = min(height, na.rm = TRUE),
+    sd_height = sd(height, na.rm = TRUE),
+    n_characters = n(),
+    n_with_height = sum(!is.na(height))
+  )
+
+# Counting values - counting magical artifacts!
+species_count <- starwars_tibble %>%
+  count(species, sort = TRUE)
+```
+
+### Common Summary Functions
+
+Here are some useful functions for creating summaries:
+
+```r
+# Statistical functions
+starwars_tibble %>%
+  summarize(
+    mean_height = mean(height, na.rm = TRUE),
+    median_height = median(height, na.rm = TRUE),
+    sd_height = sd(height, na.rm = TRUE),
+    var_height = var(height, na.rm = TRUE),
+    min_height = min(height, na.rm = TRUE),
+    max_height = max(height, na.rm = TRUE),
+    q25_height = quantile(height, 0.25, na.rm = TRUE),
+    q75_height = quantile(height, 0.75, na.rm = TRUE)
+  )
+
+# Counting functions
+starwars_tibble %>%
+  summarize(
+    n_rows = n(),
+    n_species = n_distinct(species),
+    n_homeworlds = n_distinct(homeworld)
+  )
+
+# First, last, and nth values
+starwars_tibble %>%
+  summarize(
+    first_character = first(name),
+    last_character = last(name),
+    tenth_character = nth(name, 10)
+  )
+```
+
+### Summarizing Multiple Columns
+
+You can summarize multiple columns at once using `across()`:
+
+```r
+# Apply the same summary function to multiple columns
+starwars_tibble %>%
+  summarize(across(c(height, mass), mean, na.rm = TRUE))
+
+# Apply different summary functions to different columns
+starwars_tibble %>%
+  summarize(
+    across(c(height, mass), list(avg = mean, med = median), na.rm = TRUE),
+    across(species, list(n = n_distinct))
+  )
+```
+
+### Exercise 6: The Art of Summary Magic
+
+Practice your summarizing skills on this dataset:
+
+```{webr}
+#| exercise: ex_summarize_1
+
+```
+
+::: { .hint exercise="ex_summarize_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `summarize()` to calculate statistics across the entire dataset, or `group_by()` then `summarize()` to get statistics for each group. The `count()` spell is great for quick frequency tables!
+:::
+:::
+
+::: { .solution exercise="ex_summarize_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse
+library(tidyverse)
+
+# Let's work with the built-in mpg dataset
+data(mpg)
+mpg_tibble <- as_tibble(mpg)
+
+# Overall summary statistics for continuous variables
+overall_summary <- mpg_tibble %>%
+  summarize(
+    avg_mpg = mean(hwy),
+    max_mpg = max(hwy),
+    min_mpg = min(hwy),
+    median_mpg = median(hwy),
+    sd_mpg = sd(hwy),
+    total_cars = n(),
+    efficiency_ratio = mean(hwy) / mean(cty)
+  )
+overall_summary
+
+# Count the number of cars by manufacturer
+manufacturer_counts <- mpg_tibble %>%
+  count(manufacturer, sort = TRUE)
+manufacturer_counts
+
+# Group by class and find average mpg
+class_mpg <- mpg_tibble %>%
+  group_by(class) %>%
+  summarize(
+    avg_city_mpg = mean(cty),
+    avg_hwy_mpg = mean(hwy),
+    mpg_difference = mean(hwy - cty),
+    car_count = n(),
+    manufacturers = n_distinct(manufacturer)
+  ) %>%
+  arrange(desc(avg_hwy_mpg))
+class_mpg
+
+# Find the most fuel-efficient car in each class
+best_in_class <- mpg_tibble %>%
+  group_by(class) %>%
+  slice_max(order_by = hwy, n = 1) %>%
+  select(class, manufacturer, model, hwy) %>%
+  arrange(desc(hwy))
+best_in_class
+
+# Create a comprehensive efficiency report by manufacturer
+manufacturer_report <- mpg_tibble %>%
+  group_by(manufacturer) %>%
+  summarize(
+    models = n_distinct(model),
+    avg_city = mean(cty),
+    avg_hwy = mean(hwy),
+    best_hwy = max(hwy),
+    worst_hwy = min(hwy),
+    range = max(hwy) - min(hwy),
+    total_cars = n()
+  ) %>%
+  # Only include manufacturers with at least 3 cars
+  filter(total_cars >= 3) %>%
+  # Sort by average highway MPG
+  arrange(desc(avg_hwy))
+manufacturer_report
+```
+:::
+:::
+
+## Group Operations: Organizing Your Magical Creatures
+
+Grouping allows you to perform operations on subsets of your data. It's like organizing your magical creatures by species before studying them!
+
+### Grouping with `group_by()`
+
+`group_by()` transforms your data frame into a grouped data frame, where operations are performed "by group":
+
+```r
+# Group by species and find average height/mass
+species_stats <- starwars_tibble %>%
+  group_by(species) %>%
+  summarize(
+    count = n(),
+    avg_height = mean(height, na.rm = TRUE),
+    avg_mass = mean(mass, na.rm = TRUE)
+  ) %>%
+  filter(count > 1)  # Only include species with more than 1 character
+
+# Find max height by gender and homeworld
+max_heights <- starwars_tibble %>%
+  group_by(homeworld, gender) %>%
+  summarize(
+    tallest = max(height, na.rm = TRUE),
+    n = n()
+  ) %>%
+  filter(!is.na(tallest), !is.na(homeworld))
+```
+
+### Grouping by Multiple Variables
+
+You can group by multiple variables to create nested groups:
+
+```r
+# Group by species and gender
+starwars_tibble %>%
+  group_by(species, gender) %>%
+  summarize(
+    count = n(),
+    avg_height = mean(height, na.rm = TRUE)
+  )
+
+# Getting the number of groups
+starwars_tibble %>%
+  group_by(species, gender) %>%
+  summarize(count = n()) %>%
+  nrow()
+
+# Getting information about the groups
+starwars_groups <- starwars_tibble %>% group_by(species, gender)
+group_keys(starwars_groups)
+n_groups(starwars_groups)
+```
+
+### Group Mutations
+
+You can use `group_by()` with `mutate()` to compute values within each group:
+
+```r
+# Calculate z-scores within species groups
+starwars_tibble %>%
+  group_by(species) %>%
+  filter(n() > 1) %>%  # Only species with multiple members
+  mutate(
+    height_avg = mean(height, na.rm = TRUE),
+    height_sd = sd(height, na.rm = TRUE),
+    height_z = (height - height_avg) / height_sd
+  ) %>%
+  select(name, species, height, height_avg, height_z) %>%
+  arrange(species, desc(height_z))
+
+# Rank heights within each species
+starwars_tibble %>%
+  group_by(species) %>%
+  filter(n() > 1) %>%
+  mutate(height_rank = min_rank(desc(height))) %>%
+  select(name, species, height, height_rank) %>%
+  arrange(species, height_rank)
+```
+
+### Managing Groups
+
+You can add or remove grouping variables:
+
+```r
+# Add a grouping variable
+starwars_tibble %>%
+  group_by(species) %>%
+  group_by(gender, .add = TRUE)  # Keep species grouping and add gender
+
+# Remove all grouping
+starwars_tibble %>%
+  group_by(species, gender) %>%
+  ungroup()
+```
+
+### Row-wise Operations
+
+For operations across rows (rather than down columns), use `rowwise()`:
+
+```r
+# Calculate the sum of height and mass for each character
+starwars_tibble %>%
+  rowwise() %>%
+  mutate(
+    height_plus_mass = sum(c(height, mass), na.rm = TRUE)
+  )
+
+# Find the maximum value across several columns
+starwars_tibble %>%
+  rowwise() %>%
+  mutate(
+    max_value = max(c(height, mass), na.rm = TRUE)
+  )
+```
+
+### Exercise 7: The Power of Grouping
+
+Use grouping to analyze this dataset of magical creatures:
+
+```{webr}
+#| exercise: ex_group_1
+
+```
+
+::: { .hint exercise="ex_group_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Use `group_by()` followed by `summarize()` to calculate statistics for each group. Try grouping by multiple variables to dig deeper!
+:::
+:::
+
+::: { .solution exercise="ex_group_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse
+library(tidyverse)
+
+# Create a dataset of potions sold at a magical marketplace
+potions_sales <- tibble(
+  potion_type = rep(c("Healing", "Strength", "Invisibility", "Love", "Wisdom"), each = 20),
+  merchant = rep(c("Elixir Emporium", "Witch's Brew", "Magical Mixtures", "Cauldron Creations"), times = 25),
+  price = c(
+    # Healing potions prices
+    runif(20, 10, 20),
+    # Strength potions prices
+    runif(20, 15, 30),
+    # Invisibility potions prices
+    runif(20, 25, 50),
+    # Love potions prices
+    runif(20, 5, 15),
+    # Wisdom potions prices
+    runif(20, 20, 40)
+  ),
+  quantity_sold = sample(1:10, 100, replace = TRUE),
+  customer_rating = sample(1:5, 100, replace = TRUE, prob = c(0.05, 0.1, 0.2, 0.4, 0.25))
+)
+
+# Calculate average price by potion type
+avg_prices <- potions_sales %>%
+  group_by(potion_type) %>%
+  summarize(
+    avg_price = mean(price),
+    median_price = median(price),
+    min_price = min(price),
+    max_price = max(price),
+    price_range = max_price - min_price,
+    total_sold = sum(quantity_sold),
+    avg_rating = mean(customer_rating)
+  ) %>%
+  arrange(desc(avg_price))
+avg_prices
+
+# Find total revenue by merchant and potion type
+merchant_revenue <- potions_sales %>%
+  mutate(revenue = price * quantity_sold) %>%
+  group_by(merchant, potion_type) %>%
+  summarize(
+    total_revenue = sum(revenue),
+    avg_price = mean(price),
+    total_sold = sum(quantity_sold),
+    avg_rating = mean(customer_rating)
+  ) %>%
+  arrange(merchant, desc(total_revenue))
+merchant_revenue
+
+# Find the most profitable potion type for each merchant
+best_potions <- potions_sales %>%
+  mutate(revenue = price * quantity_sold) %>%
+  group_by(merchant, potion_type) %>%
+  summarize(total_revenue = sum(revenue)) %>%
+  ungroup() %>%
+  group_by(merchant) %>%
+  slice_max(order_by = total_revenue, n = 1)
+best_potions
+
+# Calculate the average rating for each merchant and how it compares to overall average
+rating_analysis <- potions_sales %>%
+  group_by(merchant) %>%
+  summarize(
+    avg_rating = mean(customer_rating),
+    total_ratings = n()
+  ) %>%
+  ungroup() %>%
+  mutate(
+    overall_avg = mean(potions_sales$customer_rating),
+    rating_difference = avg_rating - overall_avg,
+    performance = case_when(
+      rating_difference > 0.5 ~ "Excellent",
+      rating_difference > 0 ~ "Above Average",
+      rating_difference > -0.5 ~ "Average",
+      TRUE ~ "Below Average"
+    )
+  ) %>%
+  arrange(desc(avg_rating))
+rating_analysis
+
+# Advanced analysis: Find which merchants are specialized in certain potions
+specialization_analysis <- potions_sales %>%
+  group_by(merchant, potion_type) %>%
+  summarize(
+    potion_count = n(),
+    potion_revenue = sum(price * quantity_sold)
+  ) %>%
+  group_by(merchant) %>%
+  mutate(
+    total_potions = sum(potion_count),
+    total_revenue = sum(potion_revenue),
+    potion_percent = potion_count / total_potions * 100,
+    revenue_percent = potion_revenue / total_revenue * 100,
+    is_specialized = potion_percent > 30 | revenue_percent > 40
+  ) %>%
+  filter(is_specialized) %>%
+  select(merchant, potion_type, potion_percent, revenue_percent) %>%
+  arrange(merchant, desc(revenue_percent))
+specialization_analysis
+```
+:::
+:::
+
+## Capstone Project: The Ultimate Tidyverse Spell
+
+Now it's time to combine all your tidyverse skills into one magnificent spell! Create a comprehensive analysis of magical creatures and their powers.
+
+### The Complete Tidyverse Wizard
+
+A true tidyverse wizard can combine all their magical spells - tibbles, importing, filtering, arranging, mutating, summarizing, and grouping - into a single powerful workflow. Let's put everything together!
+
+Here's what your capstone should demonstrate:
+- Creating and transforming tibbles
+- Importing and cleaning data
+- Filtering and selecting relevant information
+- Creating new variables
+- Summarizing by groups
+- Visualizing results (if desired)
+- Exporting your processed data
+
+### Exercise 8: The Complete Tidyverse Magic System
+
+```{webr}
+#| exercise: ex_capstone_1
+
+```
+
+::: { .hint exercise="ex_capstone_1"}
+::: { .callout-note collapse="false"}
+## Hint
+Combine all the magical spells you've learned - create tibbles, import/export data, filter, select, arrange, mutate, summarize, and group. Think of it as creating your own complete magical analysis system!
+:::
+:::
+
+::: { .solution exercise="ex_capstone_1" }
+::: { .callout-tip collapse="false"}
+## Solution:
+```r
+# Load the tidyverse - our magical toolkit
+library(tidyverse)
+
+# Create a comprehensive magical creature database
+magical_creatures <- tibble(
+  species = c("Dragon", "Phoenix", "Unicorn", "Griffin", "Mermaid", "Centaur", 
+              "Basilisk", "Fairy", "Troll", "Werewolf", "Vampire", "Ghost",
+              "Dragon", "Unicorn", "Griffin", "Fairy", "Phoenix", "Mermaid"),
+  name = c("Smaug", "Fawkes", "Twilight", "Buckbeak", "Ariel", "Firenze", 
+           "Slytherin", "Tinkerbell", "Grumpy", "Remus", "Dracula", "Casper",
+           "Norbert", "Silver", "Talon", "Periwinkle", "Ash", "Marina"),
+  age = c(250, 500, 150, 75, 120, 80, 200, 50, 100, 45, 300, 150,
+          100, 50, 120, 25, 300, 80),
+  power_level = c(95, 90, 70, 75, 60, 65, 85, 40, 60, 70, 80, 50,
+                 80, 65, 70, 35, 85, 55),
+  habitat = c("Mountain", "Volcano", "Forest", "Mountain", "Ocean", "Forest", 
+              "Cave", "Forest", "Mountain", "Forest", "Castle", "Haunted House",
+              "Mountain", "Forest", "Mountain", "Forest", "Volcano", "Ocean"),
+  element = c("Fire", "Fire", "Light", "Air", "Water", "Earth", 
+              "Poison", "Light", "Earth", "Moon", "Blood", "Spirit",
+              "Fire", "Light", "Air", "Light", "Fire", "Water"),
+  is_friendly = c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, 
+                 FALSE, TRUE, FALSE, FALSE, FALSE, TRUE,
+                 FALSE, TRUE, FALSE, TRUE, TRUE, TRUE)
+)
+
+# Export our original dataset to CSV
+write_csv(magical_creatures, "magical_creatures.csv")
+
+# Re-import and verify (in a real workflow, you might combine these steps)
+creatures_imported <- read_csv("magical_creatures.csv")
+
+# ===== STEP 1: DATA CLEANING AND ENRICHMENT =====
+creatures_enhanced <- creatures_imported %>%
+  # Remove duplicates 
+  distinct() %>%
+  # Add calculated fields
+  mutate(
+    # Create power categories
+    power_category = case_when(
+      power_level >= 85 ~ "Supreme",
+      power_level >= 70 ~ "High",
+      power_level >= 50 ~ "Moderate",
+      TRUE ~ "Low"
+    ),
+    # Age categories
+    age_category = case_when(
+      age >= 200 ~ "Ancient",
+      age >= 100 ~ "Old",
+      age >= 50 ~ "Adult",
+      TRUE ~ "Young"
+    ),
+    # Danger assessment
+    danger_level = if_else(
+      power_level > 80 & !is_friendly, 
+      "Extremely Dangerous",
+      if_else(power_level > 60 & !is_friendly, "Dangerous",
+             if_else(!is_friendly, "Exercise Caution", "Generally Safe"))
+    ),
+    # Normalized power (as a percentage of maximum)
+    power_normalized = round(power_level / max(power_level) * 100, 1),
+    # Create a magical power index
+    magic_index = (power_level * 0.6) + (age * 0.4 / 10)
+  )
+
+# ===== STEP 2: SPECIES ANALYSIS =====
+species_analysis <- creatures_enhanced %>%
+  group_by(species) %>%
+  summarize(
+    count = n(),
+    avg_power = mean(power_level),
+    max_power = max(power_level),
+    min_power = min(power_level),
+    power_range = max_power - min_power,
+    avg_age = mean(age),
+    pct_friendly = mean(is_friendly) * 100
+  ) %>%
+  arrange(desc(avg_power))
+
+# ===== STEP 3: HABITAT ANALYSIS =====
+habitat_analysis <- creatures_enhanced %>%
+  group_by(habitat, element) %>%
+  summarize(
+    creature_count = n(),
+    avg_power = mean(power_level),
+    most_dangerous = max(power_level),
+    pct_friendly = mean(is_friendly) * 100
+  ) %>%
+  arrange(habitat, desc(avg_power))
+
+# ===== STEP 4: ELEMENT CHAMPIONS =====
+element_champions <- creatures_enhanced %>%
+  group_by(element) %>%
+  slice_max(order_by = power_level, n = 1) %>%
+  select(element, name, species, power_level, danger_level) %>%
+  arrange(desc(power_level))
+
+# ===== STEP 5: FRIENDSHIP ANALYSIS =====
+friendship_analysis <- creatures_enhanced %>%
+  group_by(power_category, is_friendly) %>%
+  summarize(
+    count = n(),
+    avg_age = mean(age),
+    avg_power = mean(power_level)
+  ) %>%
+  arrange(power_category, desc(is_friendly))
+
+# ===== STEP 6: FEATURE CORRELATION =====
+# Checking relationship between power and age
+power_age_correlation <- cor(creatures_enhanced$power_level, 
+                            creatures_enhanced$age,
+                            method = "pearson")
+
+# ===== STEP 7: DANGER ASSESSMENT =====
+danger_assessment <- creatures_enhanced %>% 
+  filter(danger_level == "Extremely Dangerous") %>% 
+  select(name, species, habitat, power_level, element)
+
+# ===== STEP 8: ADVANCED FILTERING =====
+# Find creatures matching specific criteria
+special_creatures <- creatures_enhanced %>%
+  filter(
+    (element %in% c("Fire", "Water")) &
+    (power_level > 70 | age > 200) &
+    (habitat != "Cave")
+  ) %>%
+  select(name, species, element, habitat, power_level, age) %>%
+  arrange(desc(power_level))
+
+# ===== STEP 9: CREATE FINAL REPORT =====
+magical_report <- list(
+  dataset_summary = list(
+    creature_count = nrow(creatures_enhanced),
+    species_count = n_distinct(creatures_enhanced$species),
+    habitat_count = n_distinct(creatures_enhanced$habitat),
+    element_count = n_distinct(creatures_enhanced$element),
+    avg_power_level = mean(creatures_enhanced$power_level),
+    avg_age = mean(creatures_enhanced$age),
+    friendly_pct = mean(creatures_enhanced$is_friendly) * 100,
+    power_age_correlation = power_age_correlation
+  ),
+  most_powerful = creatures_enhanced %>% 
+                  slice_max(order_by = power_level, n = 1) %>% 
+                  select(name, species, power_level, element),
+  oldest_creature = creatures_enhanced %>%
+                   slice_max(order_by = age, n = 1) %>%
+                   select(name, species, age, power_level),
+  species_analysis = species_analysis,
+  habitat_analysis = habitat_analysis,
+  element_champions = element_champions,
+  friendship_analysis = friendship_analysis,
+  danger_assessment = danger_assessment,
+  special_creatures = special_creatures
+)
+
+# Show the complete report
+magical_report
+```
+:::
+:::
+
+## Advanced Tidyverse Topics: Mastering the Arcane Arts
+
+For those who wish to continue their magical journey, here are some advanced tidyverse topics to explore:
+
+### The Magic of Joins
+
+Combining datasets is like merging two magical potions to create something even more powerful:
+
+```r
+# Create two datasets
+wizards <- tibble(
+  name = c("Gandalf", "Dumbledore", "Merlin", "Elminster"),
+  element = c("Light", "Fire", "Earth", "Air"),
+  power = c(95, 92, 99, 90)
+)
+
+spells <- tibble(
+  caster = c("Gandalf", "Gandalf", "Dumbledore", "Merlin", "Unknown"),
+  spell = c("Light Beam", "Flame Shield", "Phoenix Call", "Earth Shake", "Tempest"),
+  power_cost = c(20, 35, 40, 50, 60)
+)
+
+# Inner join - only keeps matching rows
+inner_join(wizards, spells, by = c("name" = "caster"))
+
+# Left join - keeps all rows from the left table
+left_join(wizards, spells, by = c("name" = "caster"))
+
+# Right join - keeps all rows from the right table
+right_join(wizards, spells, by = c("name" = "caster"))
+
+# Full join - keeps all rows from both tables
+full_join(wizards, spells, by = c("name" = "caster"))
+```
+
+### The Art of Pivoting
+
+Reshaping data is like transforming your magical creatures into different forms:
+
+```r
+# Wide to long format
+measurements <- tibble(
+  name = c("Dragon", "Phoenix", "Unicorn"),
+  height = c(300, 120, 180),
+  weight = c(2000, 15, 450),
+  wingspan = c(500, 300, NA)
+)
+
+# Convert to long format
+measurements_long <- measurements %>%
+  pivot_longer(
+    cols = c(height, weight, wingspan),
+    names_to = "measurement",
+    values_to = "value"
+  )
+
+# Long to wide format
+measurements_wide <- measurements_long %>%
+  pivot_wider(
+    names_from = measurement,
+    values_from = value
+  )
+```
+
+### Working with Nested Data
+
+Nested data is like having magical creatures with smaller creatures inside them:
+
+```r
+# Group and nest data
+nested_creatures <- magical_creatures %>%
+  group_by(species) %>%
+  nest()
+
+# Work with nested data
+nested_creatures %>%
+  mutate(
+    creature_count = map_int(data, nrow),
+    power_stats = map(data, ~ summary(.$power_level)),
+    max_power = map_dbl(data, ~ max(.$power_level))
+  )
+
+# Unnest data
+nested_creatures %>%
+  unnest(data)
+```
+
+With these advanced techniques in your magical arsenal, there's no data enchantment you can't master!
+
+### Further Learning
+
+To continue your journey to becoming a tidyverse archmage, consult these magical tomes:
+- [R for Data Science](https://r4ds.had.co.nz/)
+- [tidyverse.org](https://www.tidyverse.org/)
+- [RStudio Cheatsheets](https://www.rstudio.com/resources/cheatsheets/) 
