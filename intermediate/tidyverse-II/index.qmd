@@ -1,0 +1,1071 @@
+---
+title: "Tidyverse II: Intermediate Data Wrangling"
+author: "David Munoz Tord"
+description: "Deep dive into joins, pivots, string ops and more with the tidyverse"
+engine: knitr
+date: "2025-05-11"
+format: live-html
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Course Overview
+
+Welcome to Tidyverse II! In this intermediate course, we'll build upon your existing Tidyverse knowledge to tackle more complex data manipulation tasks. You'll learn how to effectively combine, reshape, and clean diverse datasets, mastering techniques essential for real-world data analysis.
+
+We will cover:
+
+1.  **Recap & Setup**: A quick refresher on Tidyverse fundamentals and setting up our environment.
+2.  **Joins**: Combining data from multiple tables.
+3.  **Pivoting & Reshaping**: Transforming data between wide and long formats.
+4.  **String Operations**: Working with textual data using {stringr}.
+5.  **Date-Time Operations**: Handling dates and times with {lubridate}. (Coming soon!)
+6.  **Advanced Graphics**: Taking {ggplot2} skills to the next level. (Coming soon!)
+7.  **Factor Operations**: Managing categorical data with {forcats}. (Coming soon!)
+8.  **Capstone Project**: Applying all learned skills to a comprehensive project. (Coming soon!)
+
+Let's begin!
+
+---
+
+## Lesson 1: Recap & Setup
+
+Before diving into new material, let's briefly revisit the core principles of the Tidyverse and ensure our R environment is ready.
+
+The **Tidyverse** is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. Key packages include:
+
+*   **{dplyr}**: For data manipulation (filtering, arranging, selecting, mutating, summarizing).
+*   **{ggplot2}**: For creating elegant and informative data visualizations.
+*   **{tidyr}**: For tidying data (making it easy to work with).
+*   **{readr}**: For reading rectangular data files (like CSVs).
+*   **{purrr}**: For functional programming, enhancing your R toolkit.
+*   **{tibble}**: For modern, user-friendly data frames.
+*   **{stringr}**: For working with strings and regular expressions.
+*   **{forcats}**: For handling categorical variables (factors).
+
+A central concept is the **pipe operator `%>%`** (or the base R pipe `|>` from R 4.1+). It allows you to chain operations together in a readable and intuitive way, passing the result of one function as the first argument to the next.
+
+For this course, we'll primarily use RStudio or a similar R environment. Ensure you have the `tidyverse` package installed. If not, you can install it with `install.packages("tidyverse")`.
+
+```{r}
+#| label: lesson1-setup
+# Load the entire tidyverse
+library(tidyverse)
+
+# Example: Using the pipe with dplyr
+# Let's inspect the built-in starwars dataset
+starwars_tibble <- starwars %>% as_tibble()
+
+starwars_tibble %>%
+  glimpse()
+
+# A quick dplyr reminder:
+# Find all droids taller than 100cm
+starwars_tibble %>%
+  filter(species == "Droid" & height > 100) %>%
+  select(name, height, mass, homeworld) %>%
+  arrange(desc(height))
+```
+
+**Exercise 1.1: Quick Check**
+
+Familiarize yourself again with a built-in dataset.
+1.  Load the `tidyverse` package.
+2.  Convert the `mtcars` dataset to a tibble.
+3.  Use `glimpse()` to see its structure.
+4.  Use `head()` to view the first few rows.
+5.  How many cars have more than 4 cylinders and achieve more than 20 miles per gallon (mpg)?
+
+```{webr}
+#| exercise: ex1-1
+#| solution_hidden: true
+# Inspect the built-in mtcars dataset: glimpse and head
+library(tidyverse)
+
+mtcars_tbl <- as_tibble(mtcars, rownames = "model")
+
+glimpse(mtcars_tbl)
+head(mtcars_tbl)
+
+# How many cars have more than 4 cylinders and achieve more than 20 miles per gallon (mpg)?
+mtcars_tbl %>%
+  filter(cyl > 4 & mpg > 20) %>%
+  nrow() # or count()
+```
+
+---
+
+## Lesson 2: Joins (Part I & II)
+
+Often, the data you need is spread across multiple tables. **Joins** are how we combine these tables based on common variables (keys).
+
+### Part I: Stacking Tables
+
+Sometimes, you don't need to match rows based on keys, but rather stack tables on top of each other or side-by-side.
+
+*   **`bind_rows(...)`**: Stacks multiple data frames vertically.
+    *   It matches columns by name.
+    *   Columns that don't exist in one of the tables will be filled with `NA`.
+    *   You can use the `.id` argument to create a new column indicating the original data frame for each row.
+
+*   **`bind_cols(...)`**: Stacks multiple data frames horizontally.
+    *   This is less common for typical data analysis workflows because it requires the data frames to have the same number of rows and for those rows to correspond to each other (e.g., same observations in the same order).
+    *   If column names are duplicated, `bind_cols()` will automatically rename them.
+
+**Example: `bind_rows()`**
+```{r}
+#| label: lesson2-bind-rows-example
+sales_q1 <- tribble(
+  ~product_id, ~units_sold, ~quarter,
+  "A101",      50,          "Q1",
+  "B202",      75,          "Q1"
+)
+
+sales_q2 <- tribble(
+  ~product_id, ~units_sold, ~revenue, ~quarter,
+  "A101",      60,          1200,     "Q2",
+  "C303",      90,          1800,     "Q2"
+)
+
+all_sales <- bind_rows(sales_q1, sales_q2, .id = "source_table_id")
+print(all_sales)
+```
+Notice how `revenue` is `NA` for Q1 sales, and `source_table_id` tells us which original table the row came from.
+
+**Exercise 2.1: Stacking Sales Data**
+
+You have three tibbles representing sales data for different regions. Combine them into a single tibble.
+
+```{webr}
+#| exercise: ex2-1
+#| solution_hidden: true
+library(tidyverse)
+
+sales_north <- tribble(
+  ~month, ~product, ~sales,
+  "Jan",  "Apple",  100,
+  "Feb",  "Banana", 150
+)
+
+sales_south <- tribble(
+  ~month, ~product, ~sales, ~rep_id,
+  "Jan",  "Apple",  200,    "S01",
+  "Mar",  "Orange", 120,    "S02"
+)
+
+sales_west <- tribble(
+  ~month, ~product, ~sales, ~customer_segment,
+  "Jan",  "Banana", 50,     "Retail",
+  "Feb",  "Apple",  75,     "Wholesale"
+)
+
+# Your task: Use bind_rows() to stack these three tables.
+# What happens to columns not present in all tables?
+# Add an .id argument to track the source region.
+
+combined_sales <- bind_rows(
+  North = sales_north,
+  South = sales_south,
+  West = sales_west,
+  .id = "region"
+)
+
+print(combined_sales)
+```
+
+### Part II: Relational (dplyr) Joins
+
+These joins combine data frames based on matching values in specified "key" columns.
+
+*   **Key Concepts**:
+    *   **Primary Key**: A column (or set of columns) in a table that uniquely identifies each row.
+    *   **Foreign Key**: A column (or set of columns) in one table that refers to the primary key in another table.
+    *   Joins work by matching foreign keys to primary keys.
+
+*   **Mutating Joins**: Add columns from one table to another.
+    *   `left_join(x, y, by = "key_column")`: Keeps all rows from `x` and all columns from `x` and `y`. Rows in `x` with no match in `y` will have `NA` values in the new columns from `y`.
+    *   `right_join(x, y, by = "key_column")`: Keeps all rows from `y`. Rows in `y` with no match in `x` will have `NA` values. (Less common, often you can achieve the same by swapping `x` and `y` in a `left_join`).
+    *   `inner_join(x, y, by = "key_column")`: Keeps only rows from `x` that have a match in `y`.
+    *   `full_join(x, y, by = "key_column")`: Keeps all rows from both `x` and `y`. If there are no matches, `NA`s are inserted.
+
+*   **Filtering Joins**: Filter rows from one table based on whether they match in another, but do *not* add columns.
+    *   `semi_join(x, y, by = "key_column")`: Keeps all rows from `x` that *have* a match in `y`. Does not duplicate rows in `x` if there are multiple matches in `y`.
+    *   `anti_join(x, y, by = "key_column")`: Keeps all rows from `x` that *do not* have a match in `y`. Useful for finding unmatched records.
+
+**Specifying Keys with `by`**:
+*   `by = "key_col"`: If the key column has the same name in both tables.
+*   `by = c("key_col_x" = "key_col_y")`: If key columns have different names.
+*   `by = c("key1", "key2")`: For multiple key columns (composite key), all with same names.
+*   `by = join_by(col_x == col_y, another_x == another_y)`: A more flexible `dplyr 1.1.0+` syntax for complex joins, including inequality or rolling joins (though we focus on equality here).
+
+**Example: `left_join` and `inner_join`**
+```{r}
+#| label: lesson2-dplyr-joins-example
+patients <- tribble(
+  ~patient_id, ~name,
+  1,           "Alice",
+  2,           "Bob",
+  3,           "Charlie"
+)
+
+visits <- tribble(
+  ~visit_id, ~patient_id, ~visit_date,
+  101,       1,           "2023-01-15",
+  102,       2,           "2023-01-20",
+  103,       1,           "2023-02-10",
+  104,       4,           "2023-02-15" # Patient 4 not in patients table
+)
+
+# Left Join: Keep all patients, add visit info if available
+patients_left_visits <- left_join(patients, visits, by = "patient_id")
+print("Left Join (patients to visits):")
+print(patients_left_visits) # Charlie will have NAs for visit_id, visit_date
+
+# Inner Join: Keep only patients who had visits
+patients_inner_visits <- inner_join(patients, visits, by = "patient_id")
+print("Inner Join (patients to visits):")
+print(patients_inner_visits) # Charlie and Patient 4 from visits are excluded
+
+# Anti Join: Which patients had no visits?
+patients_no_visits <- anti_join(patients, visits, by = "patient_id")
+print("Anti Join (patients with no visits):")
+print(patients_no_visits) # Should show Charlie
+
+# Semi Join: Which patients had at least one visit? (returns columns of patients only)
+patients_with_visits_semi <- semi_join(patients, visits, by = "patient_id")
+print("Semi Join (patients with visits):")
+print(patients_with_visits_semi) # Should show Alice and Bob
+```
+
+**Exercise 2.2: Joining Orders and Customers**
+
+You have two tibbles: `customers` and `orders`.
+1.  Perform a `left_join()` to combine `orders` with `customers` data. Which orders don't have customer information?
+2.  Perform an `inner_join()` to see only orders with valid customer information.
+3.  Use `anti_join()` to find customers who have not placed any orders.
+
+```{webr}
+#| exercise: ex2-2
+#| solution_hidden: true
+library(tidyverse)
+
+customers <- tribble(
+  ~customer_id, ~customer_name, ~city,
+  "C1",         "John Smith",   "New York",
+  "C2",         "Jane Doe",     "London",
+  "C3",         "Mike Brown",   "Paris",
+  "C4",         "Lisa Ray",     "Tokyo"
+)
+
+orders <- tribble(
+  ~order_id, ~customer_id, ~order_date, ~amount,
+  "O101",    "C1",         "2023-01-01", 100,
+  "O102",    "C2",         "2023-01-05", 150,
+  "O103",    "C5",         "2023-01-10", 200, # Customer C5 doesn't exist
+  "O104",    "C1",         "2023-01-15", 50
+)
+
+# 1. Left join orders with customers
+orders_with_customers_left <- left_join(orders, customers, by = "customer_id")
+print("1. Orders Left Joined with Customers:")
+print(orders_with_customers_left)
+# Order O103 will have NAs for customer_name and city.
+
+# 2. Inner join orders with customers
+orders_with_customers_inner <- inner_join(orders, customers, by = "customer_id")
+print("2. Orders Inner Joined with Customers:")
+print(orders_with_customers_inner)
+# Order O103 will be excluded.
+
+# 3. Anti join to find customers with no orders
+customers_no_orders <- anti_join(customers, orders, by = "customer_id")
+print("3. Customers with no orders:")
+print(customers_no_orders)
+# Mike Brown (C3) and Lisa Ray (C4) should appear.
+```
+
+---
+
+## Lesson 3: Pivoting & Reshaping Data
+
+Data often comes in formats that are not ideal for analysis or plotting. **Pivoting** is the process of changing the shape of your data by turning:
+*   **Wide data into long data (`pivot_longer()`):** This is often needed when some column names are actually values of a variable.
+*   **Long data into wide data (`pivot_wider()`):** This is useful for creating summary tables or when variables are stored in rows.
+
+The goal is often to achieve "tidy data" where:
+1.  Each variable forms a column.
+2.  Each observation forms a row.
+3.  Each type of observational unit forms a table.
+
+### `pivot_longer()`
+
+Use `pivot_longer()` when you have data spread across multiple columns, and those column names themselves represent values of a variable.
+
+Key arguments:
+*   `data`: The data frame to reshape.
+*   `cols`: The columns to pivot (gather). You can use dplyr select helpers like `starts_with()`, `ends_with()`, `everything()`, `c(col1, col2)`, etc.
+*   `names_to`: A string specifying the name of the new column that will store the *names* of the pivoted columns.
+*   `values_to`: A string specifying the name of the new column that will store the *values* from the pivoted columns.
+*   `names_prefix`: (Optional) A string prefix to remove from the column names before they become values in the `names_to` column.
+*   `names_sep` or `names_pattern`: (Optional) For more complex scenarios where column names encode multiple variables.
+*   `values_drop_na = TRUE`: (Optional) To drop rows where the value in the `values_to` column is `NA`.
+
+**Example: `pivot_longer()`**
+```{r}
+#| label: lesson3-pivot-longer-example
+wide_data <- tribble(
+  ~student_id, ~test1_score, ~test2_score, ~test3_score,
+  "S101",      85,           90,           88,
+  "S102",      78,           82,           80,
+  "S103",      92,           88,           95
+)
+print("Wide Data:")
+print(wide_data)
+
+long_data <- wide_data %>%
+  pivot_longer(
+    cols = starts_with("test"), # or c(test1_score, test2_score, test3_score)
+    names_to = "test_name",
+    values_to = "score",
+    names_prefix = "test" # removes "test" from "test1_score" -> "1_score"
+    # A better approach for names_prefix or names_transform might be needed for cleaner test_name
+  )
+
+# For cleaner test names, we can use names_transform or further mutate
+long_data_cleaner <- wide_data %>%
+  pivot_longer(
+    cols = -student_id, # pivot all columns except student_id
+    names_to = "test_name_raw",
+    values_to = "score"
+  ) %>%
+  mutate(test_number = str_extract(test_name_raw, "\\d+")) %>% # Extract number
+  select(student_id, test_number, score)
+
+
+print("Long Data (Simpler):")
+long_data_simple_names <- wide_data %>%
+  pivot_longer(cols = c(test1_score, test2_score, test3_score),
+               names_to = "test_id",
+               values_to = "score")
+print(long_data_simple_names)
+
+
+print("Long Data (using names_prefix):")
+long_data_prefix <- wide_data %>%
+  pivot_longer(
+    cols = starts_with("test"),
+    names_to = "test_number_suffix",
+    values_to = "score",
+    names_prefix = "test" # results in "1_score", "2_score" etc.
+  )
+print(long_data_prefix)
+
+print("Long Data (using names_pattern for more complex extraction):")
+# If columns were like test_1_score, test_2_score
+# wide_data_complex_names <- tribble(
+#   ~student_id, ~test_1_score, ~test_2_score,
+#   "S101",      85,           90,
+# )
+# long_data_pattern <- wide_data_complex_names %>%
+#   pivot_longer(
+#     cols = starts_with("test"),
+#     names_to = c(".value", "test_number"), # .value takes part before _
+#     names_pattern = "test_([0-9]+)_(.*)", # Captures number and "score"
+#     # This is more advanced; for now, focus on simpler names_to/values_to
+#   )
+# print(long_data_pattern)
+```
+
+**Exercise 3.1: Long Format for Lab Results**
+
+You have a tibble `lab_results_wide` where each row is a patient, and columns represent different lab tests taken on different days (e.g., `glucose_day1`, `hgb_day1`, `glucose_day7`, `hgb_day7`). Convert this to a long format with columns: `patient_id`, `test_type`, `day`, `value`.
+
+```{webr}
+#| exercise: ex3-1
+#| solution_hidden: true
+library(tidyverse)
+
+lab_results_wide <- tribble(
+  ~patient_id, ~glucose_day1, ~hgb_day1, ~glucose_day7, ~hgb_day7,
+  "P001",      105,           14.1,      110,           13.9,
+  "P002",      99,            13.5,      102,           13.6,
+  "P003",      120,           15.0,      115,           14.8
+)
+print("Original Wide Data:")
+print(lab_results_wide)
+
+# Your task: Convert lab_results_wide to a long format.
+# Hint: You might need pivot_longer() and then separate() or extract()
+# on the new 'name' column.
+
+lab_results_long <- lab_results_wide %>%
+  pivot_longer(
+    cols = -patient_id, # Select all columns except patient_id
+    names_to = "test_day_raw",
+    values_to = "value"
+  ) %>%
+  separate(
+    col = test_day_raw,
+    into = c("test_type", "day_raw"),
+    sep = "_day" # Split at "_day"
+  ) %>%
+  mutate(day = as.integer(day_raw)) %>% # Convert day to integer
+  select(patient_id, test_type, day, value)
+
+print("Long Format Lab Results:")
+print(lab_results_long)
+```
+
+### `pivot_wider()`
+
+Use `pivot_wider()` when you have observations scattered across multiple rows, and you want to consolidate them into a wider format. This is the inverse of `pivot_longer()`.
+
+Key arguments:
+*   `data`: The data frame to reshape.
+*   `names_from`: The column whose *values* will become new column *names*.
+*   `values_from`: The column whose *values* will fill the new columns.
+*   `values_fill`: (Optional) A value to use if a combination of `id_cols` and `names_from` doesn't exist (to fill explicit NAs).
+*   `id_cols`: (Optional) Columns that uniquely identify each observation unit, which will be kept as is. If not specified, all columns not used in `names_from` or `values_from` are used.
+
+**Example: `pivot_wider()`**
+```{r}
+#| label: lesson3-pivot-wider-example
+long_sensor_data <- tribble(
+  ~timestamp,          ~sensor_id, ~metric, ~value,
+  "2023-03-15 10:00:00", "SensorA",  "temp",  25.5,
+  "2023-03-15 10:00:00", "SensorA",  "humid", 60.1,
+  "2023-03-15 10:00:00", "SensorB",  "temp",  26.1,
+  "2023-03-15 10:00:00", "SensorB",  "humid", 58.5,
+  "2023-03-15 10:01:00", "SensorA",  "temp",  25.6,
+  "2023-03-15 10:01:00", "SensorA",  "humid", 60.3
+)
+print("Long Sensor Data:")
+print(long_sensor_data)
+
+wide_sensor_data <- long_sensor_data %>%
+  pivot_wider(
+    id_cols = c(timestamp, sensor_id), # Columns to keep as identifiers for rows
+    names_from = metric,
+    values_from = value
+  )
+print("Wide Sensor Data:")
+print(wide_sensor_data)
+```
+
+**Exercise 3.2: Reconstruct Summary Table**
+
+You have `long_summary_data` with columns `country`, `year`, `metric_name`, `value`. Convert this to a wide format where each `metric_name` becomes a column.
+
+```{webr}
+#| exercise: ex3-2
+#| solution_hidden: true
+library(tidyverse)
+
+long_summary_data <- tribble(
+  ~country, ~year, ~metric_name, ~value,
+  "USA",    2020,  "GDP",        20.94,
+  "USA",    2020,  "Population", 331,
+  "China",  2020,  "GDP",        14.72,
+  "China",  2020,  "Population", 1444,
+  "USA",    2021,  "GDP",        22.99,
+  "USA",    2021,  "Population", 332
+)
+print("Original Long Summary Data:")
+print(long_summary_data)
+
+# Your task: Use pivot_wider() to make GDP and Population their own columns.
+wide_summary_data <- long_summary_data %>%
+  pivot_wider(
+    id_cols = c(country, year),
+    names_from = metric_name,
+    values_from = value
+  )
+
+print("Wide Summary Data:")
+print(wide_summary_data)
+```
+
+---
+
+## Lesson 4: String Operations with {stringr}
+
+Text data is ubiquitous. The **{stringr}** package provides a cohesive set of functions for common string manipulations, often wrapping base R string functions or those from the `stringi` package in a more consistent and pipe-friendly way. Most `stringr` functions start with `str_`.
+
+### Detecting and Subsetting Patterns
+
+*   `str_detect(string, pattern)`: Detects the presence of a `pattern` in a `string`. Returns a logical vector.
+    *   `pattern` can be a literal string or a regular expression.
+*   `str_subset(string, pattern)`: Returns only the elements of `string` that match the `pattern`.
+*   `str_count(string, pattern)`: Counts the number of matches of `pattern` in each string.
+
+**Example:**
+```{r}
+#| label: lesson4-str-detect-example
+fruit <- c("apple", "banana", "pear", "pineapple")
+
+str_detect(fruit, "a")        # TRUE TRUE TRUE TRUE
+str_detect(fruit, "^a")       # TRUE FALSE FALSE FALSE (starts with 'a')
+str_detect(fruit, "a$")       # FALSE TRUE FALSE FALSE (ends with 'a')
+str_detect(fruit, "[aeiou]") # TRUE TRUE TRUE TRUE (contains any vowel)
+
+str_subset(fruit, "apple")    # "apple" "pineapple"
+str_subset(fruit, "^p")       # "pear" "pineapple"
+
+str_count(fruit, "p")         # 2 0 1 2
+str_count(fruit, "[aeiou]")   # 2 3 2 4
+```
+
+### Replacing Patterns
+
+*   `str_replace(string, pattern, replacement)`: Replaces the *first* occurrence of `pattern` with `replacement`.
+*   `str_replace_all(string, pattern, replacement)`: Replaces *all* occurrences of `pattern`.
+    *   You can use a named vector for `pattern` and `replacement` to perform multiple replacements simultaneously.
+*   `str_remove(string, pattern)`: Shortcut for `str_replace(string, pattern, "")`.
+*   `str_remove_all(string, pattern)`: Shortcut for `str_replace_all(string, pattern, "")`.
+
+**Example:**
+```{r}
+#| label: lesson4-str-replace-example
+text_data <- c("Color: Red", "Colour: Blue", "Color: Green")
+
+str_replace(text_data, "Color", "Colour") # Only first match in each string
+str_replace_all(text_data, "Colou?r", "Hue") # Using regex ? for optional 'u'
+
+ids <- c("ID_123", "ID_456", "REF_789")
+str_remove_all(ids, "ID_|_") # "123" "456" "REF789"
+str_remove_all(ids, "ID_?|REF_?") # "123" "456" "789" (more precise)
+```
+
+### Splitting Strings
+
+*   `str_split(string, pattern, n = Inf, simplify = FALSE)`: Splits strings into pieces based on `pattern`.
+    *   Returns a list by default.
+    *   If `simplify = TRUE`, returns a character matrix (useful if `pattern` yields same number of pieces for each string).
+*   `str_split_fixed(string, pattern, n)`: A variation that always returns a character matrix, splitting into exactly `n` pieces. If fewer pieces are found, fills with `""`. If more, the `n`-th piece contains the rest of the string.
+
+**Example:**
+```{r}
+#| label: lesson4-str-split-example
+filenames <- c("report_2023_final.docx", "data_2022_raw.csv", "image.png")
+
+str_split(filenames, pattern = "_") # Returns a list
+str_split(filenames, pattern = "_", n = 2, simplify = TRUE) # Matrix, splits at first "_"
+
+str_split_fixed(filenames, pattern = "\\.", n = 2) # Split at literal "."
+```
+
+### Whitespace and Case
+
+*   `str_trim(string, side = "both")`: Removes leading and/or trailing whitespace. `side` can be "left", "right", or "both".
+*   `str_squish(string)`: Removes all excess whitespace: leading/trailing, and reduces internal consecutive whitespace to a single space.
+*   `str_to_lower(string)`, `str_to_upper(string)`, `str_to_title(string)`: Convert case.
+
+**Example:**
+```{r}
+#| label: lesson4-str-whitespace-case-example
+messy_text <- "  Hello   World!  "
+str_trim(messy_text)    # "Hello   World!"
+str_squish(messy_text)  # "Hello World!"
+
+str_to_upper("Hello World") # "HELLO WORLD"
+```
+
+### A Brief Note on Regular Expressions (Regex)
+
+Many `stringr` functions accept **regular expressions** for `pattern`. Regex is a powerful mini-language for describing text patterns.
+*   `.`: Matches any single character (except newline).
+*   `^`: Matches the start of the string.
+*   `$`: Matches the end of the string.
+*   `*`: Matches the preceding item 0 or more times.
+*   `+`: Matches the preceding item 1 or more times.
+*   `?`: Matches the preceding item 0 or 1 time (optional).
+*   `\\d`: Matches a digit. `\\D` matches non-digit.
+*   `\\s`: Matches whitespace. `\\S` matches non-whitespace.
+*   `[abc]`: Matches 'a', 'b', or 'c'.
+*   `[^abc]`: Matches any character *except* 'a', 'b', or 'c'.
+*   `(pattern)`: Groups a pattern. Useful for `str_extract` or backreferences.
+*   `\\`: Escape special characters (e.g., `\\.` to match a literal dot).
+
+Learning regex takes time but is incredibly useful for complex text processing.
+
+**Exercise 4.1: Clean Up Product Descriptions**
+
+You have a tibble with a `product_desc` column containing messy descriptions.
+1.  Convert all descriptions to lowercase.
+2.  Remove any leading/trailing whitespace.
+3.  Replace multiple internal spaces with a single space.
+4.  Remove all punctuation (e.g., `!`, `.`, `,`).
+
+```{webr}
+#| exercise: ex4-1
+#| solution_hidden: true
+library(tidyverse)
+
+products <- tribble(
+  ~product_id, ~product_desc,
+  1,           "  RED T-Shirt, size L!  ",
+  2,           "Blue Jeans - Slim FIT.",
+  3,           "  Green  Socks (3-pack)  "
+)
+print("Original Product Data:")
+print(products)
+
+# Your task: Clean product_desc
+cleaned_products <- products %>%
+  mutate(
+    product_desc_clean = str_to_lower(product_desc),
+    product_desc_clean = str_squish(product_desc_clean), # Handles leading/trailing and internal spaces
+    product_desc_clean = str_remove_all(product_desc_clean, "[[:punct:]]") # Removes all punctuation
+    # Alternative for punctuation: str_replace_all(product_desc_clean, "[^[:alnum:][:space:]]", "")
+    # This keeps alphanumeric and spaces, removes everything else.
+  )
+
+print("Cleaned Product Data:")
+print(cleaned_products)
+```
+
+**Exercise 4.2: Extract Information from Log Entries**
+
+You have log entries like `"INFO:2023-03-15:User_JohnDoe:Logged_In"`.
+Extract the `date`, `user_id`, and `action` into separate columns.
+
+```{webr}
+#| exercise: ex4-2
+#| solution_hidden: true
+library(tidyverse)
+
+log_entries <- tibble(
+  entry = c(
+    "INFO:2023-03-15:User_JohnDoe:Logged_In",
+    "WARN:2023-03-16:User_JaneRoe:Failed_Login_Attempt",
+    "INFO:2023-03-17:User_Admin:System_Shutdown"
+  )
+)
+print("Original Log Entries:")
+print(log_entries)
+
+# Your task: Extract date, user_id, and action
+# Hint: str_split_fixed or str_extract_all with regex might be useful.
+# Using str_split_fixed is simpler here if the structure is consistent.
+
+extracted_logs <- log_entries %>%
+  separate(
+    col = entry,
+    into = c("log_level", "date", "user_raw", "action"),
+    sep = ":", # Split by colon
+    extra = "merge" # If action has colons, merge them
+  ) %>%
+  mutate(
+    user_id = str_remove(user_raw, "^User_") # Remove "User_" prefix
+  ) %>%
+  select(log_level, date, user_id, action)
+
+print("Extracted Log Information:")
+print(extracted_logs)
+
+# Alternative using str_match (regex based extraction)
+# This is more robust if the number of colons can vary before the main parts.
+extracted_logs_regex <- log_entries %>%
+  mutate(
+    matches = str_match(entry, "^([^:]+):([^:]+):User_([^:]+):(.*)$")
+  ) %>%
+  mutate(
+    log_level = matches[,2],
+    date = matches[,3],
+    user_id = matches[,4],
+    action = matches[,5]
+  ) %>%
+  select(log_level, date, user_id, action)
+
+print("Extracted Log Information (Regex):")
+print(extracted_logs_regex)
+
+```
+
+---
+
+## Lesson 5: Date-Time Operations with {lubridate}
+
+Working with dates and times can be notoriously tricky. The **{lubridate}** package, part of the Tidyverse, makes it significantly easier by providing intuitive functions to parse, manipulate, and compute with date-time objects.
+
+Key features of {lubridate}:
+*   **Easy Parsing**: Functions like `ymd()`, `mdy()`, `dmy()`, `ymd_hms()` can automatically parse dates and times from strings in various formats.
+*   **Accessing Components**: Functions like `year()`, `month()`, `day()`, `hour()`, `minute()`, `second()`, `wday()` (day of the week), `yday()` (day of the year) allow easy extraction of specific components.
+*   **Time Spans**: {lubridate} defines three types of time spans:
+    *   **Durations**: Exact number of seconds (e.g., `dseconds()`, `dminutes()`, `ddays()`).
+    *   **Periods**: Human-readable units that account for irregularities like leap years and daylight saving (e.g., `seconds()`, `minutes()`, `days()`, `months()`, `years()`).
+    *   **Intervals**: A time span between two specific date-times.
+*   **Arithmetic**: Perform arithmetic directly on date-times (e.g., adding days, finding differences).
+
+**Example: Parsing and Components**
+```{r}
+#| label: lesson5-lubridate-parsing-components
+library(lubridate)
+
+date_string1 <- "2024-07-15"
+date_string2 <- "July 15, 2024 14:30:00"
+date_string3 <- "15/07/2024"
+
+dt1 <- ymd(date_string1)
+dt2 <- mdy_hms(date_string2)
+dt3 <- dmy(date_string3)
+
+print(dt1)
+print(dt2)
+print(dt3)
+
+paste("Year:", year(dt1))
+paste("Month:", month(dt1, label = TRUE, abbr = FALSE)) # Full month name
+paste("Day of week:", wday(dt1, label = TRUE, abbr = FALSE)) # Full day name
+paste("Hour of dt2:", hour(dt2))
+```
+
+**Example: Time Spans and Arithmetic**
+```{r}
+#| label: lesson5-lubridate-spans-arithmetic
+start_date <- ymd("2024-01-01")
+end_date <- ymd("2025-03-15")
+
+# Add 10 days to start_date
+start_date + ddays(10)
+start_date + days(10) # Period, often same for days
+
+# Add 2 months
+start_date + months(2)
+
+# Difference between dates
+time_difference_days <- end_date - start_date # Returns a difftime object
+print(time_difference_days)
+
+# Create a duration
+one_week_duration <- dweeks(1)
+print(one_week_duration)
+
+# Create a period
+one_month_period <- months(1)
+print(one_month_period)
+
+# Interval
+event_interval <- interval(start_date, end_date)
+print(event_interval)
+
+# Check if a date is within an interval
+ymd("2024-06-01") %within% event_interval # TRUE
+```
+
+**Exercise 5.1: Analyzing Event Durations**
+
+You have a tibble of project tasks with start and end dates.
+1.  Parse the `start_date` and `end_date` strings into date objects.
+2.  Calculate the duration of each task in days.
+3.  Extract the year and month the task started.
+4.  Determine which day of the week each task ended.
+5.  Filter for tasks that lasted longer than 30 days.
+
+```{webr}
+#| exercise: ex5-1
+#| solution_hidden: true
+library(tidyverse)
+library(lubridate)
+
+tasks <- tribble(
+  ~task_id, ~task_name,         ~start_date_str, ~end_date_str,
+  "T101",   "Initial Planning", "2023-01-15",    "2023-02-10",
+  "T102",   "Development Phase1", "2023-02-11",    "2023-04-05",
+  "T103",   "Testing",            "2023-04-06",    "2023-04-20",
+  "T104",   "Deployment",         "2023-04-21",    "2023-04-25"
+)
+print("Original Task Data:")
+print(tasks)
+
+tasks_analyzed <- tasks %>%
+  mutate(
+    # 1. Parse dates
+    start_date = ymd(start_date_str),
+    end_date = ymd(end_date_str),
+
+    # 2. Calculate duration in days
+    # duration_interval = interval(start_date, end_date),
+    # duration_days = as.duration(duration_interval) / ddays(1)
+    # Simpler for just days:
+    duration_days = as.numeric(end_date - start_date, units = "days"),
+
+    # 3. Extract year and month of start
+    start_year = year(start_date),
+    start_month = month(start_date, label = TRUE, abbr = FALSE),
+
+    # 4. Day of week task ended
+    end_day_of_week = wday(end_date, label = TRUE, abbr = FALSE)
+  )
+
+print("Analyzed Task Data:")
+print(tasks_analyzed %>% select(-start_date_str, -end_date_str))
+
+# 5. Filter for tasks longer than 30 days
+long_tasks <- tasks_analyzed %>%
+  filter(duration_days > 30)
+
+print("Tasks longer than 30 days:")
+print(long_tasks %>% select(task_name, duration_days))
+```
+
+**Exercise 5.2: Scheduling Appointments**
+
+You have a list of appointment requests with a preferred date and time.
+1.  Parse `preferred_datetime_str` into a datetime object. Assume UTC for simplicity if no timezone is given, or parse with a specific timezone.
+2.  If an appointment is requested before 9 AM or after 5 PM (17:00), flag it as "AfterHours".
+3.  Calculate the time until each appointment from a reference datetime (e.g., `now()`, or a fixed datetime for reproducibility).
+4.  Round appointment times to the nearest half hour.
+
+```{webr}
+#| exercise: ex5-2
+#| solution_hidden: true
+library(tidyverse)
+library(lubridate)
+
+appointment_requests <- tribble(
+  ~request_id, ~client_name, ~preferred_datetime_str,
+  "R001",      "Alice",      "2024-08-01 10:00:00",
+  "R002",      "Bob",        "2024-08-01 08:30:00", # Early
+  "R003",      "Charlie",    "2024-08-02 17:45:00", # Late
+  "R004",      "Diana",      "2024-08-03 14:12:00"
+)
+print("Original Appointment Requests:")
+print(appointment_requests)
+
+# For reproducibility, let's use a fixed "current" time
+current_time_fixed <- ymd_hms("2024-07-20 12:00:00", tz = "UTC")
+
+appointments_scheduled <- appointment_requests %>%
+  mutate(
+    # 1. Parse datetime (assume UTC if not specified)
+    preferred_datetime = ymd_hms(preferred_datetime_str, tz = "UTC"),
+
+    # 2. Flag AfterHours
+    appointment_hour = hour(preferred_datetime),
+    is_after_hours = if_else(appointment_hour < 9 | appointment_hour >= 17, TRUE, FALSE),
+
+    # 3. Time until appointment
+    time_until = preferred_datetime - current_time_fixed, # difftime object
+
+    # 4. Round to nearest half hour
+    rounded_datetime = round_date(preferred_datetime, unit = "30minutes")
+  )
+
+print("Scheduled Appointments Analysis:")
+print(appointments_scheduled %>% select(-preferred_datetime_str))
+```
+
+---
+
+## Lesson 6: Graphics I ({ggplot2} Essentials)
+
+The **{ggplot2}** package, created by Hadley Wickham, is a powerful and versatile system for creating static graphics in R. It's based on the "Grammar of Graphics," which allows you to build plots layer by layer.
+
+Core components of a ggplot:
+1.  **Data**: The dataset being plotted (must be a data frame or tibble).
+2.  **Aesthetic Mappings (`aes()`)**: How variables in your data map to visual properties (aesthetics) of the plot. Examples: `x`, `y`, `color`, `shape`, `size`, `fill`, `alpha`.
+3.  **Geoms (`geom_...()`)**: Geometric objects that represent your data. Examples: `geom_point()`, `geom_line()`, `geom_bar()`, `geom_histogram()`, `geom_boxplot()`, `geom_sf()`.
+4.  **Scales (`scale_...()`)**: Control how data values are mapped to aesthetic values (e.g., color gradients, axis limits, breaks, labels).
+5.  **Facets (`facet_...()`)**: Create small multiples (subplots) based on levels of a categorical variable (e.g., `facet_wrap()`, `facet_grid()`).
+6.  **Coordinates (`coord_...()`)**: Control the coordinate system (e.g., `coord_flip()` to swap x/y, `coord_polar()`).
+7.  **Themes (`theme_...()`)**: Control the overall appearance of the plot (non-data elements like background, gridlines, fonts).
+
+**Basic Plot Structure:**
+```r
+# ggplot(data = <DATA>) +
+#   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+**Example: Scatter Plot**
+```{r}
+#| label: lesson6-ggplot-scatter
+library(ggplot2)
+data(mpg) # Using the built-in mpg dataset
+
+# Scatter plot of engine displacement (displ) vs. highway mpg (hwy)
+# Colored by car class
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+  geom_point() +
+  labs(
+    title = "Engine Displacement vs. Highway MPG",
+    x = "Engine Displacement (Liters)",
+    y = "Highway Miles Per Gallon",
+    color = "Car Class",
+    caption = "Source: mpg dataset"
+  ) +
+  theme_minimal() # Apply a minimal theme
+```
+
+**Example: Bar Plot**
+Bar plots can represent counts or pre-summarized values.
+```{r}
+#| label: lesson6-ggplot-bar
+# Bar plot of car counts by manufacturer
+ggplot(data = mpg, mapping = aes(x = manufacturer)) +
+  geom_bar(fill = "steelblue", color = "black") + # Counts are calculated by geom_bar
+  labs(title = "Number of Car Models by Manufacturer", x = "Manufacturer", y = "Count") +
+  theme_light() +
+  coord_flip() # Flip coordinates to make manufacturer names readable
+
+# If data is already summarized:
+manufacturer_summary <- mpg %>% count(manufacturer, name = "count")
+ggplot(data = manufacturer_summary, mapping = aes(x = manufacturer, y = count)) +
+  geom_col(fill = "darkgreen", color = "black") + # Use geom_col for pre-summarized data
+  labs(title = "Number of Car Models by Manufacturer (Pre-summarized)", x = "Manufacturer", y = "Count") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) # Rotate x-axis labels
+```
+
+**Exercise 6.1: Exploring Fuel Efficiency**
+
+Using the `mpg` dataset:
+1.  Create a scatter plot showing city miles per gallon (`cty`) vs. highway miles per gallon (`hwy`).
+2.  Color the points by `drv` (drive train: f=front, r=rear, 4=4wd).
+3.  Add a title and appropriate axis labels.
+4.  Experiment with `geom_smooth(method = "lm")` to add a linear regression line for each `drv` group.
+
+```{webr}
+#| exercise: ex6-1
+#| solution_hidden: true
+library(tidyverse)
+library(ggplot2)
+# data(mpg) # already loaded if tidyverse is loaded
+
+# 1, 2, 3. Scatter plot cty vs hwy, colored by drv
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy, color = drv)) +
+  geom_point(alpha = 0.7) + # Added alpha for better visibility of overlapping points
+  labs(
+    title = "City MPG vs. Highway MPG by Drive Train",
+    x = "City Miles Per Gallon (MPG)",
+    y = "Highway Miles Per Gallon (MPG)",
+    color = "Drive Train"
+  ) +
+  theme_minimal() +
+  # 4. Add linear regression lines
+  geom_smooth(method = "lm", se = FALSE) # se = FALSE removes confidence interval ribbon
+```
+
+**Exercise 6.2: Distribution of Highway MPG**
+
+1.  Create a histogram of highway miles per gallon (`hwy`).
+2.  Use `facet_wrap(~ class)` to create separate histograms for each car `class`.
+3.  Customize the bin width or number of bins for the histogram.
+4.  Add a vertical line representing the mean `hwy` for each class.
+
+```{webr}
+#| exercise: ex6-2
+#| solution_hidden: true
+library(tidyverse)
+library(ggplot2)
+# data(mpg)
+
+# 1, 2, 3. Histogram of hwy, faceted by class
+ggplot(data = mpg, mapping = aes(x = hwy)) +
+  geom_histogram(binwidth = 2, fill = "skyblue", color = "black", alpha = 0.8) +
+  facet_wrap(~ class, scales = "free_y") + # scales = "free_y" allows y-axis to vary
+  labs(
+    title = "Distribution of Highway MPG by Car Class",
+    x = "Highway Miles Per Gallon (MPG)",
+    y = "Frequency (Count)"
+  ) +
+  theme_light() +
+  # 4. Add mean hwy line for each class
+  geom_vline(
+    data = mpg %>% group_by(class) %>% summarize(mean_hwy = mean(hwy, na.rm = TRUE)),
+    mapping = aes(xintercept = mean_hwy),
+    color = "red",
+    linetype = "dashed",
+    linewidth = 1
+  )
+```
+
+---
+
+## Lesson 7: Graphics II (Advanced {ggplot2})
+
+Building on the essentials, we can further customize and enhance our {ggplot2} visualizations.
+
+### Scales
+Scales control the mapping from data values to aesthetics. You can customize axes, colors, sizes, etc.
+*   **Position Scales (x and y axes)**: `scale_x_continuous()`, `scale_y_continuous()`, `scale_x_discrete()`, `scale_y_discrete()`, `scale_x_log10()`, `scale_x_date()`.
+    *   Control `limits`, `breaks`, `labels`.
+*   **Color and Fill Scales**: `scale_color_brewer()`, `scale_fill_brewer()` (for discrete variables using ColorBrewer palettes), `scale_color_gradient()`, `scale_fill_gradient()` (for continuous variables), `scale_color_manual()`, `scale_fill_manual()` (for specifying colors manually).
+*   **Shape and Size Scales**: `scale_shape_manual()`, `scale_size_continuous()`.
+
+**Example: Customizing Scales**
+```{r}
+#| label: lesson7-ggplot-scales
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = cty)) +
+  geom_point(size = 3) +
+  scale_x_continuous(
+    name = "Engine Displacement (Liters)",
+    breaks = seq(1, 7, by = 1),
+    limits = c(1, 7)
+  ) +
+  scale_y_continuous(
+    name = "Highway MPG",
+    labels = scales::label_comma() # Use comma for thousands, etc.
+  ) +
+  scale_color_gradient(low = "blue", high = "red", name = "City MPG") +
+  labs(title = "Customized Scales Example") +
+  theme_minimal()
+```
+
+### Themes
+Themes control the non-data elements of the plot.
+*   **Built-in Themes**: `theme_gray()` (default), `theme_bw()`, `theme_minimal()`, `theme_classic()`, `theme_light()`, `theme_dark()`, `theme_void()`.
+*   **Customizing Theme Elements**: Use `theme()` to modify specific elements like `plot.title`, `axis.text`, `axis.title`, `legend.position`, `panel.background`, `panel.grid`.
+
+**Example: Custom Theme**
+```{r}
+#| label: lesson7-ggplot-theme
+ggplot(data = mpg, mapping = aes(x = class, fill = drv)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Car Count by Class and Drive Train", x = "Class", y = "Count", fill = "Drive Train") +
+  theme_classic() + # Start with a classic theme
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    axis.title = element_text(size = 12),
+    legend.position = "top", # "bottom", "left", "right", "none", or c(x,y) coordinates
+    panel.grid.major.y = element_line(color = "grey80", linetype = "dashed"),
+    panel.background = element_rect(fill = "aliceblue")
+  )
+```
+
+### Annotations and Saving Plots
+*   **Annotations**: Add text (`geom_text()`, `annotate("text", ...)`), lines (`geom_hline()`, `geom_vline()`), rectangles (`annotate("rect", ...)`).
+*   **Saving Plots**: Use `ggsave()` to save plots to files (e.g., PNG, PDF, SVG). It infers the type from the extension.
+
+**Example: Annotations and Saving**
+```{r}
+#| label: lesson7-ggplot-annotations
+# This plot won't render in the QMD output directly if ggsave is used without printing the plot
+# For demonstration, we'll build it and then mention ggsave.
+
+p <- ggplot(data = filter(mpg, manufacturer == "audi"), aes(x = year, y = hwy)) +
+  geom_jitter(width = 0.1, height = 0, alpha = 0.7, color = "darkblue") +
+  geom_smooth(method = "loess", color = "red", se = FALSE) +
+  annotate(
+    "text", x = 2004, y = 30,
+    label = "Trend for Audi Highway MPG",
+    color = "darkred", fontface = "italic"
+  ) +
+  labs(title = "Audi Highway MPG Over Years", x = "Year", y = "Highway MPG") +
+  theme_bw()
+
+print(p) # Display the plot
+
+# To save:
+# ggsave("audi_mpg_plot.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+**Exercise 7.1: Polished Boxplot of MPG**
+
+Using the `mpg` dataset:
+1.  Create a boxplot of `hwy` (highway MPG) grouped by `class`.
+2.  Fill the boxes based on `drv` (drive train). Use `position = position_dodge(preserve = "single")` if boxes overlap too much.
+3.  Customize the color palette for `drv` using `scale_fill_brewer(palette = "Set2")`.
+4.  Add a title: "Highway MPG Distribution by Class and Drive Train".
+5.  Modify

@@ -1,7 +1,9 @@
 [
   {
     "listing": "/intermediate.html",
-    "items": []
+    "items": [
+      "/intermediate/tidyverse-II/index.html"
+    ]
   },
   {
     "listing": "/advanced.html",
