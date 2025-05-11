@@ -1,5 +1,9 @@
 [
   {
+    "listing": "/advanced.html",
+    "items": []
+  },
+  {
     "listing": "/beginner.html",
     "items": [
       "/beginner/basics/basics.html",
@@ -9,10 +13,6 @@
       "/beginner/NCCR_MWQTA_2024_R_Day1/1_Introduction_to_R_language.html",
       "/beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html"
     ]
-  },
-  {
-    "listing": "/advanced.html",
-    "items": []
   },
   {
     "listing": "/intermediate.html",
