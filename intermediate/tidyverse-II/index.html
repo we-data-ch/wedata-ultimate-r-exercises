@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.56">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="David Munoz Tord">
+<meta name="dcterms.date" content="2025-05-11">
+<meta name="description" content="Deep dive into joins, pivots, string ops and more with the tidyverse">
+
+<title>Tidyverse II: Intermediate Data Wrangling – We Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/me.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="../../site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ECFW8LLBS7"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ECFW8LLBS7', { 'anonymize_ip': true});
+</script>
+<script type="module" src="../../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+
+<meta name="twitter:title" content="Tidyverse II: Intermediate Data Wrangling – We Data">
+<meta name="twitter:description" content="Deep dive into joins, pivots, string ops and more with the tidyverse">
+<meta name="twitter:creator" content="@PEcodemo">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/primary.png" alt="" class="navbar-logo">
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../beginner.html"> 
+<span class="menu-text">Beginner</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../intermediate.html"> 
+<span class="menu-text">Intermediate</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../advanced.html"> 
+<span class="menu-text">Advanced</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../contribute.html"> 
+<span class="menu-text">How to contribute?</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/we-data-ch"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.youtube.com/@wedata_unige"> <i class="bi bi-youtube" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/wedata_unige"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/wedata-gen%C3%A8ve/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Tidyverse II: Intermediate Data Wrangling</h1>
+                  <div>
+        <div class="description">
+          Deep dive into joins, pivots, string ops and more with the tidyverse
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>David Munoz Tord </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 11, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="course-overview" class="level2">
+<h2 class="anchored" data-anchor-id="course-overview">Course Overview</h2>
+<p>Welcome to Tidyverse II! In this intermediate course, we’ll build upon your existing Tidyverse knowledge to tackle more complex data manipulation tasks. You’ll learn how to effectively combine, reshape, and clean diverse datasets, mastering techniques essential for real-world data analysis.</p>
+<p>We will cover:</p>
+<ol type="1">
+<li><strong>Recap &amp; Setup</strong>: A quick refresher on Tidyverse fundamentals and setting up our environment.</li>
+<li><strong>Joins</strong>: Combining data from multiple tables.</li>
+<li><strong>Pivoting &amp; Reshaping</strong>: Transforming data between wide and long formats.</li>
+<li><strong>String Operations</strong>: Working with textual data using {stringr}.</li>
+<li><strong>Date-Time Operations</strong>: Handling dates and times with {lubridate}. (Coming soon!)</li>
+<li><strong>Advanced Graphics</strong>: Taking {ggplot2} skills to the next level. (Coming soon!)</li>
+<li><strong>Factor Operations</strong>: Managing categorical data with {forcats}. (Coming soon!)</li>
+<li><strong>Capstone Project</strong>: Applying all learned skills to a comprehensive project. (Coming soon!)</li>
+</ol>
+<p>Let’s begin!</p>
+<hr>
+</section>
+<section id="lesson-1-recap-setup" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-1-recap-setup">Lesson 1: Recap &amp; Setup</h2>
+<p>Before diving into new material, let’s briefly revisit the core principles of the Tidyverse and ensure our R environment is ready.</p>
+<p>The <strong>Tidyverse</strong> is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures. Key packages include:</p>
+<ul>
+<li><strong>{dplyr}</strong>: For data manipulation (filtering, arranging, selecting, mutating, summarizing).</li>
+<li><strong>{ggplot2}</strong>: For creating elegant and informative data visualizations.</li>
+<li><strong>{tidyr}</strong>: For tidying data (making it easy to work with).</li>
+<li><strong>{readr}</strong>: For reading rectangular data files (like CSVs).</li>
+<li><strong>{purrr}</strong>: For functional programming, enhancing your R toolkit.</li>
+<li><strong>{tibble}</strong>: For modern, user-friendly data frames.</li>
+<li><strong>{stringr}</strong>: For working with strings and regular expressions.</li>
+<li><strong>{forcats}</strong>: For handling categorical variables (factors).</li>
+</ul>
+<p>A central concept is the <strong>pipe operator <code>%&gt;%</code></strong> (or the base R pipe <code>|&gt;</code> from R 4.1+). It allows you to chain operations together in a readable and intuitive way, passing the result of one function as the first argument to the next.</p>
+<p>For this course, we’ll primarily use RStudio or a similar R environment. Ensure you have the <code>tidyverse</code> package installed. If not, you can install it with <code>install.packages("tidyverse")</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the entire tidyverse</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Using the pipe with dplyr</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's inspect the built-in starwars dataset</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>starwars_tibble <span class="ot">&lt;-</span> starwars <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>starwars_tibble <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 87
+Columns: 14
+$ name       &lt;chr&gt; "Luke Skywalker", "C-3PO", "R2-D2", "Darth Vader", "Leia Or…
+$ height     &lt;int&gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188, 180, 2…
+$ mass       &lt;dbl&gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 84.0, 77.…
+$ hair_color &lt;chr&gt; "blond", NA, NA, "none", "brown", "brown, grey", "brown", N…
+$ skin_color &lt;chr&gt; "fair", "gold", "white, blue", "white", "light", "light", "…
+$ eye_color  &lt;chr&gt; "blue", "yellow", "red", "yellow", "brown", "blue", "blue",…
+$ birth_year &lt;dbl&gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0, 57.0, …
+$ sex        &lt;chr&gt; "male", "none", "none", "male", "female", "male", "female",…
+$ gender     &lt;chr&gt; "masculine", "masculine", "masculine", "masculine", "femini…
+$ homeworld  &lt;chr&gt; "Tatooine", "Tatooine", "Naboo", "Tatooine", "Alderaan", "T…
+$ species    &lt;chr&gt; "Human", "Droid", "Droid", "Human", "Human", "Human", "Huma…
+$ films      &lt;list&gt; &lt;"A New Hope", "The Empire Strikes Back", "Return of the J…
+$ vehicles   &lt;list&gt; &lt;"Snowspeeder", "Imperial Speeder Bike"&gt;, &lt;&gt;, &lt;&gt;, &lt;&gt;, "Imp…
+$ starships  &lt;list&gt; &lt;"X-wing", "Imperial shuttle"&gt;, &lt;&gt;, &lt;&gt;, "TIE Advanced x1",…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A quick dplyr reminder:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Find all droids taller than 100cm</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>starwars_tibble <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Droid"</span> <span class="sc">&amp;</span> height <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, height, mass, homeworld) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(height))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  name  height  mass homeworld
+  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;    
+1 IG-88    200   140 &lt;NA&gt;     
+2 C-3PO    167    75 Tatooine </code></pre>
+</div>
+</div>
+<p><strong>Exercise 1.1: Quick Check</strong></p>
+<p>Familiarize yourself again with a built-in dataset. 1. Load the <code>tidyverse</code> package. 2. Convert the <code>mtcars</code> dataset to a tibble. 3. Use <code>glimpse()</code> to see its structure. 4. Use <code>head()</code> to view the first few rows. 5. How many cars have more than 4 cylinders and achieve more than 20 miles per gallon (mpg)?</p>
+<div class="cell" data-exercise="ex1-1" data-solution_hidden="true">
+<div>
+<div id="webr-1" class="exercise-cell">
+
+</div>
+<script type="webr-1-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXgxLTEiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoiIyBJbnNwZWN0IHRoZSBidWlsdC1pbiBtdGNhcnMgZGF0YXNldDogZ2xpbXBzZSBhbmQgaGVhZFxubGlicmFyeSh0aWR5dmVyc2UpXG5cbm10Y2Fyc190YmwgPC0gYXNfdGliYmxlKG10Y2Fycywgcm93bmFtZXMgPSBcIm1vZGVsXCIpXG5cbmdsaW1wc2UobXRjYXJzX3RibClcbmhlYWQobXRjYXJzX3RibClcblxuIyBIb3cgbWFueSBjYXJzIGhhdmUgbW9yZSB0aGFuIDQgY3lsaW5kZXJzIGFuZCBhY2hpZXZlIG1vcmUgdGhhbiAyMCBtaWxlcyBwZXIgZ2FsbG9uIChtcGcpP1xubXRjYXJzX3RibCAlPiVcbiAgZmlsdGVyKGN5bCA+IDQgJiBtcGcgPiAyMCkgJT4lXG4gIG5yb3coKSAjIG9yIGNvdW50KCkifQ==
+</script>
+</div>
+</div>
+<hr>
+</section>
+<section id="lesson-2-joins-part-i-ii" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-2-joins-part-i-ii">Lesson 2: Joins (Part I &amp; II)</h2>
+<p>Often, the data you need is spread across multiple tables. <strong>Joins</strong> are how we combine these tables based on common variables (keys).</p>
+<section id="part-i-stacking-tables" class="level3">
+<h3 class="anchored" data-anchor-id="part-i-stacking-tables">Part I: Stacking Tables</h3>
+<p>Sometimes, you don’t need to match rows based on keys, but rather stack tables on top of each other or side-by-side.</p>
+<ul>
+<li><strong><code>bind_rows(...)</code></strong>: Stacks multiple data frames vertically.
+<ul>
+<li>It matches columns by name.</li>
+<li>Columns that don’t exist in one of the tables will be filled with <code>NA</code>.</li>
+<li>You can use the <code>.id</code> argument to create a new column indicating the original data frame for each row.</li>
+</ul></li>
+<li><strong><code>bind_cols(...)</code></strong>: Stacks multiple data frames horizontally.
+<ul>
+<li>This is less common for typical data analysis workflows because it requires the data frames to have the same number of rows and for those rows to correspond to each other (e.g., same observations in the same order).</li>
+<li>If column names are duplicated, <code>bind_cols()</code> will automatically rename them.</li>
+</ul></li>
+</ul>
+<p><strong>Example: <code>bind_rows()</code></strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sales_q1 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>product_id, <span class="sc">~</span>units_sold, <span class="sc">~</span>quarter,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"A101"</span>,      <span class="dv">50</span>,          <span class="st">"Q1"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"B202"</span>,      <span class="dv">75</span>,          <span class="st">"Q1"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>sales_q2 <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>product_id, <span class="sc">~</span>units_sold, <span class="sc">~</span>revenue, <span class="sc">~</span>quarter,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"A101"</span>,      <span class="dv">60</span>,          <span class="dv">1200</span>,     <span class="st">"Q2"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"C303"</span>,      <span class="dv">90</span>,          <span class="dv">1800</span>,     <span class="st">"Q2"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>all_sales <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sales_q1, sales_q2, <span class="at">.id =</span> <span class="st">"source_table_id"</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(all_sales)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  source_table_id product_id units_sold quarter revenue
+  &lt;chr&gt;           &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+1 1               A101               50 Q1           NA
+2 1               B202               75 Q1           NA
+3 2               A101               60 Q2         1200
+4 2               C303               90 Q2         1800</code></pre>
+</div>
+</div>
+<p>Notice how <code>revenue</code> is <code>NA</code> for Q1 sales, and <code>source_table_id</code> tells us which original table the row came from.</p>
+<p><strong>Exercise 2.1: Stacking Sales Data</strong></p>
+<p>You have three tibbles representing sales data for different regions. Combine them into a single tibble.</p>
+<div class="cell" data-exercise="ex2-1" data-solution_hidden="true">
+<div>
+<div id="webr-2" class="exercise-cell">
+
+</div>
+<script type="webr-2-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXgyLTEiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5cbnNhbGVzX25vcnRoIDwtIHRyaWJibGUoXG4gIH5tb250aCwgfnByb2R1Y3QsIH5zYWxlcyxcbiAgXCJKYW5cIiwgIFwiQXBwbGVcIiwgIDEwMCxcbiAgXCJGZWJcIiwgIFwiQmFuYW5hXCIsIDE1MFxuKVxuXG5zYWxlc19zb3V0aCA8LSB0cmliYmxlKFxuICB+bW9udGgsIH5wcm9kdWN0LCB+c2FsZXMsIH5yZXBfaWQsXG4gIFwiSmFuXCIsICBcIkFwcGxlXCIsICAyMDAsICAgIFwiUzAxXCIsXG4gIFwiTWFyXCIsICBcIk9yYW5nZVwiLCAxMjAsICAgIFwiUzAyXCJcbilcblxuc2FsZXNfd2VzdCA8LSB0cmliYmxlKFxuICB+bW9udGgsIH5wcm9kdWN0LCB+c2FsZXMsIH5jdXN0b21lcl9zZWdtZW50LFxuICBcIkphblwiLCAgXCJCYW5hbmFcIiwgNTAsICAgICBcIlJldGFpbFwiLFxuICBcIkZlYlwiLCAgXCJBcHBsZVwiLCAgNzUsICAgICBcIldob2xlc2FsZVwiXG4pXG5cbiMgWW91ciB0YXNrOiBVc2UgYmluZF9yb3dzKCkgdG8gc3RhY2sgdGhlc2UgdGhyZWUgdGFibGVzLlxuIyBXaGF0IGhhcHBlbnMgdG8gY29sdW1ucyBub3QgcHJlc2VudCBpbiBhbGwgdGFibGVzP1xuIyBBZGQgYW4gLmlkIGFyZ3VtZW50IHRvIHRyYWNrIHRoZSBzb3VyY2UgcmVnaW9uLlxuXG5jb21iaW5lZF9zYWxlcyA8LSBiaW5kX3Jvd3MoXG4gIE5vcnRoID0gc2FsZXNfbm9ydGgsXG4gIFNvdXRoID0gc2FsZXNfc291dGgsXG4gIFdlc3QgPSBzYWxlc193ZXN0LFxuICAuaWQgPSBcInJlZ2lvblwiXG4pXG5cbnByaW50KGNvbWJpbmVkX3NhbGVzKSJ9
+</script>
+</div>
+</div>
+</section>
+<section id="part-ii-relational-dplyr-joins" class="level3">
+<h3 class="anchored" data-anchor-id="part-ii-relational-dplyr-joins">Part II: Relational (dplyr) Joins</h3>
+<p>These joins combine data frames based on matching values in specified “key” columns.</p>
+<ul>
+<li><strong>Key Concepts</strong>:
+<ul>
+<li><strong>Primary Key</strong>: A column (or set of columns) in a table that uniquely identifies each row.</li>
+<li><strong>Foreign Key</strong>: A column (or set of columns) in one table that refers to the primary key in another table.</li>
+<li>Joins work by matching foreign keys to primary keys.</li>
+</ul></li>
+<li><strong>Mutating Joins</strong>: Add columns from one table to another.
+<ul>
+<li><code>left_join(x, y, by = "key_column")</code>: Keeps all rows from <code>x</code> and all columns from <code>x</code> and <code>y</code>. Rows in <code>x</code> with no match in <code>y</code> will have <code>NA</code> values in the new columns from <code>y</code>.</li>
+<li><code>right_join(x, y, by = "key_column")</code>: Keeps all rows from <code>y</code>. Rows in <code>y</code> with no match in <code>x</code> will have <code>NA</code> values. (Less common, often you can achieve the same by swapping <code>x</code> and <code>y</code> in a <code>left_join</code>).</li>
+<li><code>inner_join(x, y, by = "key_column")</code>: Keeps only rows from <code>x</code> that have a match in <code>y</code>.</li>
+<li><code>full_join(x, y, by = "key_column")</code>: Keeps all rows from both <code>x</code> and <code>y</code>. If there are no matches, <code>NA</code>s are inserted.</li>
+</ul></li>
+<li><strong>Filtering Joins</strong>: Filter rows from one table based on whether they match in another, but do <em>not</em> add columns.
+<ul>
+<li><code>semi_join(x, y, by = "key_column")</code>: Keeps all rows from <code>x</code> that <em>have</em> a match in <code>y</code>. Does not duplicate rows in <code>x</code> if there are multiple matches in <code>y</code>.</li>
+<li><code>anti_join(x, y, by = "key_column")</code>: Keeps all rows from <code>x</code> that <em>do not</em> have a match in <code>y</code>. Useful for finding unmatched records.</li>
+</ul></li>
+</ul>
+<p><strong>Specifying Keys with <code>by</code></strong>: * <code>by = "key_col"</code>: If the key column has the same name in both tables. * <code>by = c("key_col_x" = "key_col_y")</code>: If key columns have different names. * <code>by = c("key1", "key2")</code>: For multiple key columns (composite key), all with same names. * <code>by = join_by(col_x == col_y, another_x == another_y)</code>: A more flexible <code>dplyr 1.1.0+</code> syntax for complex joins, including inequality or rolling joins (though we focus on equality here).</p>
+<p><strong>Example: <code>left_join</code> and <code>inner_join</code></strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>patients <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>patient_id, <span class="sc">~</span>name,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>,           <span class="st">"Alice"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>,           <span class="st">"Bob"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">3</span>,           <span class="st">"Charlie"</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>visits <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>visit_id, <span class="sc">~</span>patient_id, <span class="sc">~</span>visit_date,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="dv">101</span>,       <span class="dv">1</span>,           <span class="st">"2023-01-15"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="dv">102</span>,       <span class="dv">2</span>,           <span class="st">"2023-01-20"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="dv">103</span>,       <span class="dv">1</span>,           <span class="st">"2023-02-10"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="dv">104</span>,       <span class="dv">4</span>,           <span class="st">"2023-02-15"</span> <span class="co"># Patient 4 not in patients table</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Left Join: Keep all patients, add visit info if available</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>patients_left_visits <span class="ot">&lt;-</span> <span class="fu">left_join</span>(patients, visits, <span class="at">by =</span> <span class="st">"patient_id"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Left Join (patients to visits):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Left Join (patients to visits):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(patients_left_visits) <span class="co"># Charlie will have NAs for visit_id, visit_date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  patient_id name    visit_id visit_date
+       &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;     
+1          1 Alice        101 2023-01-15
+2          1 Alice        103 2023-02-10
+3          2 Bob          102 2023-01-20
+4          3 Charlie       NA &lt;NA&gt;      </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inner Join: Keep only patients who had visits</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>patients_inner_visits <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(patients, visits, <span class="at">by =</span> <span class="st">"patient_id"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Inner Join (patients to visits):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Inner Join (patients to visits):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(patients_inner_visits) <span class="co"># Charlie and Patient 4 from visits are excluded</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  patient_id name  visit_id visit_date
+       &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;     
+1          1 Alice      101 2023-01-15
+2          1 Alice      103 2023-02-10
+3          2 Bob        102 2023-01-20</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Anti Join: Which patients had no visits?</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>patients_no_visits <span class="ot">&lt;-</span> <span class="fu">anti_join</span>(patients, visits, <span class="at">by =</span> <span class="st">"patient_id"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Anti Join (patients with no visits):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Anti Join (patients with no visits):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(patients_no_visits) <span class="co"># Should show Charlie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  patient_id name   
+       &lt;dbl&gt; &lt;chr&gt;  
+1          3 Charlie</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Semi Join: Which patients had at least one visit? (returns columns of patients only)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>patients_with_visits_semi <span class="ot">&lt;-</span> <span class="fu">semi_join</span>(patients, visits, <span class="at">by =</span> <span class="st">"patient_id"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Semi Join (patients with visits):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Semi Join (patients with visits):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(patients_with_visits_semi) <span class="co"># Should show Alice and Bob</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  patient_id name 
+       &lt;dbl&gt; &lt;chr&gt;
+1          1 Alice
+2          2 Bob  </code></pre>
+</div>
+</div>
+<p><strong>Exercise 2.2: Joining Orders and Customers</strong></p>
+<p>You have two tibbles: <code>customers</code> and <code>orders</code>. 1. Perform a <code>left_join()</code> to combine <code>orders</code> with <code>customers</code> data. Which orders don’t have customer information? 2. Perform an <code>inner_join()</code> to see only orders with valid customer information. 3. Use <code>anti_join()</code> to find customers who have not placed any orders.</p>
+<div class="cell" data-exercise="ex2-2" data-solution_hidden="true">
+<div>
+<div id="webr-3" class="exercise-cell">
+
+</div>
+<script type="webr-3-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXgyLTIiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5cbmN1c3RvbWVycyA8LSB0cmliYmxlKFxuICB+Y3VzdG9tZXJfaWQsIH5jdXN0b21lcl9uYW1lLCB+Y2l0eSxcbiAgXCJDMVwiLCAgICAgICAgIFwiSm9obiBTbWl0aFwiLCAgIFwiTmV3IFlvcmtcIixcbiAgXCJDMlwiLCAgICAgICAgIFwiSmFuZSBEb2VcIiwgICAgIFwiTG9uZG9uXCIsXG4gIFwiQzNcIiwgICAgICAgICBcIk1pa2UgQnJvd25cIiwgICBcIlBhcmlzXCIsXG4gIFwiQzRcIiwgICAgICAgICBcIkxpc2EgUmF5XCIsICAgICBcIlRva3lvXCJcbilcblxub3JkZXJzIDwtIHRyaWJibGUoXG4gIH5vcmRlcl9pZCwgfmN1c3RvbWVyX2lkLCB+b3JkZXJfZGF0ZSwgfmFtb3VudCxcbiAgXCJPMTAxXCIsICAgIFwiQzFcIiwgICAgICAgICBcIjIwMjMtMDEtMDFcIiwgMTAwLFxuICBcIk8xMDJcIiwgICAgXCJDMlwiLCAgICAgICAgIFwiMjAyMy0wMS0wNVwiLCAxNTAsXG4gIFwiTzEwM1wiLCAgICBcIkM1XCIsICAgICAgICAgXCIyMDIzLTAxLTEwXCIsIDIwMCwgIyBDdXN0b21lciBDNSBkb2Vzbid0IGV4aXN0XG4gIFwiTzEwNFwiLCAgICBcIkMxXCIsICAgICAgICAgXCIyMDIzLTAxLTE1XCIsIDUwXG4pXG5cbiMgMS4gTGVmdCBqb2luIG9yZGVycyB3aXRoIGN1c3RvbWVyc1xub3JkZXJzX3dpdGhfY3VzdG9tZXJzX2xlZnQgPC0gbGVmdF9qb2luKG9yZGVycywgY3VzdG9tZXJzLCBieSA9IFwiY3VzdG9tZXJfaWRcIilcbnByaW50KFwiMS4gT3JkZXJzIExlZnQgSm9pbmVkIHdpdGggQ3VzdG9tZXJzOlwiKVxucHJpbnQob3JkZXJzX3dpdGhfY3VzdG9tZXJzX2xlZnQpXG4jIE9yZGVyIE8xMDMgd2lsbCBoYXZlIE5BcyBmb3IgY3VzdG9tZXJfbmFtZSBhbmQgY2l0eS5cblxuIyAyLiBJbm5lciBqb2luIG9yZGVycyB3aXRoIGN1c3RvbWVyc1xub3JkZXJzX3dpdGhfY3VzdG9tZXJzX2lubmVyIDwtIGlubmVyX2pvaW4ob3JkZXJzLCBjdXN0b21lcnMsIGJ5ID0gXCJjdXN0b21lcl9pZFwiKVxucHJpbnQoXCIyLiBPcmRlcnMgSW5uZXIgSm9pbmVkIHdpdGggQ3VzdG9tZXJzOlwiKVxucHJpbnQob3JkZXJzX3dpdGhfY3VzdG9tZXJzX2lubmVyKVxuIyBPcmRlciBPMTAzIHdpbGwgYmUgZXhjbHVkZWQuXG5cbiMgMy4gQW50aSBqb2luIHRvIGZpbmQgY3VzdG9tZXJzIHdpdGggbm8gb3JkZXJzXG5jdXN0b21lcnNfbm9fb3JkZXJzIDwtIGFudGlfam9pbihjdXN0b21lcnMsIG9yZGVycywgYnkgPSBcImN1c3RvbWVyX2lkXCIpXG5wcmludChcIjMuIEN1c3RvbWVycyB3aXRoIG5vIG9yZGVyczpcIilcbnByaW50KGN1c3RvbWVyc19ub19vcmRlcnMpXG4jIE1pa2UgQnJvd24gKEMzKSBhbmQgTGlzYSBSYXkgKEM0KSBzaG91bGQgYXBwZWFyLiJ9
+</script>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="lesson-3-pivoting-reshaping-data" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-3-pivoting-reshaping-data">Lesson 3: Pivoting &amp; Reshaping Data</h2>
+<p>Data often comes in formats that are not ideal for analysis or plotting. <strong>Pivoting</strong> is the process of changing the shape of your data by turning: * <strong>Wide data into long data (<code>pivot_longer()</code>):</strong> This is often needed when some column names are actually values of a variable. * <strong>Long data into wide data (<code>pivot_wider()</code>):</strong> This is useful for creating summary tables or when variables are stored in rows.</p>
+<p>The goal is often to achieve “tidy data” where: 1. Each variable forms a column. 2. Each observation forms a row. 3. Each type of observational unit forms a table.</p>
+<section id="pivot_longer" class="level3">
+<h3 class="anchored" data-anchor-id="pivot_longer"><code>pivot_longer()</code></h3>
+<p>Use <code>pivot_longer()</code> when you have data spread across multiple columns, and those column names themselves represent values of a variable.</p>
+<p>Key arguments: * <code>data</code>: The data frame to reshape. * <code>cols</code>: The columns to pivot (gather). You can use dplyr select helpers like <code>starts_with()</code>, <code>ends_with()</code>, <code>everything()</code>, <code>c(col1, col2)</code>, etc. * <code>names_to</code>: A string specifying the name of the new column that will store the <em>names</em> of the pivoted columns. * <code>values_to</code>: A string specifying the name of the new column that will store the <em>values</em> from the pivoted columns. * <code>names_prefix</code>: (Optional) A string prefix to remove from the column names before they become values in the <code>names_to</code> column. * <code>names_sep</code> or <code>names_pattern</code>: (Optional) For more complex scenarios where column names encode multiple variables. * <code>values_drop_na = TRUE</code>: (Optional) To drop rows where the value in the <code>values_to</code> column is <code>NA</code>.</p>
+<p><strong>Example: <code>pivot_longer()</code></strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>wide_data <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>student_id, <span class="sc">~</span>test1_score, <span class="sc">~</span>test2_score, <span class="sc">~</span>test3_score,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"S101"</span>,      <span class="dv">85</span>,           <span class="dv">90</span>,           <span class="dv">88</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"S102"</span>,      <span class="dv">78</span>,           <span class="dv">82</span>,           <span class="dv">80</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"S103"</span>,      <span class="dv">92</span>,           <span class="dv">88</span>,           <span class="dv">95</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Wide Data:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Wide Data:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(wide_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  student_id test1_score test2_score test3_score
+  &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1 S101                85          90          88
+2 S102                78          82          80
+3 S103                92          88          95</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>long_data <span class="ot">&lt;-</span> wide_data <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"test"</span>), <span class="co"># or c(test1_score, test2_score, test3_score)</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"test_name"</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"score"</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">"test"</span> <span class="co"># removes "test" from "test1_score" -&gt; "1_score"</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A better approach for names_prefix or names_transform might be needed for cleaner test_name</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co"># For cleaner test names, we can use names_transform or further mutate</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>long_data_cleaner <span class="ot">&lt;-</span> wide_data <span class="sc">%&gt;%</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>student_id, <span class="co"># pivot all columns except student_id</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"test_name_raw"</span>,</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"score"</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_number =</span> <span class="fu">str_extract</span>(test_name_raw, <span class="st">"</span><span class="sc">\\</span><span class="st">d+"</span>)) <span class="sc">%&gt;%</span> <span class="co"># Extract number</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(student_id, test_number, score)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Long Data (Simpler):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Long Data (Simpler):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>long_data_simple_names <span class="ot">&lt;-</span> wide_data <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(test1_score, test2_score, test3_score),</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"test_id"</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"score"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(long_data_simple_names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 3
+  student_id test_id     score
+  &lt;chr&gt;      &lt;chr&gt;       &lt;dbl&gt;
+1 S101       test1_score    85
+2 S101       test2_score    90
+3 S101       test3_score    88
+4 S102       test1_score    78
+5 S102       test2_score    82
+6 S102       test3_score    80
+7 S103       test1_score    92
+8 S103       test2_score    88
+9 S103       test3_score    95</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Long Data (using names_prefix):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Long Data (using names_prefix):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>long_data_prefix <span class="ot">&lt;-</span> wide_data <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"test"</span>),</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"test_number_suffix"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"score"</span>,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">"test"</span> <span class="co"># results in "1_score", "2_score" etc.</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(long_data_prefix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 3
+  student_id test_number_suffix score
+  &lt;chr&gt;      &lt;chr&gt;              &lt;dbl&gt;
+1 S101       1_score               85
+2 S101       2_score               90
+3 S101       3_score               88
+4 S102       1_score               78
+5 S102       2_score               82
+6 S102       3_score               80
+7 S103       1_score               92
+8 S103       2_score               88
+9 S103       3_score               95</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Long Data (using names_pattern for more complex extraction):"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Long Data (using names_pattern for more complex extraction):"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If columns were like test_1_score, test_2_score</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># wide_data_complex_names &lt;- tribble(</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   ~student_id, ~test_1_score, ~test_2_score,</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   "S101",      85,           90,</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co"># long_data_pattern &lt;- wide_data_complex_names %&gt;%</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   pivot_longer(</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     cols = starts_with("test"),</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     names_to = c(".value", "test_number"), # .value takes part before _</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     names_pattern = "test_([0-9]+)_(.*)", # Captures number and "score"</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     # This is more advanced; for now, focus on simpler names_to/values_to</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co"># print(long_data_pattern)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Exercise 3.1: Long Format for Lab Results</strong></p>
+<p>You have a tibble <code>lab_results_wide</code> where each row is a patient, and columns represent different lab tests taken on different days (e.g., <code>glucose_day1</code>, <code>hgb_day1</code>, <code>glucose_day7</code>, <code>hgb_day7</code>). Convert this to a long format with columns: <code>patient_id</code>, <code>test_type</code>, <code>day</code>, <code>value</code>.</p>
+<div class="cell" data-exercise="ex3-1" data-solution_hidden="true">
+<div>
+<div id="webr-4" class="exercise-cell">
+
+</div>
+<script type="webr-4-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXgzLTEiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5cbmxhYl9yZXN1bHRzX3dpZGUgPC0gdHJpYmJsZShcbiAgfnBhdGllbnRfaWQsIH5nbHVjb3NlX2RheTEsIH5oZ2JfZGF5MSwgfmdsdWNvc2VfZGF5NywgfmhnYl9kYXk3LFxuICBcIlAwMDFcIiwgICAgICAxMDUsICAgICAgICAgICAxNC4xLCAgICAgIDExMCwgICAgICAgICAgIDEzLjksXG4gIFwiUDAwMlwiLCAgICAgIDk5LCAgICAgICAgICAgIDEzLjUsICAgICAgMTAyLCAgICAgICAgICAgMTMuNixcbiAgXCJQMDAzXCIsICAgICAgMTIwLCAgICAgICAgICAgMTUuMCwgICAgICAxMTUsICAgICAgICAgICAxNC44XG4pXG5wcmludChcIk9yaWdpbmFsIFdpZGUgRGF0YTpcIilcbnByaW50KGxhYl9yZXN1bHRzX3dpZGUpXG5cbiMgWW91ciB0YXNrOiBDb252ZXJ0IGxhYl9yZXN1bHRzX3dpZGUgdG8gYSBsb25nIGZvcm1hdC5cbiMgSGludDogWW91IG1pZ2h0IG5lZWQgcGl2b3RfbG9uZ2VyKCkgYW5kIHRoZW4gc2VwYXJhdGUoKSBvciBleHRyYWN0KClcbiMgb24gdGhlIG5ldyAnbmFtZScgY29sdW1uLlxuXG5sYWJfcmVzdWx0c19sb25nIDwtIGxhYl9yZXN1bHRzX3dpZGUgJT4lXG4gIHBpdm90X2xvbmdlcihcbiAgICBjb2xzID0gLXBhdGllbnRfaWQsICMgU2VsZWN0IGFsbCBjb2x1bW5zIGV4Y2VwdCBwYXRpZW50X2lkXG4gICAgbmFtZXNfdG8gPSBcInRlc3RfZGF5X3Jhd1wiLFxuICAgIHZhbHVlc190byA9IFwidmFsdWVcIlxuICApICU+JVxuICBzZXBhcmF0ZShcbiAgICBjb2wgPSB0ZXN0X2RheV9yYXcsXG4gICAgaW50byA9IGMoXCJ0ZXN0X3R5cGVcIiwgXCJkYXlfcmF3XCIpLFxuICAgIHNlcCA9IFwiX2RheVwiICMgU3BsaXQgYXQgXCJfZGF5XCJcbiAgKSAlPiVcbiAgbXV0YXRlKGRheSA9IGFzLmludGVnZXIoZGF5X3JhdykpICU+JSAjIENvbnZlcnQgZGF5IHRvIGludGVnZXJcbiAgc2VsZWN0KHBhdGllbnRfaWQsIHRlc3RfdHlwZSwgZGF5LCB2YWx1ZSlcblxucHJpbnQoXCJMb25nIEZvcm1hdCBMYWIgUmVzdWx0czpcIilcbnByaW50KGxhYl9yZXN1bHRzX2xvbmcpIn0=
+</script>
+</div>
+</div>
+</section>
+<section id="pivot_wider" class="level3">
+<h3 class="anchored" data-anchor-id="pivot_wider"><code>pivot_wider()</code></h3>
+<p>Use <code>pivot_wider()</code> when you have observations scattered across multiple rows, and you want to consolidate them into a wider format. This is the inverse of <code>pivot_longer()</code>.</p>
+<p>Key arguments: * <code>data</code>: The data frame to reshape. * <code>names_from</code>: The column whose <em>values</em> will become new column <em>names</em>. * <code>values_from</code>: The column whose <em>values</em> will fill the new columns. * <code>values_fill</code>: (Optional) A value to use if a combination of <code>id_cols</code> and <code>names_from</code> doesn’t exist (to fill explicit NAs). * <code>id_cols</code>: (Optional) Columns that uniquely identify each observation unit, which will be kept as is. If not specified, all columns not used in <code>names_from</code> or <code>values_from</code> are used.</p>
+<p><strong>Example: <code>pivot_wider()</code></strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>long_sensor_data <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>timestamp,          <span class="sc">~</span>sensor_id, <span class="sc">~</span>metric, <span class="sc">~</span>value,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2023-03-15 10:00:00"</span>, <span class="st">"SensorA"</span>,  <span class="st">"temp"</span>,  <span class="fl">25.5</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2023-03-15 10:00:00"</span>, <span class="st">"SensorA"</span>,  <span class="st">"humid"</span>, <span class="fl">60.1</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2023-03-15 10:00:00"</span>, <span class="st">"SensorB"</span>,  <span class="st">"temp"</span>,  <span class="fl">26.1</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2023-03-15 10:00:00"</span>, <span class="st">"SensorB"</span>,  <span class="st">"humid"</span>, <span class="fl">58.5</span>,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2023-03-15 10:01:00"</span>, <span class="st">"SensorA"</span>,  <span class="st">"temp"</span>,  <span class="fl">25.6</span>,</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"2023-03-15 10:01:00"</span>, <span class="st">"SensorA"</span>,  <span class="st">"humid"</span>, <span class="fl">60.3</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Long Sensor Data:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Long Sensor Data:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(long_sensor_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  timestamp           sensor_id metric value
+  &lt;chr&gt;               &lt;chr&gt;     &lt;chr&gt;  &lt;dbl&gt;
+1 2023-03-15 10:00:00 SensorA   temp    25.5
+2 2023-03-15 10:00:00 SensorA   humid   60.1
+3 2023-03-15 10:00:00 SensorB   temp    26.1
+4 2023-03-15 10:00:00 SensorB   humid   58.5
+5 2023-03-15 10:01:00 SensorA   temp    25.6
+6 2023-03-15 10:01:00 SensorA   humid   60.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>wide_sensor_data <span class="ot">&lt;-</span> long_sensor_data <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(timestamp, sensor_id), <span class="co"># Columns to keep as identifiers for rows</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> metric,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> value</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Wide Sensor Data:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Wide Sensor Data:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(wide_sensor_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  timestamp           sensor_id  temp humid
+  &lt;chr&gt;               &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;
+1 2023-03-15 10:00:00 SensorA    25.5  60.1
+2 2023-03-15 10:00:00 SensorB    26.1  58.5
+3 2023-03-15 10:01:00 SensorA    25.6  60.3</code></pre>
+</div>
+</div>
+<p><strong>Exercise 3.2: Reconstruct Summary Table</strong></p>
+<p>You have <code>long_summary_data</code> with columns <code>country</code>, <code>year</code>, <code>metric_name</code>, <code>value</code>. Convert this to a wide format where each <code>metric_name</code> becomes a column.</p>
+<div class="cell" data-exercise="ex3-2" data-solution_hidden="true">
+<div>
+<div id="webr-5" class="exercise-cell">
+
+</div>
+<script type="webr-5-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXgzLTIiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5cbmxvbmdfc3VtbWFyeV9kYXRhIDwtIHRyaWJibGUoXG4gIH5jb3VudHJ5LCB+eWVhciwgfm1ldHJpY19uYW1lLCB+dmFsdWUsXG4gIFwiVVNBXCIsICAgIDIwMjAsICBcIkdEUFwiLCAgICAgICAgMjAuOTQsXG4gIFwiVVNBXCIsICAgIDIwMjAsICBcIlBvcHVsYXRpb25cIiwgMzMxLFxuICBcIkNoaW5hXCIsICAyMDIwLCAgXCJHRFBcIiwgICAgICAgIDE0LjcyLFxuICBcIkNoaW5hXCIsICAyMDIwLCAgXCJQb3B1bGF0aW9uXCIsIDE0NDQsXG4gIFwiVVNBXCIsICAgIDIwMjEsICBcIkdEUFwiLCAgICAgICAgMjIuOTksXG4gIFwiVVNBXCIsICAgIDIwMjEsICBcIlBvcHVsYXRpb25cIiwgMzMyXG4pXG5wcmludChcIk9yaWdpbmFsIExvbmcgU3VtbWFyeSBEYXRhOlwiKVxucHJpbnQobG9uZ19zdW1tYXJ5X2RhdGEpXG5cbiMgWW91ciB0YXNrOiBVc2UgcGl2b3Rfd2lkZXIoKSB0byBtYWtlIEdEUCBhbmQgUG9wdWxhdGlvbiB0aGVpciBvd24gY29sdW1ucy5cbndpZGVfc3VtbWFyeV9kYXRhIDwtIGxvbmdfc3VtbWFyeV9kYXRhICU+JVxuICBwaXZvdF93aWRlcihcbiAgICBpZF9jb2xzID0gYyhjb3VudHJ5LCB5ZWFyKSxcbiAgICBuYW1lc19mcm9tID0gbWV0cmljX25hbWUsXG4gICAgdmFsdWVzX2Zyb20gPSB2YWx1ZVxuICApXG5cbnByaW50KFwiV2lkZSBTdW1tYXJ5IERhdGE6XCIpXG5wcmludCh3aWRlX3N1bW1hcnlfZGF0YSkifQ==
+</script>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="lesson-4-string-operations-with-stringr" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-4-string-operations-with-stringr">Lesson 4: String Operations with {stringr}</h2>
+<p>Text data is ubiquitous. The <strong>{stringr}</strong> package provides a cohesive set of functions for common string manipulations, often wrapping base R string functions or those from the <code>stringi</code> package in a more consistent and pipe-friendly way. Most <code>stringr</code> functions start with <code>str_</code>.</p>
+<section id="detecting-and-subsetting-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="detecting-and-subsetting-patterns">Detecting and Subsetting Patterns</h3>
+<ul>
+<li><code>str_detect(string, pattern)</code>: Detects the presence of a <code>pattern</code> in a <code>string</code>. Returns a logical vector.
+<ul>
+<li><code>pattern</code> can be a literal string or a regular expression.</li>
+</ul></li>
+<li><code>str_subset(string, pattern)</code>: Returns only the elements of <code>string</code> that match the <code>pattern</code>.</li>
+<li><code>str_count(string, pattern)</code>: Counts the number of matches of <code>pattern</code> in each string.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>fruit <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"pear"</span>, <span class="st">"pineapple"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(fruit, <span class="st">"a"</span>)        <span class="co"># TRUE TRUE TRUE TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE TRUE TRUE TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(fruit, <span class="st">"^a"</span>)       <span class="co"># TRUE FALSE FALSE FALSE (starts with 'a')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE FALSE FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(fruit, <span class="st">"a$"</span>)       <span class="co"># FALSE TRUE FALSE FALSE (ends with 'a')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE FALSE FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(fruit, <span class="st">"[aeiou]"</span>) <span class="co"># TRUE TRUE TRUE TRUE (contains any vowel)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE TRUE TRUE TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_subset</span>(fruit, <span class="st">"apple"</span>)    <span class="co"># "apple" "pineapple"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "apple"     "pineapple"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_subset</span>(fruit, <span class="st">"^p"</span>)       <span class="co"># "pear" "pineapple"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "pear"      "pineapple"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_count</span>(fruit, <span class="st">"p"</span>)         <span class="co"># 2 0 1 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 0 1 3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_count</span>(fruit, <span class="st">"[aeiou]"</span>)   <span class="co"># 2 3 2 4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 3 2 4</code></pre>
+</div>
+</div>
+</section>
+<section id="replacing-patterns" class="level3">
+<h3 class="anchored" data-anchor-id="replacing-patterns">Replacing Patterns</h3>
+<ul>
+<li><code>str_replace(string, pattern, replacement)</code>: Replaces the <em>first</em> occurrence of <code>pattern</code> with <code>replacement</code>.</li>
+<li><code>str_replace_all(string, pattern, replacement)</code>: Replaces <em>all</em> occurrences of <code>pattern</code>.
+<ul>
+<li>You can use a named vector for <code>pattern</code> and <code>replacement</code> to perform multiple replacements simultaneously.</li>
+</ul></li>
+<li><code>str_remove(string, pattern)</code>: Shortcut for <code>str_replace(string, pattern, "")</code>.</li>
+<li><code>str_remove_all(string, pattern)</code>: Shortcut for <code>str_replace_all(string, pattern, "")</code>.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Color: Red"</span>, <span class="st">"Colour: Blue"</span>, <span class="st">"Color: Green"</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_replace</span>(text_data, <span class="st">"Color"</span>, <span class="st">"Colour"</span>) <span class="co"># Only first match in each string</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Colour: Red"   "Colour: Blue"  "Colour: Green"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_replace_all</span>(text_data, <span class="st">"Colou?r"</span>, <span class="st">"Hue"</span>) <span class="co"># Using regex ? for optional 'u'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hue: Red"   "Hue: Blue"  "Hue: Green"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>ids <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ID_123"</span>, <span class="st">"ID_456"</span>, <span class="st">"REF_789"</span>)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove_all</span>(ids, <span class="st">"ID_|_"</span>) <span class="co"># "123" "456" "REF789"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "123"    "456"    "REF789"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_remove_all</span>(ids, <span class="st">"ID_?|REF_?"</span>) <span class="co"># "123" "456" "789" (more precise)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "123" "456" "789"</code></pre>
+</div>
+</div>
+</section>
+<section id="splitting-strings" class="level3">
+<h3 class="anchored" data-anchor-id="splitting-strings">Splitting Strings</h3>
+<ul>
+<li><code>str_split(string, pattern, n = Inf, simplify = FALSE)</code>: Splits strings into pieces based on <code>pattern</code>.
+<ul>
+<li>Returns a list by default.</li>
+<li>If <code>simplify = TRUE</code>, returns a character matrix (useful if <code>pattern</code> yields same number of pieces for each string).</li>
+</ul></li>
+<li><code>str_split_fixed(string, pattern, n)</code>: A variation that always returns a character matrix, splitting into exactly <code>n</code> pieces. If fewer pieces are found, fills with <code>""</code>. If more, the <code>n</code>-th piece contains the rest of the string.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>filenames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"report_2023_final.docx"</span>, <span class="st">"data_2022_raw.csv"</span>, <span class="st">"image.png"</span>)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split</span>(filenames, <span class="at">pattern =</span> <span class="st">"_"</span>) <span class="co"># Returns a list</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] "report"     "2023"       "final.docx"
+
+[[2]]
+[1] "data"    "2022"    "raw.csv"
+
+[[3]]
+[1] "image.png"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split</span>(filenames, <span class="at">pattern =</span> <span class="st">"_"</span>, <span class="at">n =</span> <span class="dv">2</span>, <span class="at">simplify =</span> <span class="cn">TRUE</span>) <span class="co"># Matrix, splits at first "_"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]        [,2]             
+[1,] "report"    "2023_final.docx"
+[2,] "data"      "2022_raw.csv"   
+[3,] "image.png" ""               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split_fixed</span>(filenames, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>, <span class="at">n =</span> <span class="dv">2</span>) <span class="co"># Split at literal "."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]                [,2]  
+[1,] "report_2023_final" "docx"
+[2,] "data_2022_raw"     "csv" 
+[3,] "image"             "png" </code></pre>
+</div>
+</div>
+</section>
+<section id="whitespace-and-case" class="level3">
+<h3 class="anchored" data-anchor-id="whitespace-and-case">Whitespace and Case</h3>
+<ul>
+<li><code>str_trim(string, side = "both")</code>: Removes leading and/or trailing whitespace. <code>side</code> can be “left”, “right”, or “both”.</li>
+<li><code>str_squish(string)</code>: Removes all excess whitespace: leading/trailing, and reduces internal consecutive whitespace to a single space.</li>
+<li><code>str_to_lower(string)</code>, <code>str_to_upper(string)</code>, <code>str_to_title(string)</code>: Convert case.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>messy_text <span class="ot">&lt;-</span> <span class="st">"  Hello   World!  "</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_trim</span>(messy_text)    <span class="co"># "Hello   World!"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello   World!"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_squish</span>(messy_text)  <span class="co"># "Hello World!"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello World!"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_upper</span>(<span class="st">"Hello World"</span>) <span class="co"># "HELLO WORLD"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "HELLO WORLD"</code></pre>
+</div>
+</div>
+</section>
+<section id="a-brief-note-on-regular-expressions-regex" class="level3">
+<h3 class="anchored" data-anchor-id="a-brief-note-on-regular-expressions-regex">A Brief Note on Regular Expressions (Regex)</h3>
+<p>Many <code>stringr</code> functions accept <strong>regular expressions</strong> for <code>pattern</code>. Regex is a powerful mini-language for describing text patterns. * <code>.</code>: Matches any single character (except newline). * <code>^</code>: Matches the start of the string. * <code>$</code>: Matches the end of the string. * <code>*</code>: Matches the preceding item 0 or more times. * <code>+</code>: Matches the preceding item 1 or more times. * <code>?</code>: Matches the preceding item 0 or 1 time (optional). * <code>\\d</code>: Matches a digit. <code>\\D</code> matches non-digit. * <code>\\s</code>: Matches whitespace. <code>\\S</code> matches non-whitespace. * <code>[abc]</code>: Matches ‘a’, ‘b’, or ‘c’. * <code>[^abc]</code>: Matches any character <em>except</em> ‘a’, ‘b’, or ‘c’. * <code>(pattern)</code>: Groups a pattern. Useful for <code>str_extract</code> or backreferences. * <code>\\</code>: Escape special characters (e.g., <code>\\.</code> to match a literal dot).</p>
+<p>Learning regex takes time but is incredibly useful for complex text processing.</p>
+<p><strong>Exercise 4.1: Clean Up Product Descriptions</strong></p>
+<p>You have a tibble with a <code>product_desc</code> column containing messy descriptions. 1. Convert all descriptions to lowercase. 2. Remove any leading/trailing whitespace. 3. Replace multiple internal spaces with a single space. 4. Remove all punctuation (e.g., <code>!</code>, <code>.</code>, <code>,</code>).</p>
+<div class="cell" data-exercise="ex4-1" data-solution_hidden="true">
+<div>
+<div id="webr-6" class="exercise-cell">
+
+</div>
+<script type="webr-6-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXg0LTEiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5cbnByb2R1Y3RzIDwtIHRyaWJibGUoXG4gIH5wcm9kdWN0X2lkLCB+cHJvZHVjdF9kZXNjLFxuICAxLCAgICAgICAgICAgXCIgIFJFRCBULVNoaXJ0LCBzaXplIEwhICBcIixcbiAgMiwgICAgICAgICAgIFwiQmx1ZSBKZWFucyAtIFNsaW0gRklULlwiLFxuICAzLCAgICAgICAgICAgXCIgIEdyZWVuICBTb2NrcyAoMy1wYWNrKSAgXCJcbilcbnByaW50KFwiT3JpZ2luYWwgUHJvZHVjdCBEYXRhOlwiKVxucHJpbnQocHJvZHVjdHMpXG5cbiMgWW91ciB0YXNrOiBDbGVhbiBwcm9kdWN0X2Rlc2NcbmNsZWFuZWRfcHJvZHVjdHMgPC0gcHJvZHVjdHMgJT4lXG4gIG11dGF0ZShcbiAgICBwcm9kdWN0X2Rlc2NfY2xlYW4gPSBzdHJfdG9fbG93ZXIocHJvZHVjdF9kZXNjKSxcbiAgICBwcm9kdWN0X2Rlc2NfY2xlYW4gPSBzdHJfc3F1aXNoKHByb2R1Y3RfZGVzY19jbGVhbiksICMgSGFuZGxlcyBsZWFkaW5nL3RyYWlsaW5nIGFuZCBpbnRlcm5hbCBzcGFjZXNcbiAgICBwcm9kdWN0X2Rlc2NfY2xlYW4gPSBzdHJfcmVtb3ZlX2FsbChwcm9kdWN0X2Rlc2NfY2xlYW4sIFwiW1s6cHVuY3Q6XV1cIikgIyBSZW1vdmVzIGFsbCBwdW5jdHVhdGlvblxuICAgICMgQWx0ZXJuYXRpdmUgZm9yIHB1bmN0dWF0aW9uOiBzdHJfcmVwbGFjZV9hbGwocHJvZHVjdF9kZXNjX2NsZWFuLCBcIlteWzphbG51bTpdWzpzcGFjZTpdXVwiLCBcIlwiKVxuICAgICMgVGhpcyBrZWVwcyBhbHBoYW51bWVyaWMgYW5kIHNwYWNlcywgcmVtb3ZlcyBldmVyeXRoaW5nIGVsc2UuXG4gIClcblxucHJpbnQoXCJDbGVhbmVkIFByb2R1Y3QgRGF0YTpcIilcbnByaW50KGNsZWFuZWRfcHJvZHVjdHMpIn0=
+</script>
+</div>
+</div>
+<p><strong>Exercise 4.2: Extract Information from Log Entries</strong></p>
+<p>You have log entries like <code>"INFO:2023-03-15:User_JohnDoe:Logged_In"</code>. Extract the <code>date</code>, <code>user_id</code>, and <code>action</code> into separate columns.</p>
+<div class="cell" data-exercise="ex4-2" data-solution_hidden="true">
+<div>
+<div id="webr-7" class="exercise-cell">
+
+</div>
+<script type="webr-7-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXg0LTIiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5cbmxvZ19lbnRyaWVzIDwtIHRpYmJsZShcbiAgZW50cnkgPSBjKFxuICAgIFwiSU5GTzoyMDIzLTAzLTE1OlVzZXJfSm9obkRvZTpMb2dnZWRfSW5cIixcbiAgICBcIldBUk46MjAyMy0wMy0xNjpVc2VyX0phbmVSb2U6RmFpbGVkX0xvZ2luX0F0dGVtcHRcIixcbiAgICBcIklORk86MjAyMy0wMy0xNzpVc2VyX0FkbWluOlN5c3RlbV9TaHV0ZG93blwiXG4gIClcbilcbnByaW50KFwiT3JpZ2luYWwgTG9nIEVudHJpZXM6XCIpXG5wcmludChsb2dfZW50cmllcylcblxuIyBZb3VyIHRhc2s6IEV4dHJhY3QgZGF0ZSwgdXNlcl9pZCwgYW5kIGFjdGlvblxuIyBIaW50OiBzdHJfc3BsaXRfZml4ZWQgb3Igc3RyX2V4dHJhY3RfYWxsIHdpdGggcmVnZXggbWlnaHQgYmUgdXNlZnVsLlxuIyBVc2luZyBzdHJfc3BsaXRfZml4ZWQgaXMgc2ltcGxlciBoZXJlIGlmIHRoZSBzdHJ1Y3R1cmUgaXMgY29uc2lzdGVudC5cblxuZXh0cmFjdGVkX2xvZ3MgPC0gbG9nX2VudHJpZXMgJT4lXG4gIHNlcGFyYXRlKFxuICAgIGNvbCA9IGVudHJ5LFxuICAgIGludG8gPSBjKFwibG9nX2xldmVsXCIsIFwiZGF0ZVwiLCBcInVzZXJfcmF3XCIsIFwiYWN0aW9uXCIpLFxuICAgIHNlcCA9IFwiOlwiLCAjIFNwbGl0IGJ5IGNvbG9uXG4gICAgZXh0cmEgPSBcIm1lcmdlXCIgIyBJZiBhY3Rpb24gaGFzIGNvbG9ucywgbWVyZ2UgdGhlbVxuICApICU+JVxuICBtdXRhdGUoXG4gICAgdXNlcl9pZCA9IHN0cl9yZW1vdmUodXNlcl9yYXcsIFwiXlVzZXJfXCIpICMgUmVtb3ZlIFwiVXNlcl9cIiBwcmVmaXhcbiAgKSAlPiVcbiAgc2VsZWN0KGxvZ19sZXZlbCwgZGF0ZSwgdXNlcl9pZCwgYWN0aW9uKVxuXG5wcmludChcIkV4dHJhY3RlZCBMb2cgSW5mb3JtYXRpb246XCIpXG5wcmludChleHRyYWN0ZWRfbG9ncylcblxuIyBBbHRlcm5hdGl2ZSB1c2luZyBzdHJfbWF0Y2ggKHJlZ2V4IGJhc2VkIGV4dHJhY3Rpb24pXG4jIFRoaXMgaXMgbW9yZSByb2J1c3QgaWYgdGhlIG51bWJlciBvZiBjb2xvbnMgY2FuIHZhcnkgYmVmb3JlIHRoZSBtYWluIHBhcnRzLlxuZXh0cmFjdGVkX2xvZ3NfcmVnZXggPC0gbG9nX2VudHJpZXMgJT4lXG4gIG11dGF0ZShcbiAgICBtYXRjaGVzID0gc3RyX21hdGNoKGVudHJ5LCBcIl4oW146XSspOihbXjpdKyk6VXNlcl8oW146XSspOiguKikkXCIpXG4gICkgJT4lXG4gIG11dGF0ZShcbiAgICBsb2dfbGV2ZWwgPSBtYXRjaGVzWywyXSxcbiAgICBkYXRlID0gbWF0Y2hlc1ssM10sXG4gICAgdXNlcl9pZCA9IG1hdGNoZXNbLDRdLFxuICAgIGFjdGlvbiA9IG1hdGNoZXNbLDVdXG4gICkgJT4lXG4gIHNlbGVjdChsb2dfbGV2ZWwsIGRhdGUsIHVzZXJfaWQsIGFjdGlvbilcblxucHJpbnQoXCJFeHRyYWN0ZWQgTG9nIEluZm9ybWF0aW9uIChSZWdleCk6XCIpXG5wcmludChleHRyYWN0ZWRfbG9nc19yZWdleCkifQ==
+</script>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="lesson-5-date-time-operations-with-lubridate" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-5-date-time-operations-with-lubridate">Lesson 5: Date-Time Operations with {lubridate}</h2>
+<p>Working with dates and times can be notoriously tricky. The <strong>{lubridate}</strong> package, part of the Tidyverse, makes it significantly easier by providing intuitive functions to parse, manipulate, and compute with date-time objects.</p>
+<p>Key features of {lubridate}: * <strong>Easy Parsing</strong>: Functions like <code>ymd()</code>, <code>mdy()</code>, <code>dmy()</code>, <code>ymd_hms()</code> can automatically parse dates and times from strings in various formats. * <strong>Accessing Components</strong>: Functions like <code>year()</code>, <code>month()</code>, <code>day()</code>, <code>hour()</code>, <code>minute()</code>, <code>second()</code>, <code>wday()</code> (day of the week), <code>yday()</code> (day of the year) allow easy extraction of specific components. * <strong>Time Spans</strong>: {lubridate} defines three types of time spans: * <strong>Durations</strong>: Exact number of seconds (e.g., <code>dseconds()</code>, <code>dminutes()</code>, <code>ddays()</code>). * <strong>Periods</strong>: Human-readable units that account for irregularities like leap years and daylight saving (e.g., <code>seconds()</code>, <code>minutes()</code>, <code>days()</code>, <code>months()</code>, <code>years()</code>). * <strong>Intervals</strong>: A time span between two specific date-times. * <strong>Arithmetic</strong>: Perform arithmetic directly on date-times (e.g., adding days, finding differences).</p>
+<p><strong>Example: Parsing and Components</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>date_string1 <span class="ot">&lt;-</span> <span class="st">"2024-07-15"</span></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>date_string2 <span class="ot">&lt;-</span> <span class="st">"July 15, 2024 14:30:00"</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>date_string3 <span class="ot">&lt;-</span> <span class="st">"15/07/2024"</span></span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>dt1 <span class="ot">&lt;-</span> <span class="fu">ymd</span>(date_string1)</span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>dt2 <span class="ot">&lt;-</span> <span class="fu">mdy_hms</span>(date_string2)</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>dt3 <span class="ot">&lt;-</span> <span class="fu">dmy</span>(date_string3)</span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dt1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2024-07-15"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dt2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2024-07-15 14:30:00 UTC"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dt3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2024-07-15"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Year:"</span>, <span class="fu">year</span>(dt1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Year: 2024"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Month:"</span>, <span class="fu">month</span>(dt1, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">abbr =</span> <span class="cn">FALSE</span>)) <span class="co"># Full month name</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Month: July"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Day of week:"</span>, <span class="fu">wday</span>(dt1, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">abbr =</span> <span class="cn">FALSE</span>)) <span class="co"># Full day name</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Day of week: Monday"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Hour of dt2:"</span>, <span class="fu">hour</span>(dt2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hour of dt2: 14"</code></pre>
+</div>
+</div>
+<p><strong>Example: Time Spans and Arithmetic</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>start_date <span class="ot">&lt;-</span> <span class="fu">ymd</span>(<span class="st">"2024-01-01"</span>)</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>end_date <span class="ot">&lt;-</span> <span class="fu">ymd</span>(<span class="st">"2025-03-15"</span>)</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Add 10 days to start_date</span></span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>start_date <span class="sc">+</span> <span class="fu">ddays</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2024-01-11"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>start_date <span class="sc">+</span> <span class="fu">days</span>(<span class="dv">10</span>) <span class="co"># Period, often same for days</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2024-01-11"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add 2 months</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>start_date <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2024-03-01"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Difference between dates</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>time_difference_days <span class="ot">&lt;-</span> end_date <span class="sc">-</span> start_date <span class="co"># Returns a difftime object</span></span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(time_difference_days)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time difference of 439 days</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a duration</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>one_week_duration <span class="ot">&lt;-</span> <span class="fu">dweeks</span>(<span class="dv">1</span>)</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(one_week_duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "604800s (~1 weeks)"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a period</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>one_month_period <span class="ot">&lt;-</span> <span class="fu">months</span>(<span class="dv">1</span>)</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(one_month_period)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1m 0d 0H 0M 0S"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Interval</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>event_interval <span class="ot">&lt;-</span> <span class="fu">interval</span>(start_date, end_date)</span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(event_interval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2024-01-01 UTC--2025-03-15 UTC</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if a date is within an interval</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ymd</span>(<span class="st">"2024-06-01"</span>) <span class="sc">%within%</span> event_interval <span class="co"># TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p><strong>Exercise 5.1: Analyzing Event Durations</strong></p>
+<p>You have a tibble of project tasks with start and end dates. 1. Parse the <code>start_date</code> and <code>end_date</code> strings into date objects. 2. Calculate the duration of each task in days. 3. Extract the year and month the task started. 4. Determine which day of the week each task ended. 5. Filter for tasks that lasted longer than 30 days.</p>
+<div class="cell" data-exercise="ex5-1" data-solution_hidden="true">
+<div>
+<div id="webr-8" class="exercise-cell">
+
+</div>
+<script type="webr-8-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXg1LTEiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGx1YnJpZGF0ZSlcblxudGFza3MgPC0gdHJpYmJsZShcbiAgfnRhc2tfaWQsIH50YXNrX25hbWUsICAgICAgICAgfnN0YXJ0X2RhdGVfc3RyLCB+ZW5kX2RhdGVfc3RyLFxuICBcIlQxMDFcIiwgICBcIkluaXRpYWwgUGxhbm5pbmdcIiwgXCIyMDIzLTAxLTE1XCIsICAgIFwiMjAyMy0wMi0xMFwiLFxuICBcIlQxMDJcIiwgICBcIkRldmVsb3BtZW50IFBoYXNlMVwiLCBcIjIwMjMtMDItMTFcIiwgICAgXCIyMDIzLTA0LTA1XCIsXG4gIFwiVDEwM1wiLCAgIFwiVGVzdGluZ1wiLCAgICAgICAgICAgIFwiMjAyMy0wNC0wNlwiLCAgICBcIjIwMjMtMDQtMjBcIixcbiAgXCJUMTA0XCIsICAgXCJEZXBsb3ltZW50XCIsICAgICAgICAgXCIyMDIzLTA0LTIxXCIsICAgIFwiMjAyMy0wNC0yNVwiXG4pXG5wcmludChcIk9yaWdpbmFsIFRhc2sgRGF0YTpcIilcbnByaW50KHRhc2tzKVxuXG50YXNrc19hbmFseXplZCA8LSB0YXNrcyAlPiVcbiAgbXV0YXRlKFxuICAgICMgMS4gUGFyc2UgZGF0ZXNcbiAgICBzdGFydF9kYXRlID0geW1kKHN0YXJ0X2RhdGVfc3RyKSxcbiAgICBlbmRfZGF0ZSA9IHltZChlbmRfZGF0ZV9zdHIpLFxuXG4gICAgIyAyLiBDYWxjdWxhdGUgZHVyYXRpb24gaW4gZGF5c1xuICAgICMgZHVyYXRpb25faW50ZXJ2YWwgPSBpbnRlcnZhbChzdGFydF9kYXRlLCBlbmRfZGF0ZSksXG4gICAgIyBkdXJhdGlvbl9kYXlzID0gYXMuZHVyYXRpb24oZHVyYXRpb25faW50ZXJ2YWwpIC8gZGRheXMoMSlcbiAgICAjIFNpbXBsZXIgZm9yIGp1c3QgZGF5czpcbiAgICBkdXJhdGlvbl9kYXlzID0gYXMubnVtZXJpYyhlbmRfZGF0ZSAtIHN0YXJ0X2RhdGUsIHVuaXRzID0gXCJkYXlzXCIpLFxuXG4gICAgIyAzLiBFeHRyYWN0IHllYXIgYW5kIG1vbnRoIG9mIHN0YXJ0XG4gICAgc3RhcnRfeWVhciA9IHllYXIoc3RhcnRfZGF0ZSksXG4gICAgc3RhcnRfbW9udGggPSBtb250aChzdGFydF9kYXRlLCBsYWJlbCA9IFRSVUUsIGFiYnIgPSBGQUxTRSksXG5cbiAgICAjIDQuIERheSBvZiB3ZWVrIHRhc2sgZW5kZWRcbiAgICBlbmRfZGF5X29mX3dlZWsgPSB3ZGF5KGVuZF9kYXRlLCBsYWJlbCA9IFRSVUUsIGFiYnIgPSBGQUxTRSlcbiAgKVxuXG5wcmludChcIkFuYWx5emVkIFRhc2sgRGF0YTpcIilcbnByaW50KHRhc2tzX2FuYWx5emVkICU+JSBzZWxlY3QoLXN0YXJ0X2RhdGVfc3RyLCAtZW5kX2RhdGVfc3RyKSlcblxuIyA1LiBGaWx0ZXIgZm9yIHRhc2tzIGxvbmdlciB0aGFuIDMwIGRheXNcbmxvbmdfdGFza3MgPC0gdGFza3NfYW5hbHl6ZWQgJT4lXG4gIGZpbHRlcihkdXJhdGlvbl9kYXlzID4gMzApXG5cbnByaW50KFwiVGFza3MgbG9uZ2VyIHRoYW4gMzAgZGF5czpcIilcbnByaW50KGxvbmdfdGFza3MgJT4lIHNlbGVjdCh0YXNrX25hbWUsIGR1cmF0aW9uX2RheXMpKSJ9
+</script>
+</div>
+</div>
+<p><strong>Exercise 5.2: Scheduling Appointments</strong></p>
+<p>You have a list of appointment requests with a preferred date and time. 1. Parse <code>preferred_datetime_str</code> into a datetime object. Assume UTC for simplicity if no timezone is given, or parse with a specific timezone. 2. If an appointment is requested before 9 AM or after 5 PM (17:00), flag it as “AfterHours”. 3. Calculate the time until each appointment from a reference datetime (e.g., <code>now()</code>, or a fixed datetime for reproducibility). 4. Round appointment times to the nearest half hour.</p>
+<div class="cell" data-exercise="ex5-2" data-solution_hidden="true">
+<div>
+<div id="webr-9" class="exercise-cell">
+
+</div>
+<script type="webr-9-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXg1LTIiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGx1YnJpZGF0ZSlcblxuYXBwb2ludG1lbnRfcmVxdWVzdHMgPC0gdHJpYmJsZShcbiAgfnJlcXVlc3RfaWQsIH5jbGllbnRfbmFtZSwgfnByZWZlcnJlZF9kYXRldGltZV9zdHIsXG4gIFwiUjAwMVwiLCAgICAgIFwiQWxpY2VcIiwgICAgICBcIjIwMjQtMDgtMDEgMTA6MDA6MDBcIixcbiAgXCJSMDAyXCIsICAgICAgXCJCb2JcIiwgICAgICAgIFwiMjAyNC0wOC0wMSAwODozMDowMFwiLCAjIEVhcmx5XG4gIFwiUjAwM1wiLCAgICAgIFwiQ2hhcmxpZVwiLCAgICBcIjIwMjQtMDgtMDIgMTc6NDU6MDBcIiwgIyBMYXRlXG4gIFwiUjAwNFwiLCAgICAgIFwiRGlhbmFcIiwgICAgICBcIjIwMjQtMDgtMDMgMTQ6MTI6MDBcIlxuKVxucHJpbnQoXCJPcmlnaW5hbCBBcHBvaW50bWVudCBSZXF1ZXN0czpcIilcbnByaW50KGFwcG9pbnRtZW50X3JlcXVlc3RzKVxuXG4jIEZvciByZXByb2R1Y2liaWxpdHksIGxldCdzIHVzZSBhIGZpeGVkIFwiY3VycmVudFwiIHRpbWVcbmN1cnJlbnRfdGltZV9maXhlZCA8LSB5bWRfaG1zKFwiMjAyNC0wNy0yMCAxMjowMDowMFwiLCB0eiA9IFwiVVRDXCIpXG5cbmFwcG9pbnRtZW50c19zY2hlZHVsZWQgPC0gYXBwb2ludG1lbnRfcmVxdWVzdHMgJT4lXG4gIG11dGF0ZShcbiAgICAjIDEuIFBhcnNlIGRhdGV0aW1lIChhc3N1bWUgVVRDIGlmIG5vdCBzcGVjaWZpZWQpXG4gICAgcHJlZmVycmVkX2RhdGV0aW1lID0geW1kX2htcyhwcmVmZXJyZWRfZGF0ZXRpbWVfc3RyLCB0eiA9IFwiVVRDXCIpLFxuXG4gICAgIyAyLiBGbGFnIEFmdGVySG91cnNcbiAgICBhcHBvaW50bWVudF9ob3VyID0gaG91cihwcmVmZXJyZWRfZGF0ZXRpbWUpLFxuICAgIGlzX2FmdGVyX2hvdXJzID0gaWZfZWxzZShhcHBvaW50bWVudF9ob3VyIDwgOSB8IGFwcG9pbnRtZW50X2hvdXIgPj0gMTcsIFRSVUUsIEZBTFNFKSxcblxuICAgICMgMy4gVGltZSB1bnRpbCBhcHBvaW50bWVudFxuICAgIHRpbWVfdW50aWwgPSBwcmVmZXJyZWRfZGF0ZXRpbWUgLSBjdXJyZW50X3RpbWVfZml4ZWQsICMgZGlmZnRpbWUgb2JqZWN0XG5cbiAgICAjIDQuIFJvdW5kIHRvIG5lYXJlc3QgaGFsZiBob3VyXG4gICAgcm91bmRlZF9kYXRldGltZSA9IHJvdW5kX2RhdGUocHJlZmVycmVkX2RhdGV0aW1lLCB1bml0ID0gXCIzMG1pbnV0ZXNcIilcbiAgKVxuXG5wcmludChcIlNjaGVkdWxlZCBBcHBvaW50bWVudHMgQW5hbHlzaXM6XCIpXG5wcmludChhcHBvaW50bWVudHNfc2NoZWR1bGVkICU+JSBzZWxlY3QoLXByZWZlcnJlZF9kYXRldGltZV9zdHIpKSJ9
+</script>
+</div>
+</div>
+<hr>
+</section>
+<section id="lesson-6-graphics-i-ggplot2-essentials" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-6-graphics-i-ggplot2-essentials">Lesson 6: Graphics I ({ggplot2} Essentials)</h2>
+<p>The <strong>{ggplot2}</strong> package, created by Hadley Wickham, is a powerful and versatile system for creating static graphics in R. It’s based on the “Grammar of Graphics,” which allows you to build plots layer by layer.</p>
+<p>Core components of a ggplot: 1. <strong>Data</strong>: The dataset being plotted (must be a data frame or tibble). 2. <strong>Aesthetic Mappings (<code>aes()</code>)</strong>: How variables in your data map to visual properties (aesthetics) of the plot. Examples: <code>x</code>, <code>y</code>, <code>color</code>, <code>shape</code>, <code>size</code>, <code>fill</code>, <code>alpha</code>. 3. <strong>Geoms (<code>geom_...()</code>)</strong>: Geometric objects that represent your data. Examples: <code>geom_point()</code>, <code>geom_line()</code>, <code>geom_bar()</code>, <code>geom_histogram()</code>, <code>geom_boxplot()</code>, <code>geom_sf()</code>. 4. <strong>Scales (<code>scale_...()</code>)</strong>: Control how data values are mapped to aesthetic values (e.g., color gradients, axis limits, breaks, labels). 5. <strong>Facets (<code>facet_...()</code>)</strong>: Create small multiples (subplots) based on levels of a categorical variable (e.g., <code>facet_wrap()</code>, <code>facet_grid()</code>). 6. <strong>Coordinates (<code>coord_...()</code>)</strong>: Control the coordinate system (e.g., <code>coord_flip()</code> to swap x/y, <code>coord_polar()</code>). 7. <strong>Themes (<code>theme_...()</code>)</strong>: Control the overall appearance of the plot (non-data elements like background, gridlines, fonts).</p>
+<p><strong>Basic Plot Structure:</strong></p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(data = &lt;DATA&gt;) +</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   &lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Example: Scatter Plot</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mpg) <span class="co"># Using the built-in mpg dataset</span></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatter plot of engine displacement (displ) vs. highway mpg (hwy)</span></span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Colored by car class</span></span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mpg, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> displ, <span class="at">y =</span> hwy, <span class="at">color =</span> class)) <span class="sc">+</span></span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Engine Displacement vs. Highway MPG"</span>,</span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Engine Displacement (Liters)"</span>,</span>
+<span id="cb115-11"><a href="#cb115-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Highway Miles Per Gallon"</span>,</span>
+<span id="cb115-12"><a href="#cb115-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Car Class"</span>,</span>
+<span id="cb115-13"><a href="#cb115-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: mpg dataset"</span></span>
+<span id="cb115-14"><a href="#cb115-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb115-15"><a href="#cb115-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="co"># Apply a minimal theme</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/lesson6-ggplot-scatter-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Example: Bar Plot</strong> Bar plots can represent counts or pre-summarized values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bar plot of car counts by manufacturer</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mpg, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> manufacturer)) <span class="sc">+</span></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="co"># Counts are calculated by geom_bar</span></span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Car Models by Manufacturer"</span>, <span class="at">x =</span> <span class="st">"Manufacturer"</span>, <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>() <span class="sc">+</span></span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="co"># Flip coordinates to make manufacturer names readable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/lesson6-ggplot-bar-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If data is already summarized:</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>manufacturer_summary <span class="ot">&lt;-</span> mpg <span class="sc">%&gt;%</span> <span class="fu">count</span>(manufacturer, <span class="at">name =</span> <span class="st">"count"</span>)</span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> manufacturer_summary, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> manufacturer, <span class="at">y =</span> count)) <span class="sc">+</span></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkgreen"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="co"># Use geom_col for pre-summarized data</span></span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Car Models by Manufacturer (Pre-summarized)"</span>, <span class="at">x =</span> <span class="st">"Manufacturer"</span>, <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="co"># Rotate x-axis labels</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/lesson6-ggplot-bar-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Exercise 6.1: Exploring Fuel Efficiency</strong></p>
+<p>Using the <code>mpg</code> dataset: 1. Create a scatter plot showing city miles per gallon (<code>cty</code>) vs.&nbsp;highway miles per gallon (<code>hwy</code>). 2. Color the points by <code>drv</code> (drive train: f=front, r=rear, 4=4wd). 3. Add a title and appropriate axis labels. 4. Experiment with <code>geom_smooth(method = "lm")</code> to add a linear regression line for each <code>drv</code> group.</p>
+<div class="cell" data-exercise="ex6-1" data-solution_hidden="true">
+<div>
+<div id="webr-10" class="exercise-cell">
+
+</div>
+<script type="webr-10-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXg2LTEiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGdncGxvdDIpXG4jIGRhdGEobXBnKSAjIGFscmVhZHkgbG9hZGVkIGlmIHRpZHl2ZXJzZSBpcyBsb2FkZWRcblxuIyAxLCAyLCAzLiBTY2F0dGVyIHBsb3QgY3R5IHZzIGh3eSwgY29sb3JlZCBieSBkcnZcbmdncGxvdChkYXRhID0gbXBnLCBtYXBwaW5nID0gYWVzKHggPSBjdHksIHkgPSBod3ksIGNvbG9yID0gZHJ2KSkgK1xuICBnZW9tX3BvaW50KGFscGhhID0gMC43KSArICMgQWRkZWQgYWxwaGEgZm9yIGJldHRlciB2aXNpYmlsaXR5IG9mIG92ZXJsYXBwaW5nIHBvaW50c1xuICBsYWJzKFxuICAgIHRpdGxlID0gXCJDaXR5IE1QRyB2cy4gSGlnaHdheSBNUEcgYnkgRHJpdmUgVHJhaW5cIixcbiAgICB4ID0gXCJDaXR5IE1pbGVzIFBlciBHYWxsb24gKE1QRylcIixcbiAgICB5ID0gXCJIaWdod2F5IE1pbGVzIFBlciBHYWxsb24gKE1QRylcIixcbiAgICBjb2xvciA9IFwiRHJpdmUgVHJhaW5cIlxuICApICtcbiAgdGhlbWVfbWluaW1hbCgpICtcbiAgIyA0LiBBZGQgbGluZWFyIHJlZ3Jlc3Npb24gbGluZXNcbiAgZ2VvbV9zbW9vdGgobWV0aG9kID0gXCJsbVwiLCBzZSA9IEZBTFNFKSAjIHNlID0gRkFMU0UgcmVtb3ZlcyBjb25maWRlbmNlIGludGVydmFsIHJpYmJvbiJ9
+</script>
+</div>
+</div>
+<p><strong>Exercise 6.2: Distribution of Highway MPG</strong></p>
+<ol type="1">
+<li>Create a histogram of highway miles per gallon (<code>hwy</code>).</li>
+<li>Use <code>facet_wrap(~ class)</code> to create separate histograms for each car <code>class</code>.</li>
+<li>Customize the bin width or number of bins for the histogram.</li>
+<li>Add a vertical line representing the mean <code>hwy</code> for each class.</li>
+</ol>
+<div class="cell" data-exercise="ex6-2" data-solution_hidden="true">
+<div>
+<div id="webr-11" class="exercise-cell">
+
+</div>
+<script type="webr-11-contents">
+eyJhdHRyIjp7ImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXg2LTIiLCJzb2x1dGlvbl9oaWRkZW4iOnRydWUsImVkaXQiOnRydWV9LCJjb2RlIjoibGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGdncGxvdDIpXG4jIGRhdGEobXBnKVxuXG4jIDEsIDIsIDMuIEhpc3RvZ3JhbSBvZiBod3ksIGZhY2V0ZWQgYnkgY2xhc3NcbmdncGxvdChkYXRhID0gbXBnLCBtYXBwaW5nID0gYWVzKHggPSBod3kpKSArXG4gIGdlb21faGlzdG9ncmFtKGJpbndpZHRoID0gMiwgZmlsbCA9IFwic2t5Ymx1ZVwiLCBjb2xvciA9IFwiYmxhY2tcIiwgYWxwaGEgPSAwLjgpICtcbiAgZmFjZXRfd3JhcCh+IGNsYXNzLCBzY2FsZXMgPSBcImZyZWVfeVwiKSArICMgc2NhbGVzID0gXCJmcmVlX3lcIiBhbGxvd3MgeS1heGlzIHRvIHZhcnlcbiAgbGFicyhcbiAgICB0aXRsZSA9IFwiRGlzdHJpYnV0aW9uIG9mIEhpZ2h3YXkgTVBHIGJ5IENhciBDbGFzc1wiLFxuICAgIHggPSBcIkhpZ2h3YXkgTWlsZXMgUGVyIEdhbGxvbiAoTVBHKVwiLFxuICAgIHkgPSBcIkZyZXF1ZW5jeSAoQ291bnQpXCJcbiAgKSArXG4gIHRoZW1lX2xpZ2h0KCkgK1xuICAjIDQuIEFkZCBtZWFuIGh3eSBsaW5lIGZvciBlYWNoIGNsYXNzXG4gIGdlb21fdmxpbmUoXG4gICAgZGF0YSA9IG1wZyAlPiUgZ3JvdXBfYnkoY2xhc3MpICU+JSBzdW1tYXJpemUobWVhbl9od3kgPSBtZWFuKGh3eSwgbmEucm0gPSBUUlVFKSksXG4gICAgbWFwcGluZyA9IGFlcyh4aW50ZXJjZXB0ID0gbWVhbl9od3kpLFxuICAgIGNvbG9yID0gXCJyZWRcIixcbiAgICBsaW5ldHlwZSA9IFwiZGFzaGVkXCIsXG4gICAgbGluZXdpZHRoID0gMVxuICApIn0=
+</script>
+</div>
+</div>
+<hr>
+</section>
+<section id="lesson-7-graphics-ii-advanced-ggplot2" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-7-graphics-ii-advanced-ggplot2">Lesson 7: Graphics II (Advanced {ggplot2})</h2>
+<p>Building on the essentials, we can further customize and enhance our {ggplot2} visualizations.</p>
+<section id="scales" class="level3">
+<h3 class="anchored" data-anchor-id="scales">Scales</h3>
+<p>Scales control the mapping from data values to aesthetics. You can customize axes, colors, sizes, etc. * <strong>Position Scales (x and y axes)</strong>: <code>scale_x_continuous()</code>, <code>scale_y_continuous()</code>, <code>scale_x_discrete()</code>, <code>scale_y_discrete()</code>, <code>scale_x_log10()</code>, <code>scale_x_date()</code>. * Control <code>limits</code>, <code>breaks</code>, <code>labels</code>. * <strong>Color and Fill Scales</strong>: <code>scale_color_brewer()</code>, <code>scale_fill_brewer()</code> (for discrete variables using ColorBrewer palettes), <code>scale_color_gradient()</code>, <code>scale_fill_gradient()</code> (for continuous variables), <code>scale_color_manual()</code>, <code>scale_fill_manual()</code> (for specifying colors manually). * <strong>Shape and Size Scales</strong>: <code>scale_shape_manual()</code>, <code>scale_size_continuous()</code>.</p>
+<p><strong>Example: Customizing Scales</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mpg, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> displ, <span class="at">y =</span> hwy, <span class="at">color =</span> cty)) <span class="sc">+</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Engine Displacement (Liters)"</span>,</span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="at">by =</span> <span class="dv">1</span>),</span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">7</span>)</span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb118-8"><a href="#cb118-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb118-9"><a href="#cb118-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"Highway MPG"</span>,</span>
+<span id="cb118-10"><a href="#cb118-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>() <span class="co"># Use comma for thousands, etc.</span></span>
+<span id="cb118-11"><a href="#cb118-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb118-12"><a href="#cb118-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">name =</span> <span class="st">"City MPG"</span>) <span class="sc">+</span></span>
+<span id="cb118-13"><a href="#cb118-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Customized Scales Example"</span>) <span class="sc">+</span></span>
+<span id="cb118-14"><a href="#cb118-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/lesson7-ggplot-scales-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="themes" class="level3">
+<h3 class="anchored" data-anchor-id="themes">Themes</h3>
+<p>Themes control the non-data elements of the plot. * <strong>Built-in Themes</strong>: <code>theme_gray()</code> (default), <code>theme_bw()</code>, <code>theme_minimal()</code>, <code>theme_classic()</code>, <code>theme_light()</code>, <code>theme_dark()</code>, <code>theme_void()</code>. * <strong>Customizing Theme Elements</strong>: Use <code>theme()</code> to modify specific elements like <code>plot.title</code>, <code>axis.text</code>, <code>axis.title</code>, <code>legend.position</code>, <code>panel.background</code>, <code>panel.grid</code>.</p>
+<p><strong>Example: Custom Theme</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> mpg, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> class, <span class="at">fill =</span> drv)) <span class="sc">+</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Car Count by Class and Drive Train"</span>, <span class="at">x =</span> <span class="st">"Class"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">fill =</span> <span class="st">"Drive Train"</span>) <span class="sc">+</span></span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="co"># Start with a classic theme</span></span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb119-8"><a href="#cb119-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb119-9"><a href="#cb119-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>, <span class="co"># "bottom", "left", "right", "none", or c(x,y) coordinates</span></span>
+<span id="cb119-10"><a href="#cb119-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"grey80"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>),</span>
+<span id="cb119-11"><a href="#cb119-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"aliceblue"</span>)</span>
+<span id="cb119-12"><a href="#cb119-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/lesson7-ggplot-theme-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="annotations-and-saving-plots" class="level3">
+<h3 class="anchored" data-anchor-id="annotations-and-saving-plots">Annotations and Saving Plots</h3>
+<ul>
+<li><strong>Annotations</strong>: Add text (<code>geom_text()</code>, <code>annotate("text", ...)</code>), lines (<code>geom_hline()</code>, <code>geom_vline()</code>), rectangles (<code>annotate("rect", ...)</code>).</li>
+<li><strong>Saving Plots</strong>: Use <code>ggsave()</code> to save plots to files (e.g., PNG, PDF, SVG). It infers the type from the extension.</li>
+</ul>
+<p><strong>Example: Annotations and Saving</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This plot won't render in the QMD output directly if ggsave is used without printing the plot</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="co"># For demonstration, we'll build it and then mention ggsave.</span></span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">filter</span>(mpg, manufacturer <span class="sc">==</span> <span class="st">"audi"</span>), <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> hwy)) <span class="sc">+</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb120-8"><a href="#cb120-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2004</span>, <span class="at">y =</span> <span class="dv">30</span>,</span>
+<span id="cb120-9"><a href="#cb120-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"Trend for Audi Highway MPG"</span>,</span>
+<span id="cb120-10"><a href="#cb120-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">fontface =</span> <span class="st">"italic"</span></span>
+<span id="cb120-11"><a href="#cb120-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb120-12"><a href="#cb120-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Audi Highway MPG Over Years"</span>, <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"Highway MPG"</span>) <span class="sc">+</span></span>
+<span id="cb120-13"><a href="#cb120-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb120-14"><a href="#cb120-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-15"><a href="#cb120-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p) <span class="co"># Display the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: pseudoinverse used at 1999</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: neighborhood radius 9.045</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: reciprocal condition number 0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
+: There are other near singularities as well. 81.812</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/lesson7-ggplot-annotations-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To save:</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("audi_mpg_plot.png", plot = p, width = 8, height = 6, dpi = 300)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Exercise 7.1: Polished Boxplot of MPG</strong></p>
+<p>Using the <code>mpg</code> dataset: 1. Create a boxplot of <code>hwy</code> (highway MPG) grouped by <code>class</code>. 2. Fill the boxes based on <code>drv</code> (drive train). Use <code>position = position_dodge(preserve = "single")</code> if boxes overlap too much. 3. Customize the color palette for <code>drv</code> using <code>scale_fill_brewer(palette = "Set2")</code>. 4. Add a title: “Highway MPG Distribution by Class and Drive Train”. 5. Modify</p>
+
+
+<script type="webr-data">
+eyJwYWNrYWdlcyI6eyJyZXBvcyI6W10sInBrZ3MiOlsiZXZhbHVhdGUiLCJrbml0ciIsImh0bWx0b29scyJdfSwib3B0aW9ucyI6eyJiYXNlVXJsIjoiaHR0cHM6Ly93ZWJyLnItd2FzbS5vcmcvdjAuNC4yLyJ9LCJyZW5kZXJfZGYiOiJkZWZhdWx0In0=
+</script>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMSIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTE7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItMTEiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzExID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTEtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici0xMS1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzExID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8xMSwge30pO1xuX3dlYnJfZmVlZGJhY2tfMTEgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzExLmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTA7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItMTAiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzEwID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTAtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici0xMC1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzEwID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8xMCwge30pO1xuX3dlYnJfZmVlZGJhY2tfMTAgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzEwLmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC05Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV85O1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLTkiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzkgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici05LWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBleGVyY2lzZSBjb25maWd1cmF0aW9uXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKFxuICAgIHtcbiAgICAgIGlkOiBcIndlYnItOS1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzkgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzksIHt9KTtcbl93ZWJyX2ZlZWRiYWNrXzkgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzkuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTgiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzg7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItOCIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfOCA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTgtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici04LWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfOCA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfOCwge30pO1xuX3dlYnJfZmVlZGJhY2tfOCA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfOC5ldmFsdWF0b3IpO1xuICBjb25zdCBmZWVkYmFjayA9IGF3YWl0IGdyYWRlci5ncmFkZUV4ZXJjaXNlKCk7XG4gIGlmICghZmVlZGJhY2spIHJldHVybiBlbXB0eUZlZWRiYWNrO1xuICByZXR1cm4gZmVlZGJhY2s7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2UsImNlbGxOYW1lIjoid2Vici13aWRnZXQtNyIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfNztcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2UsImNlbGxOYW1lIjoid2Vici03Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl83ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItNy1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTctY29udGVudHNcIixcbiAgICAgIGVudmlyOiBgZXhlcmNpc2UtZW52LSR7YmxvY2suYXR0ci5leGVyY2lzZX1gLFxuICAgICAgZXJyb3I6IGZhbHNlLFxuICAgICAgY2FwdGlvbjogJ0V4ZXJjaXNlJyxcbiAgICB9LFxuICAgIGJsb2NrLmF0dHJcbiAgKTtcblxuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbnZpZXdvZiBfd2Vicl92YWx1ZV83ID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl83LCB7fSk7XG5fd2Vicl9mZWVkYmFja183ID0ge1xuICBjb25zdCB7IFdlYlJHcmFkZXIgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IGVtcHR5RmVlZGJhY2sgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTtcblxuICBjb25zdCBncmFkZXIgPSBuZXcgV2ViUkdyYWRlcihfd2Vicl92YWx1ZV83LmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC02Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV82O1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLTYiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzYgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici02LWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBleGVyY2lzZSBjb25maWd1cmF0aW9uXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKFxuICAgIHtcbiAgICAgIGlkOiBcIndlYnItNi1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzYgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzYsIHt9KTtcbl93ZWJyX2ZlZWRiYWNrXzYgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzYuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTUiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzU7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItNSIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfNSA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTUtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici01LWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfNSA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfNSwge30pO1xuX3dlYnJfZmVlZGJhY2tfNSA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfNS5ldmFsdWF0b3IpO1xuICBjb25zdCBmZWVkYmFjayA9IGF3YWl0IGdyYWRlci5ncmFkZUV4ZXJjaXNlKCk7XG4gIGlmICghZmVlZGJhY2spIHJldHVybiBlbXB0eUZlZWRiYWNrO1xuICByZXR1cm4gZmVlZGJhY2s7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2UsImNlbGxOYW1lIjoid2Vici13aWRnZXQtNCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfNDtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2UsImNlbGxOYW1lIjoid2Vici00Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl80ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItNC1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTQtY29udGVudHNcIixcbiAgICAgIGVudmlyOiBgZXhlcmNpc2UtZW52LSR7YmxvY2suYXR0ci5leGVyY2lzZX1gLFxuICAgICAgZXJyb3I6IGZhbHNlLFxuICAgICAgY2FwdGlvbjogJ0V4ZXJjaXNlJyxcbiAgICB9LFxuICAgIGJsb2NrLmF0dHJcbiAgKTtcblxuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbnZpZXdvZiBfd2Vicl92YWx1ZV80ID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl80LCB7fSk7XG5fd2Vicl9mZWVkYmFja180ID0ge1xuICBjb25zdCB7IFdlYlJHcmFkZXIgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IGVtcHR5RmVlZGJhY2sgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTtcblxuICBjb25zdCBncmFkZXIgPSBuZXcgV2ViUkdyYWRlcihfd2Vicl92YWx1ZV80LmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0zIiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV8zO1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLTMiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzMgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0zLWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBleGVyY2lzZSBjb25maWd1cmF0aW9uXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKFxuICAgIHtcbiAgICAgIGlkOiBcIndlYnItMy1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzMgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzMsIHt9KTtcbl93ZWJyX2ZlZWRiYWNrXzMgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzMuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTIiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzI7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlLCJjZWxsTmFtZSI6IndlYnItMiIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMiA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTItY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici0yLWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfMiA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMiwge30pO1xuX3dlYnJfZmVlZGJhY2tfMiA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfMi5ldmFsdWF0b3IpO1xuICBjb25zdCBmZWVkYmFjayA9IGF3YWl0IGdyYWRlci5ncmFkZUV4ZXJjaXNlKCk7XG4gIGlmICghZmVlZGJhY2spIHJldHVybiBlbXB0eUZlZWRiYWNrO1xuICByZXR1cm4gZmVlZGJhY2s7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2UsImNlbGxOYW1lIjoid2Vici13aWRnZXQtMSIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2UsImNlbGxOYW1lIjoid2Vici0xIiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl8xID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMS1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTEtY29udGVudHNcIixcbiAgICAgIGVudmlyOiBgZXhlcmNpc2UtZW52LSR7YmxvY2suYXR0ci5leGVyY2lzZX1gLFxuICAgICAgZXJyb3I6IGZhbHNlLFxuICAgICAgY2FwdGlvbjogJ0V4ZXJjaXNlJyxcbiAgICB9LFxuICAgIGJsb2NrLmF0dHJcbiAgKTtcblxuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbnZpZXdvZiBfd2Vicl92YWx1ZV8xID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8xLCB7fSk7XG5fd2Vicl9mZWVkYmFja18xID0ge1xuICBjb25zdCB7IFdlYlJHcmFkZXIgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IGVtcHR5RmVlZGJhY2sgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTtcblxuICBjb25zdCBncmFkZXIgPSBuZXcgV2ViUkdyYWRlcihfd2Vicl92YWx1ZV8xLmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZSwiY2VsbE5hbWUiOiJ3ZWJyLXByZWx1ZGUiLCJzb3VyY2UiOiJ3ZWJST2pzID0ge1xuICBjb25zdCB7IFdlYlIsIENoYW5uZWxUeXBlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lLldlYlI7XG4gIGNvbnN0IHtcbiAgICBXZWJSRXZhbHVhdG9yLFxuICAgIFdlYlJFbnZpcm9ubWVudE1hbmFnZXIsXG4gICAgc2V0dXBSLFxuICAgIGI2NERlY29kZSxcbiAgICBjb2xsYXBzZVBhdGhcbiAgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG5cbiAgY29uc3Qgc3RhdHVzQ29udGFpbmVyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoXCJleGVyY2lzZS1sb2FkaW5nLXN0YXR1c1wiKTtcbiAgY29uc3QgaW5kaWNhdG9yQ29udGFpbmVyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoXCJleGVyY2lzZS1sb2FkaW5nLWluZGljYXRvclwiKTtcbiAgaW5kaWNhdG9yQ29udGFpbmVyLmNsYXNzTGlzdC5yZW1vdmUoXCJkLW5vbmVcIik7XG5cbiAgbGV0IHN0YXR1c1RleHQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpXG4gIHN0YXR1c1RleHQuY2xhc3NMaXN0ID0gXCJleGVyY2lzZS1sb2FkaW5nLWRldGFpbHNcIjtcbiAgc3RhdHVzVGV4dCA9IHN0YXR1c0NvbnRhaW5lci5hcHBlbmRDaGlsZChzdGF0dXNUZXh0KTtcbiAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBJbml0aWFsaXNlYDtcblxuICAvLyBIb2lzdCBpbmRpY2F0b3Igb3V0IGZyb20gZmluYWwgc2xpZGUgd2hlbiBydW5uaW5nIHVuZGVyIHJldmVhbFxuICBjb25zdCByZXZlYWxTdGF0dXMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLnJldmVhbCAuZXhlcmNpc2UtbG9hZGluZy1pbmRpY2F0b3JcIik7XG4gIGlmIChyZXZlYWxTdGF0dXMpIHtcbiAgICByZXZlYWxTdGF0dXMucmVtb3ZlKCk7XG4gICAgZG9jdW1lbnQucXVlcnlTZWxlY3RvcihcIi5yZXZlYWwgPiAuc2xpZGVzXCIpLmFwcGVuZENoaWxkKHJldmVhbFN0YXR1cyk7XG4gIH1cblxuICAvLyBNYWtlIGFueSByZXZlYWwgc2xpZGVzIHdpdGggbGl2ZSBjZWxscyBzY3JvbGxhYmxlXG4gIGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoXCIucmV2ZWFsIC5leGVyY2lzZS1jZWxsXCIpLmZvckVhY2goKGVsKSA9PiB7XG4gICAgZWwuY2xvc2VzdCgnc2VjdGlvbi5zbGlkZScpLmNsYXNzTGlzdC5hZGQoXCJzY3JvbGxhYmxlXCIpO1xuICB9KVxuXG4gIC8vIHdlYlIgc3VwcGxlbWVudGFsIGRhdGEgYW5kIG9wdGlvbnNcbiAgY29uc3QgZGF0YUNvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici1kYXRhXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgZGF0YSA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKGRhdGFDb250ZW50KSk7XG5cbiAgLy8gR3JhYiBsaXN0IG9mIHJlc291cmNlcyB0byBiZSBkb3dubG9hZGVkXG4gIGNvbnN0IGZpbGVzQ29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ2ZnMtZmlsZVxcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGZpbGVzID0gSlNPTi5wYXJzZShiNjREZWNvZGUoZmlsZXNDb250ZW50KSk7XG5cbiAgLy8gVXNlIFBvc3RNZXNzYWdlIGNoYW5uZWwgZm9yIGFzeW5jIGNvbW11bmljYXRpb25cbiAgLy8gV2UgZG8gbm90IGV4cGVjdCB0byB0YWtlIG5lc3RlZCBwcm9tcHQgaW5wdXQgaW4gUXVhcnRvIExpdmUgY2VsbHNcbiAgZGF0YS5vcHRpb25zLmNoYW5uZWxUeXBlID0gQ2hhbm5lbFR5cGUuUG9zdE1lc3NhZ2U7XG5cbiAgLy8gSW5pdGlhbGlzZSB3ZWJSIGFuZCBzZXR1cCBmb3IgUiBjb2RlIGV2YWx1YXRpb25cbiAgbGV0IHdlYlJQcm9taXNlID0gKGFzeW5jICh3ZWJSKSA9PiB7XG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBEb3dubG9hZGluZyB3ZWJSYDtcbiAgICBhd2FpdCB3ZWJSLmluaXQoKTtcblxuICAgIC8vIEluc3RhbGwgcHJvdmlkZWQgbGlzdCBvZiBwYWNrYWdlc1xuICAgIC8vIEVuc3VyZSB3ZWJSIGRlZmF1bHQgcmVwbyBpcyBpbmNsdWRlZFxuICAgIGRhdGEucGFja2FnZXMucmVwb3MucHVzaChcImh0dHBzOi8vcmVwby5yLXdhc20ub3JnXCIpXG4gICAgYXdhaXQgZGF0YS5wYWNrYWdlcy5wa2dzLm1hcCgocGtnKSA9PiAoKSA9PiB7XG4gICAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHBhY2thZ2U6ICR7cGtnfWA7XG4gICAgICByZXR1cm4gd2ViUi5ldmFsUlZvaWQoYFxuICAgICAgICB3ZWJyOjppbnN0YWxsKHBrZywgcmVwb3MgPSByZXBvcywgbW91bnQgPSBGQUxTRSlcbiAgICAgICAgbGlicmFyeShwa2csIGNoYXJhY3Rlci5vbmx5ID0gVFJVRSlcbiAgICAgIGAsIHsgZW52OiB7XG4gICAgICAgIHBrZzogcGtnLFxuICAgICAgICByZXBvczogZGF0YS5wYWNrYWdlcy5yZXBvcyxcbiAgICAgIH19KTtcbiAgICB9KS5yZWR1Y2UoKGN1ciwgbmV4dCkgPT4gY3VyLnRoZW4obmV4dCksIFByb21pc2UucmVzb2x2ZSgpKTtcblxuICAgIC8vIERvd25sb2FkIGFuZCBpbnN0YWxsIHJlc291cmNlc1xuICAgIGF3YWl0IGZpbGVzLm1hcCgoZmlsZSkgPT4gYXN5bmMgKCkgPT4ge1xuICAgICAgY29uc3QgbmFtZSA9IGZpbGUuc3Vic3RyaW5nKGZpbGUubGFzdEluZGV4T2YoJy8nKSArIDEpO1xuICAgICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBEb3dubG9hZGluZyByZXNvdXJjZTogJHtuYW1lfWA7XG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKGZpbGUpO1xuICAgICAgaWYgKCFyZXNwb25zZS5vaykge1xuICAgICAgICB0aHJvdyBuZXcgRXJyb3IoYENhbid0IGRvd25sb2FkIFxcYCR7ZmlsZX1cXGAuIEVycm9yICR7cmVzcG9uc2Uuc3RhdHVzfTogXCIke3Jlc3BvbnNlLnN0YXR1c1RleHR9XCIuYCk7XG4gICAgICB9XG4gICAgICBjb25zdCBkYXRhID0gYXdhaXQgcmVzcG9uc2UuYXJyYXlCdWZmZXIoKTtcblxuICAgICAgLy8gU3RvcmUgVVJMcyBpbiB0aGUgY3dkIHdpdGhvdXQgYW55IHN1YmRpcmVjdG9yeSBzdHJ1Y3R1cmVcbiAgICAgIGlmIChmaWxlLmluY2x1ZGVzKFwiOi8vXCIpKSB7XG4gICAgICAgIGZpbGUgPSBuYW1lO1xuICAgICAgfVxuXG4gICAgICAvLyBDb2xsYXBzZSBoaWdoZXIgZGlyZWN0b3J5IHN0cnVjdHVyZVxuICAgICAgZmlsZSA9IGNvbGxhcHNlUGF0aChmaWxlKTtcblxuICAgICAgLy8gQ3JlYXRlIGRpcmVjdG9yeSB0cmVlLCBpZ25vcmluZyBcImRpcmVjdG9yeSBleGlzdHNcIiBWRlMgZXJyb3JzXG4gICAgICBjb25zdCBwYXJ0cyA9IGZpbGUuc3BsaXQoJy8nKS5zbGljZSgwLCAtMSk7XG4gICAgICBsZXQgcGF0aCA9ICcnO1xuICAgICAgd2hpbGUgKHBhcnRzLmxlbmd0aCA+IDApIHtcbiAgICAgICAgcGF0aCArPSBwYXJ0cy5zaGlmdCgpICsgJy8nO1xuICAgICAgICB0cnkge1xuICAgICAgICAgIGF3YWl0IHdlYlIuRlMubWtkaXIocGF0aCk7XG4gICAgICAgIH0gY2F0Y2ggKGUpIHtcbiAgICAgICAgICBpZiAoIWUubWVzc2FnZS5pbmNsdWRlcyhcIkZTIGVycm9yXCIpKSB7XG4gICAgICAgICAgICB0aHJvdyBlO1xuICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgfVxuXG4gICAgICAvLyBXcml0ZSB0aGlzIGZpbGUgdG8gdGhlIFZGU1xuICAgICAgcmV0dXJuIGF3YWl0IHdlYlIuRlMud3JpdGVGaWxlKGZpbGUsIG5ldyBVaW50OEFycmF5KGRhdGEpKTtcbiAgICB9KS5yZWR1Y2UoKGN1ciwgbmV4dCkgPT4gY3VyLnRoZW4obmV4dCksIFByb21pc2UucmVzb2x2ZSgpKTtcblxuICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgSW5zdGFsbGluZyB3ZWJSIHNoaW1zYDtcbiAgICBhd2FpdCB3ZWJSLmV2YWxSVm9pZChgd2Vicjo6c2hpbV9pbnN0YWxsKClgKTtcblxuICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgV2ViUiBlbnZpcm9ubWVudCBzZXR1cGA7XG4gICAgYXdhaXQgc2V0dXBSKHdlYlIsIGRhdGEpO1xuXG4gICAgc3RhdHVzVGV4dC5yZW1vdmUoKTtcbiAgICBpZiAoc3RhdHVzQ29udGFpbmVyLmNoaWxkcmVuLmxlbmd0aCA9PSAwKSB7XG4gICAgICBzdGF0dXNDb250YWluZXIucGFyZW50Tm9kZS5yZW1vdmUoKTtcbiAgICB9XG4gICAgcmV0dXJuIHdlYlI7XG4gIH0pKG5ldyBXZWJSKGRhdGEub3B0aW9ucykpO1xuXG4gIC8vIEtlZXAgdHJhY2sgb2YgaW5pdGlhbCBPSlMgYmxvY2sgcmVuZGVyXG4gIGNvbnN0IHJlbmRlcmVkT2pzID0ge307XG5cbiAgY29uc3QgcHJvY2VzcyA9IGFzeW5jIChjb250ZXh0LCBpbnB1dHMpID0+IHtcbiAgICBjb25zdCB3ZWJSID0gYXdhaXQgd2ViUlByb21pc2U7XG4gICAgY29uc3QgZXZhbHVhdG9yID0gbmV3IFdlYlJFdmFsdWF0b3Iod2ViUiwgY29udGV4dClcbiAgICBhd2FpdCBldmFsdWF0b3IucHJvY2VzcyhpbnB1dHMpO1xuICAgIHJldHVybiBldmFsdWF0b3IuY29udGFpbmVyO1xuICB9XG5cbiAgcmV0dXJuIHtcbiAgICBwcm9jZXNzLFxuICAgIHdlYlJQcm9taXNlLFxuICAgIHJlbmRlcmVkT2pzLFxuICB9O1xufVxuIn1dfQ==
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../intermediate/tidyverse-II";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/we-data-ch\.github\.io\/wedata-ultimate-r-exercises\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2024, Vestin Hategekimana</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+ <img src="../../images/primary.png" width="auto" height="30px">
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/we-data-ch">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.youtube.com/@wedata_unige">
+      <i class="bi bi-youtube" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/wedata_unige">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/company/wedata-gen%C3%A8ve/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
