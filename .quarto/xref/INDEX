@@ -40,5 +40,8 @@
   },
   "beginner/r-foundations2/foundations_II.qmd": {
     "foundations_II.html": "465c8cf1"
+  },
+  "beginner/tidyverse-I/index.qmd": {
+    "index.html": "4a6c0d39"
   }
 }
