@@ -1,7 +1,9 @@
 [
   {
-    "listing": "/advanced.html",
-    "items": []
+    "listing": "/intermediate.html",
+    "items": [
+      "/intermediate/tidyverse-II/index.html"
+    ]
   },
   {
     "listing": "/beginner.html",
@@ -15,9 +17,9 @@
     ]
   },
   {
-    "listing": "/intermediate.html",
+    "listing": "/advanced.html",
     "items": [
-      "/intermediate/tidyverse-II/index.html"
+      "/advanced/troubleshooting-debugging/index.html"
     ]
   }
 ]

@@ -2,50 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner/tidyverse-I/index.html</loc>
-    <lastmod>2025-05-11T18:58:27.216Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.962Z</lastmod>
   </url>
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner/r-foundations/foundations_I.html</loc>
-    <lastmod>2025-05-11T18:58:27.216Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.962Z</lastmod>
   </url>
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner/NCCR_MWQTA_2024_R_Day1/1_Exercises_answers.html</loc>
-    <lastmod>2025-05-11T18:58:27.213Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.959Z</lastmod>
   </url>
   <url>
-    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/advanced.html</loc>
-    <lastmod>2025-05-11T18:58:27.213Z</lastmod>
-  </url>
-  <url>
-    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/intermediate/tidyverse-II/index.html</loc>
-    <lastmod>2025-05-11T18:58:27.235Z</lastmod>
-  </url>
-  <url>
-    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/contribute.html</loc>
-    <lastmod>2025-05-11T18:58:27.216Z</lastmod>
-  </url>
-  <url>
-    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/index.html</loc>
-    <lastmod>2025-05-11T18:58:27.234Z</lastmod>
-  </url>
-  <url>
-    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner.html</loc>
-    <lastmod>2025-05-11T18:58:27.213Z</lastmod>
+    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/advanced/troubleshooting-debugging/index.html</loc>
+    <lastmod>2025-05-17T17:22:56.959Z</lastmod>
   </url>
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/intermediate.html</loc>
-    <lastmod>2025-05-11T18:58:27.234Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.980Z</lastmod>
+  </url>
+  <url>
+    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner.html</loc>
+    <lastmod>2025-05-17T17:22:56.959Z</lastmod>
+  </url>
+  <url>
+    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/index.html</loc>
+    <lastmod>2025-05-17T17:22:56.980Z</lastmod>
+  </url>
+  <url>
+    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/contribute.html</loc>
+    <lastmod>2025-05-17T17:22:56.962Z</lastmod>
+  </url>
+  <url>
+    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/intermediate/tidyverse-II/index.html</loc>
+    <lastmod>2025-05-17T17:22:56.981Z</lastmod>
+  </url>
+  <url>
+    <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/advanced.html</loc>
+    <lastmod>2025-05-17T17:22:56.959Z</lastmod>
   </url>
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner/NCCR_MWQTA_2024_R_Day1/1_Introduction_to_R_language.html</loc>
-    <lastmod>2025-05-11T18:58:27.214Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.960Z</lastmod>
   </url>
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner/r-foundations2/foundations_II.html</loc>
-    <lastmod>2025-05-11T18:58:27.216Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.962Z</lastmod>
   </url>
   <url>
     <loc>https://we-data-ch.github.io/wedata-ultimate-r-exercises/beginner/basics/basics.html</loc>
-    <lastmod>2025-05-11T18:58:27.216Z</lastmod>
+    <lastmod>2025-05-17T17:22:56.962Z</lastmod>
   </url>
 </urlset>
