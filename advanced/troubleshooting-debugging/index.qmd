@@ -1,0 +1,1521 @@
+---
+title: "Troubleshooting and Debugging in R"
+author: "David Munoz Tord"
+description: "Master essential techniques for identifying, understanding, and fixing errors in R code"
+engine: knitr
+date: "2025-05-17"
+format: live-html
+---
+
+{{< include ../../_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Course Overview
+
+Welcome to the Troubleshooting and Debugging in R course! Being able to effectively diagnose and fix errors is an essential skill for any R programmer. This course will teach you systematic approaches to identify common errors, use R's built-in debugging tools, and develop robust strategies for solving problems in your code.
+
+By the end of this course, you will:
+* Understand common error message patterns and their meanings
+* Master debugging tools available in R
+* Apply systematic troubleshooting approaches
+* Gain confidence in solving coding problems independently
+
+---
+
+## Lesson 1: Understanding Error Messages
+
+When R code fails, the interpreter provides error messages that can help identify the issue. These messages often seem cryptic at first, but learning to interpret them is a valuable skill.
+
+### Types of Errors in R
+
+R errors generally fall into three main categories:
+
+1. **Syntax Errors**: Occur when code doesn't follow proper R syntax rules
+2. **Runtime Errors**: Occur during execution when R encounters an invalid operation
+3. **Logical Errors**: Code runs without errors but produces incorrect results
+
+### Reading Error Messages
+
+Error messages in R typically contain:
+* The specific error encountered 
+* The function where the error occurred
+* Sometimes, line numbers or context for the error
+
+**Example: Basic Error Messages**
+```{r chunk-1, error=TRUE}
+# Syntax error (missing closing parenthesis)
+sum(1, 2, 3
+
+# Reference error (object not found)
+print(nonexistent_variable)
+
+# Type error (incompatible data types)
+"string" + 5
+```
+
+When facing errors, focus on these key parts:
+* The error message text itself
+* The function name mentioned
+* The context or line number
+* Any traceback information showing the call stack
+
+### Common Error Messages and Their Meanings
+
+**1. "object not found"**
+This indicates trying to reference a variable or function that doesn\'t exist in the current environment.
+
+```{r chunk-2, error=TRUE}
+# Common causes:
+# 1. Typos in variable names
+mean_value <- 10
+print(mean_vlue)  # Typo in variable name
+
+# 2. Forgetting to load a package
+# head(starwars)  # Without loading dplyr
+
+# 3. Variable exists in a different environment (scope)
+example_function <- function() {
+  internal_variable <- 10
+}
+# After the function executes, trying to access:
+# print(internal_variable)  # Error: object not found
+```
+
+**2. "cannot open the connection"**
+This error usually relates to file operations.
+
+```{r chunk-3, error=TRUE}
+# Trying to read a non-existent file
+read.csv("file_that_does_not_exist.csv")
+```
+
+**3. "argument is missing, with no default"**
+Functions require certain arguments, and this error occurs when you miss a required one.
+
+```{r chunk-4, error=TRUE}
+# seq() requires at least \'from\' and \'to\'
+seq()
+```
+
+**4. "non-numeric argument to binary operator"**
+This occurs when trying to perform mathematical operations on non-numeric values.
+
+```{r chunk-5, error=TRUE}
+"hello" * 3
+```
+**Exercise 1.1: Identifying Error Types**
+
+For each code snippet below:
+1. Run the code to see the error
+2. Identify the type of error (syntax, runtime, or logical)
+3. Explain what caused the error
+4. Fix the code to make it work
+
+```{webr chunk-ex1-1}
+#| exercise: ex1-1
+#| solution_hidden: true
+
+# Code Snippet 1
+dat <- c(1, 2, 3, "four", 5)
+mean(dat)
+
+# Code Snippet 2
+values <- c(10, 20, 30, 40)
+for (i in 1:5) {
+  print(values[i])
+}
+
+# Code Snippet 3
+calculate_area <- function(length, width) {
+  area <- length * width
+  return(area)
+}
+calculate_area(5)
+
+# Code Snippet 4
+x <- c(1, 2, 3
+y <- x + 1
+print(y)
+```
+
+**Exercise 1.2: Understanding Error Messages**
+
+Given the following error messages, determine the possible cause and how you would fix it:
+
+```{webr chunk-ex1-2}
+#| exercise: ex1-2
+#| solution_hidden: true
+
+# 1. Error in data.frame(Name = c("Alice", "Bob", "Charlie"), Age = c(25, 30),  : 
+#    arguments imply differing number of rows: 3, 2
+
+# Your explanation:
+# The data.frame() function is being called with vectors of different lengths.
+# The 'Name' vector has 3 elements, but the 'Age' vector only has 2.
+# Fix: Make sure all vectors have the same length.
+
+data_fixed <- data.frame(
+  Name = c("Alice", "Bob", "Charlie"),
+  Age = c(25, 30, 35)  # Added the missing value
+)
+print(data_fixed)
+
+# 2. Error in library(ggplot3) : there is no package called 'ggplot3'
+
+# Your explanation:
+# The package name is incorrect. The correct package name is 'ggplot2'.
+# Fix: Use the correct package name.
+
+# library(ggplot2)  # Correct package name
+
+# 3. Error: unexpected symbol in "my result"
+
+# Your explanation:
+# Variable names in R cannot contain spaces. 
+# Fix: Use an underscore or period instead of a space.
+
+my_result <- 42
+print(my_result)
+
+```
+
+---
+
+## Lesson 2: Debugging Tools in R
+
+R provides several built-in tools to help with debugging. Understanding these tools can save enormous time when troubleshooting complex code.
+
+### Basic Debugging Approaches
+
+Before diving into specialized functions, consider these basic strategies:
+
+**1. Print Statements**
+The simplest debugging technique is to add `print()` or `cat()` statements at strategic points in your code.
+
+```{r chunk-6}
+complex_calculation <- function(x, y) {
+  print(paste("Input values:", x, "and", y))
+  
+  intermediate_result <- x * y
+  print(paste("Intermediate result:", intermediate_result))
+  
+  final_result <- intermediate_result + x
+  print(paste("Final result:", final_result))
+  
+  return(final_result)
+}
+
+complex_calculation(5, 3)
+```
+
+**2. Using `str()` and `class()`**
+Often, errors occur because the data isn\'t the type or structure you expect.
+
+```{r chunk-7}
+sample_data <- list(
+  numbers = 1:5,
+  text = "hello world",
+  matrix = matrix(1:9, nrow = 3)
+)
+
+str(sample_data)
+class(sample_data$numbers)
+class(sample_data$text)
+```
+
+### Specialized Debugging Functions
+
+R provides several specialized debugging functions:
+
+**1. `traceback()`**
+After an error occurs, `traceback()` shows the sequence of function calls that led to the error.
+
+```{r chunk-8, eval=FALSE}
+# Example of using traceback()
+f <- function() g()
+g <- function() h()
+h <- function() stop("Error in h")
+
+# This would cause an error
+# f()
+
+# Then you can run:
+# traceback()
+# Which would show the calling sequence:
+# 3: stop("Error in h") at #1
+# 2: h() at #1
+# 1: g() at #1
+# 0: f()
+```
+
+**2. `browser()`**
+Inserts an interactive debugging environment at any point in your function.
+
+```{r chunk-9, eval=FALSE}
+debug_calculation <- function(x, y) {
+  # This launches the browser when the function runs
+  browser()
+  
+  step1 <- x * 2
+  step2 <- y + 10
+  result <- step1 * step2
+  
+  return(result)
+}
+
+# When calling this function, execution will pause at browser()
+# debug_calculation(5, 3)
+
+# In the browser, you can:
+# - Type 'n' to execute the next statement
+# - Type 'c' to continue to the end of the function
+# - Type 'Q' to quit debugging
+# - Type variable names to see their values
+# - Execute any R code to inspect the environment
+```
+
+**3. `debug()` and `debugonce()`**
+Marks a function for debugging, activating browser mode when the function runs.
+
+```{r chunk-10, eval=FALSE}
+# debug() flags a function for debugging
+# debugonce() does it for just the next call
+
+simple_function <- function(x) {
+  result <- x^2
+  return(result)
+}
+
+# debug(simple_function)
+# simple_function(5)
+# undebug(simple_function)
+
+# Or for a single use:
+# debugonce(simple_function)
+# simple_function(5)
+```
+
+**4. The Error Inspector in RStudio**
+When an error occurs in RStudio, you can often click on "Show Traceback" to see the call stack, and "Rerun with Debug" to enter debugging mode.
+
+### Using `try()` and `tryCatch()`
+
+For more controlled error handling, R provides `try()` and `tryCatch()` functions.
+
+**1. `try()` - Continue execution despite errors**
+
+```{r chunk-11}
+# Without try(), this would stop execution
+result1 <- try(1 + "a", silent = TRUE)
+print("This code runs even after the error")
+
+# Check if an error occurred
+if (inherits(result1, "try-error")) {
+  print("An error occurred in the first operation")
+}
+
+# Continue with other operations
+result2 <- try(1 + 2)
+print(paste("Second result:", result2))
+```
+
+**2. `tryCatch()` - More sophisticated error handling**
+
+```{r chunk-12}
+result <- NULL # Initialize result
+result <- tryCatch(
+  {
+    # The main code to try
+    x <- 1 / 0
+    return(x)  # This won't execute due to the error
+  },
+  error = function(e) {
+    # Code to run if an error occurs
+    message("An error occurred: ", e$message)
+    return(NA)  # Return a default value
+  },
+  warning = function(w) {
+    # Code to run if a warning occurs
+    message("A warning occurred: ", w$message)
+    return(NULL)
+  },
+  finally = {
+    # Code that always runs, regardless of error/warning
+    message("This cleanup code always runs")
+  }
+)
+
+print(result)
+```
+
+**Exercise 2.1: Using Debugging Tools**
+
+Practice using different debugging techniques:
+
+```{webr chunk-ex2-1}
+#| exercise: ex2-1
+#| solution_hidden: true
+result <- NULL # Initialize result
+library(tidyverse)
+
+# This function has an error. Use debugging tools to find and fix it.
+calculate_statistics <- function(data) {
+  # Calculate the mean of each column
+  if (!is.data.frame(data)) {
+    stop("Input must be a data frame")
+  }
+  
+  means <- colMeans(data)  # This will fail on non-numeric columns
+  
+  # Calculate standard deviations
+  sds <- sapply(data, sd)
+  
+  # Calculate ranges
+  ranges <- sapply(data, function(x) max(x) - min(x))
+  
+  # Return results
+  return(list(means = means, sds = sds, ranges = ranges))
+}
+
+# Create a test dataset
+test_data <- data.frame(
+  a = 1:5,
+  b = c(5, 10, 15, 20, 25),
+  c = c("apple", "banana", "cherry", "date", "elderberry")  # Non-numeric column
+)
+
+# Using try() to handle the error more gracefully
+result <- try(calculate_statistics(test_data), silent = TRUE)
+
+if (inherits(result, "try-error")) {
+  print("Error detected! Let's debug...")
+  
+  # 1. Identify the issue
+  print("Issue: The function fails because it tries to calculate statistics on a non-numeric column.")
+  
+  # 2. Fix the function
+  calculate_statistics_fixed <- function(data) {
+    if (!is.data.frame(data)) {
+      stop("Input must be a data frame")
+    }
+    
+    # Only select numeric columns
+    numeric_data <- data %>% select_if(is.numeric)
+    
+    if (ncol(numeric_data) == 0) {
+      stop("No numeric columns found in the data")
+    }
+    
+    means <- colMeans(numeric_data)
+    sds <- sapply(numeric_data, sd)
+    ranges <- sapply(numeric_data, function(x) max(x) - min(x))
+    
+    return(list(means = means, sds = sds, ranges = ranges))
+  }
+  
+  # 3. Test the fixed function
+  result_fixed <- calculate_statistics_fixed(test_data)
+  print("Fixed function results:")
+  print(result_fixed)
+}
+```
+
+**Exercise 2.2: Building Robust Functions**
+
+Create a function with built-in error handling that calculates the square root of each element in a vector, but handles negative numbers gracefully.
+
+```{webr chunk-ex2-2}
+#| exercise: ex2-2
+#| solution_hidden: true
+library(tidyverse)
+
+# Complete this function with proper error handling
+safe_sqrt <- function(x, handle_negative = TRUE) {
+  if (!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  # Process each element with tryCatch
+  result <- sapply(x, function(val) {
+    tryCatch(
+      {
+        if (val < 0 && handle_negative) {
+          warning(paste("Taking square root of negative number:", val))
+          return(complex(real = 0, imaginary = sqrt(abs(val))))
+        } else {
+          return(sqrt(val))
+        }
+      },
+      error = function(e) {
+        warning(paste("Error with value", val, ":", e$message))
+        return(NA)
+      }
+    )
+  })
+  
+  return(result)
+}
+
+# Test cases
+test_vector1 <- c(4, 9, 16, 25)
+test_vector2 <- c(4, -9, 16, "string")
+test_vector3 <- c(4, -9, 16, 25)
+
+# Test with simple vector
+result1 <- safe_sqrt(test_vector1)
+print("Result 1 (all positive numbers):")
+print(result1)
+
+# Test with mixed types (should handle the error)
+result2 <- try(safe_sqrt(test_vector2), silent = TRUE)
+print("Result 2 (mixed types - should show error message):")
+print(result2)
+
+# Test with negative numbers
+result3 <- safe_sqrt(test_vector3)
+print("Result 3 (with negative number):")
+print(result3)
+
+# Test with handle_negative = FALSE
+result4 <- try(safe_sqrt(test_vector3, handle_negative = FALSE), silent = TRUE)
+print("Result 4 (negative numbers not allowed):")
+print(result4)
+```
+
+---
+
+## Lesson 3: Systematic Troubleshooting
+
+Beyond specific tools, developing a systematic approach to debugging will make you more efficient at solving problems. This section covers structured approaches to troubleshooting.
+
+### The Debugging Mindset
+
+Effective debugging requires:
+* Patience and persistence
+* Systematic, methodical thinking
+* Breaking complex problems into smaller parts
+* Formulating and testing hypotheses
+
+### Isolating the Problem
+
+When facing a complex error, try to:
+
+1. **Create a minimal reproducible example (reprex)**
+   * Strip down your code to the smallest version that still produces the error
+   * Remove unnecessary data or code that isn't relevant to the problem
+
+2. **Binary search debugging**
+   * Comment out half of your code to see if the error still occurs
+   * If it does, the problem is in the remaining half; if not, it's in the half you commented out
+   * Repeat this process, narrowing down the location of the error
+
+```{r chunk-13, eval=FALSE}
+# Example of code you might need to debug
+complex_function <- function() {
+  # Step 1 - Data loading
+  # ...
+  
+  # Step 2 - Data preprocessing
+  # ...
+  
+  # Step 3 - Analysis
+  # ...
+  
+  # Step 4 - Visualization
+  # ...
+}
+
+# Binary search approach:
+# 1. Comment out steps 3 & 4 to see if error occurs in steps 1 & 2
+# 2. If error still occurs, comment out step 2 to check if it's in step 1
+# 3. Continue narrowing down until you find the exact line
+```
+
+### Verifying Assumptions
+
+Many bugs stem from incorrect assumptions about:
+* What functions do
+* What data contains
+* The state of objects at different points in code execution
+
+Always verify these assumptions:
+
+```{r chunk-14}
+# Check function behavior with simple inputs
+head(mtcars, 2)  # Make sure you understand what head() does
+
+# Check data types and structures
+typeof(mtcars$mpg)
+is.data.frame(mtcars)
+dim(mtcars)
+
+# Check for missing values
+sum(is.na(mtcars))
+
+# Check for unexpected values
+summary(mtcars$mpg)
+range(mtcars$mpg)
+```
+
+### Using Version Control for Debugging
+
+Version control systems like Git can be valuable debugging tools:
+
+1. **Bisect through commits**:
+   * If your code worked before, use `git bisect` to find which commit introduced the bug
+
+2. **Compare working and non-working versions**:
+   * Use `git diff` to see what changed between versions
+
+3. **Revert to a known good state**:
+   * When completely stuck, you can fall back to a version you know works
+
+### Rubber Duck Debugging
+
+Sometimes, the mere act of explaining your code helps you spot the issue:
+
+1. Explain your code line by line to an inanimate object (or a patient colleague)
+2. Articulate what each line is supposed to do
+3. Describe the expected vs. actual behavior
+4. Often, you'll spot the issue while explaining
+
+**Exercise 3.1: Isolating Bugs**
+
+The following function has multiple issues. Use a systematic approach to identify and fix them.
+
+```{webr chunk-ex3-1}
+#| exercise: ex3-1
+#| solution_hidden: true
+library(tidyverse)
+
+# This function attempts to calculate the mean of each column in a data frame,
+# after filtering rows based on a condition. It has several bugs.
+analyze_data <- function(data, filter_col, min_value) {
+  # Step 1: Check input data
+  if (!is.data.frame(data)) {
+    stop("Input must be a data frame")
+  }
+  
+  # Step 2: Filter the data
+  # Bug 1: Missing comma in filter syntax
+  filtered_data <- data[data[filter_col] > min_value]
+  
+  # Step 3: Calculate column means
+  # Bug 2: Using colMeans on a data frame that might contain non-numeric columns
+  result <- colMeans(filtered_data)
+  
+  # Step 4: Return results
+  # Bug 3: No return statement
+  result
+}
+
+# Test data
+test_df <- data.frame(
+  id = 1:5,
+  value = c(10, 20, 30, 40, 50),
+  category = c("A", "B", "A", "C", "B")
+)
+
+# Step 1: Test with simple inputs to identify errors
+test_result <- try(analyze_data(test_df, "value", 25), silent = TRUE)
+if (inherits(test_result, "try-error")) {
+  print("First attempt failed with error")
+}
+
+# Step 2: Fix bugs one by one
+analyze_data_fixed <- function(data, filter_col, min_value) {
+  # Fix 1: Input validation
+  if (!is.data.frame(data)) {
+    stop("Input must be a data frame")
+  }
+  
+  if (!filter_col %in% names(data)) {
+    stop(paste("Column", filter_col, "not found in data"))
+  }
+  
+  # Fix 2: Proper filtering syntax
+  filtered_data <- data[data[[filter_col]] > min_value, ]
+  
+  # Fix 3: Handle empty result
+  if (nrow(filtered_data) == 0) {
+    warning("No rows match the filter criteria")
+    return(NULL)
+  }
+  
+  # Fix 4: Calculate means only for numeric columns
+  numeric_cols <- sapply(filtered_data, is.numeric)
+  if (sum(numeric_cols) == 0) {
+    warning("No numeric columns found")
+    return(NULL)
+  }
+  
+  result <- colMeans(filtered_data[, numeric_cols, drop = FALSE])
+  
+  # Fix 5: Explicit return
+  return(result)
+}
+
+# Test the fixed function
+final_result <- analyze_data_fixed(test_df, "value", 25)
+print("Fixed function result:")
+print(final_result)
+
+# Test with a different filter
+final_result2 <- analyze_data_fixed(test_df, "value", 45)
+print("Test with higher threshold (should include warning):")
+print(final_result2)
+```
+
+**Exercise 3.2: Creating a Minimal Reproducible Example**
+
+Take this complex and error-prone code and create a minimal reproducible example that isolates the core issue.
+
+```{webr chunk-ex3-2}
+#| exercise: ex3-2
+#| solution_hidden: true
+library(tidyverse)
+
+# Complex function with an error somewhere
+process_data <- function(data, group_var, measure_var, do_transform = TRUE) {
+  # Validate inputs
+  if (!is.data.frame(data) || !group_var %in% names(data) || !measure_var %in% names(data)) {
+    stop("Invalid inputs")
+  }
+  
+  # Apply optional transformation
+  if (do_transform) {
+    data <- data %>%
+      mutate(across(where(is.numeric), ~ . + 100))
+  }
+  
+  # Group and summarize
+  result <- data %>%
+    group_by(across(all_of(group_var))) %>%
+    summarize(
+      mean_value = mean(!!sym(measure_var)),
+      count = n(),
+      .groups = "drop"
+    ) %>%
+    filter(count >= 2) %>%  # Error: Should be >= 1 if we want to keep all groups
+    arrange(desc(mean_value))
+  
+  # Make tidy names
+  names(result) <- str_replace_all(names(result), "_", ".")
+  
+  return(result)
+}
+
+# Sample data
+test_data <- data.frame(
+  group = c("A", "A", "B", "C", "C", "C"),
+  value = c(1, 2, 3, 4, 5, 6)
+)
+
+# Try running the function - it'll drop group B because it has only one record
+result_full <- try(process_data(test_data, "group", "value"), silent = TRUE)
+
+# Create a minimal reproducible example that isolates the issue
+minimal_reprex <- function() {
+  # Simplified data with just the key issue
+  simple_data <- data.frame(
+    group = c("A", "A", "B"),
+    value = c(1, 2, 3)
+  )
+  
+  # Core issue: The filter(count >= 2) drops single-row groups
+  problem_result <- simple_data %>%
+    group_by(group) %>%
+    summarize(
+      count = n(),
+      .groups = "drop"
+    ) %>%
+    filter(count >= 2)  # This drops group B
+  
+  print("Minimal example showing the issue:")
+  print(problem_result)  # Only shows group A, drops B
+  
+  # Fix:
+  result_fixed <- simple_data %>%
+    group_by(group) %>%
+    summarize(
+      count = n(),
+      .groups = "drop"
+    ) %>%
+    filter(count >= 1)  # Keep all groups
+  
+  print("Fixed version:")
+  print(result_fixed)  # Shows both groups A and B
+  
+  return(result_fixed) # Return the fixed result
+}
+
+# Run the minimal example and save the result
+result <- minimal_reprex()
+
+# Fix the full function
+process_data_fixed <- function(data, group_var, measure_var, do_transform = TRUE, min_count = 1) {
+  # Same function but with parameterized min_count and fixed filter
+  if (!is.data.frame(data) || !group_var %in% names(data) || !measure_var %in% names(data)) {
+    stop("Invalid inputs")
+  }
+  
+  if (do_transform) {
+    data <- data %>%
+      mutate(across(where(is.numeric), ~ . + 100))
+  }
+  
+  result <- data %>%
+    group_by(across(all_of(group_var))) %>%
+    summarize(
+      mean_value = mean(!!sym(measure_var)),
+      count = n(),
+      .groups = "drop"
+    ) %>%
+    filter(count >= min_count) %>%  # Now parameterized
+    arrange(desc(mean_value))
+  
+  names(result) <- str_replace_all(names(result), "_", ".")
+  
+  return(result)
+}
+
+# Test the fixed function
+result_fixed <- process_data_fixed(test_data, "group", "value")
+print("Result from fixed function:")
+print(result_fixed)  # Should show all groups A, B, and C
+```
+
+---
+
+## Part 2: Advanced  Topics and Best Practices
+
+---
+
+## Lesson 4: Advanced Debugging Techniques
+
+While the tools in Lesson 2 cover most day-to-day debugging, R offers more advanced techniques for complex scenarios, performance issues, and deeper inspection of R's object systems.
+
+### 1. Post-mortem Debugging with `recover()`
+
+The `recover()` function is invaluable when an error occurs and you want to inspect the environment of each function in the call stack at the time of the error. It's like `browser()` but activated *after* an error.
+
+To use it effectively, you can set it as the error handler globally:
+`options(error = recover)`
+
+When an error occurs, R will present a menu listing the function calls in the stack. You can select a number to enter the environment of that function call and inspect variables, just like in `browser()`.
+
+```{r chunk-15, eval=FALSE}
+# Set recover as the error handler
+options(error = recover)
+
+# Define a series of nested functions
+func_a <- function(x) {
+  func_b(x * 2)
+}
+
+func_b <- function(y) {
+  func_c(y + 5)
+}
+
+func_c <- function(z) {
+  if (z > 10) {
+    stop("Value too high in func_c!")
+  }
+  return(z / 2)
+}
+
+# Trigger an error
+# func_a(3) # This will result in z = (3*2)+5 = 11, triggering the stop()
+
+# After the error, you'd see a menu like:
+# Enter a frame number, or 0 to exit
+#
+# 1: func_a(3)
+# 2: func_b(x * 2)
+# 3: func_c(y + 5)
+#
+# Selection:
+#
+# Typing '3' would take you into func_c's environment where you can inspect 'z'.
+# Typing 'ls()' would show objects in that frame.
+# Typing 'z' would show its value.
+# Typing '0' exits recover.
+
+# Don't forget to reset the error option if you don't want recover globally
+# options(error = NULL)
+```
+**When to use `recover()`:**
+*   When an unexpected error halts a long computation.
+*   When you need to understand the state of multiple functions in the call stack leading to an error.
+*   When `traceback()` isn't enough and you need interactive inspection.
+
+### 2. Profiling Code with `Rprof()` and `profvis`
+
+Sometimes the "bug" isn't an error, but unexpectedly slow code. Profiling helps identify these performance bottlenecks.
+
+**a) `Rprof()`**
+R's built-in `Rprof()` function samples the call stack at regular intervals during code execution and writes the results to a file.
+
+```{r chunk-16, eval=FALSE}
+# Start profiling, output to "Rprof.out"
+Rprof("Rprof.out")
+
+# Your potentially slow code here
+slow_function <- function() {
+  total <- 0
+  for (i in 1e5) {
+    total <- total + log(sqrt(i))
+  }
+  return(total)
+}
+result <- slow_function()
+
+# Stop profiling
+Rprof(NULL)
+
+# Analyze the output
+summaryRprof("Rprof.out")
+# This gives a summary of time spent in each function.
+```
+The output of `summaryRprof()` can be a bit dense. It shows time spent in each function ("self" time) and time spent in that function plus functions it called ("total" time).
+
+**b) `profvis` Package**
+The `profvis` package provides an interactive visualization of profiling data, making it much easier to understand.
+
+```{r chunk-17, eval=FALSE}
+# install.packages("profvis") # If not already installed
+library(profvis)
+
+# Profile an expression
+profvis({
+  # Your potentially slow code here
+  slow_function <- function() {
+    total <- 0
+    for (i in 1e5) {
+      total <- total + log(sqrt(i)) # sqrt() is a bit redundant here with log()
+    }
+    return(total)
+  }
+  result <- slow_function()
+  
+  another_operation <- function(n) {
+    Sys.sleep(n) # Simulate some work
+  }
+  another_operation(0.5)
+})
+
+# This will open an interactive HTML widget in RStudio or your browser.
+# It shows a flame graph and data table, highlighting time-consuming calls.
+```
+`profvis` is highly recommended for a more intuitive understanding of where your code spends its time.
+
+### 3. Debugging S3 and S4 Methods
+
+R's object-oriented systems (S3 and S4) use generic functions and methods. Debugging them can be tricky because the actual code executed depends on the class of the object.
+
+**a) Finding Which Method is Called**
+*   `sloop::s3_dispatch()` or `sloop::s4_dispatch()`: These functions from the `sloop` package are excellent for seeing the method dispatch path.
+*   `methods()`: e.g., `methods(print)` shows all `print` methods. `methods(class = "lm")` shows all methods for `lm` objects.
+*   `getS3method()` / `getMethod()`: To retrieve the actual code of a specific method.
+
+```{r chunk-18, eval=FALSE}
+# install.packages("sloop") # If not already installed
+library(sloop)
+
+# S3 Example
+data_frame <- data.frame(x = 1:3, y = letters[1:3])
+s3_dispatch(print(data_frame))
+# This will show:
+# => print.data.frame
+#  * print.default
+
+# Get the code for print.data.frame
+# getS3method("print", "data.frame")
+
+# S4 Example (requires a class and generic with methods)
+setClass("Person", slots = c(name = "character", age = "numeric"))
+setGeneric("display", function(object) standardGeneric("display"))
+setMethod("display", "Person", function(object) {
+  cat("Name:", object@name, ", Age:", object@age, "\\n")
+})
+
+alice <- new("Person", name = "Alice", age = 30)
+s4_dispatch(display(alice))
+# => display,Person,ANY
+# Get the code for the method
+# getMethod("display", "Person")
+```
+
+**b) Debugging a Specific Method**
+Once you've identified the method, you can use `debug()` or `browser()` on it:
+*   `debug(getS3method("print", "data.frame"))`
+*   Or, if it's your own S4 method, you can put `browser()` directly in its source code.
+
+### 4. Global Error Handling Options: `options(error = ...)`
+
+We saw `options(error = recover)`. Another useful one is `options(error = dump.frames)`.
+*   `dump.frames` saves the call stack and environments to an object (default `last.dump`) when an error occurs.
+*   You can then use `debugger()` to perform post-mortem debugging on this dump.
+
+```{r chunk-19, eval=FALSE}
+# Set dump.frames as the error handler
+options(error = dump.frames)
+
+# Define a function that will cause an error
+error_function <- function(a, b) {
+  a + b # This will error if b is a string
+}
+
+# Trigger an error
+# error_function(5, "hello")
+
+# Now, the dump is saved. You can inspect it:
+# debugger(last.dump)
+# This will start a browser-like session for the saved frames.
+
+# To list saved dumps:
+# ls(pattern = ".dump$")
+
+# Reset error option
+# options(error = NULL)
+```
+This is useful for non-interactive sessions (like batch scripts) where `recover` can't be used directly. You can save the dump and analyze it later.
+
+**Exercise 4.1: Using `recover()`**
+
+1.  Set `options(error = recover)`.
+2.  Write a function `calculate_ratio(a, b)` that returns `a / b`.
+3.  Inside `calculate_ratio`, add a check: if `b` is zero, `stop("Division by zero!")`.
+4.  Call `calculate_ratio(10, 0)`.
+5.  When `recover` prompts you, enter the frame for `calculate_ratio`.
+6.  Inspect the values of `a` and `b`.
+7.  Exit `recover` and reset `options(error = NULL)`.
+
+```{webr chunk-ex4-1}
+#| exercise: ex4-1
+#| solution_hidden: true
+
+# Solution for Exercise 4.1 (conceptual, as recover is interactive)
+# options(error = recover) # Step 1
+
+calculate_ratio <- function(a, b) { # Step 2
+  if (b == 0) { # Step 3
+    stop("Division by zero!")
+  }
+  return(a / b)
+}
+
+# calculate_ratio(10, 0) # Step 4
+# At this point, recover() would activate.
+# User would select the frame for calculate_ratio.
+# Then inspect 'a' (shows 10) and 'b' (shows 0).
+# Then exit recover.
+
+# options(error = NULL) # Step 7
+
+print("Exercise 4.1: Conceptual steps for using recover() described above.")
+print("To run interactively: uncomment options() and the function call, then run in an R console.")
+```
+
+**Exercise 4.2: Profiling with `profvis`**
+
+1.  Create a function `generate_data(n_rows, n_cols)` that creates a data frame with `n_rows` and `n_cols`. Each cell should be a random number `runif(1)`.
+2.  Create another function `process_data(df)` that:
+    *   Calculates the mean of each column.
+    *   Calculates the sum of each row.
+    *   Does this in a loop 10 times (just to make it take a bit longer).
+3.  Use `profvis` to profile calling `generate_data(1000, 100)` and then passing its result to `process_data()`.
+4.  Identify which parts of your functions take the most time.
+
+```{webr chunk-ex4-2}
+#| exercise: ex4-2
+#| solution_hidden: true
+# library(profvis) # Not available in webr environment for direct execution
+
+# Solution for Exercise 4.2 (conceptual for profvis)
+generate_data <- function(n_rows, n_cols) {
+  Sys.sleep(0.1) # Simulate some work
+  matrix_data <- matrix(runif(n_rows * n_cols), nrow = n_rows, ncol = n_cols)
+  df <- as.data.frame(matrix_data)
+  return(df)
+}
+
+process_data <- function(df) {
+  col_means_list <- list()
+  row_sums_list <- list()
+  for (i in 1:10) { # Loop to make it take longer
+    Sys.sleep(0.05) # Simulate work
+    col_means_list[[i]] <- colMeans(df, na.rm = TRUE)
+    row_sums_list[[i]] <- rowSums(df, na.rm = TRUE)
+  }
+  return(list(col_means = col_means_list, row_sums = row_sums_list))
+}
+
+# Conceptual profvis usage:
+# profvis({
+#   my_data <- generate_data(1000, 100)
+#   processed_results <- process_data(my_data)
+# })
+
+print("Exercise 4.2: Functions defined. Use profvis in a local R environment to see the profile.")
+print("Simulated work with Sys.sleep() added for demonstration.")
+
+# Example of running without profvis for webr
+my_data_ex4_2 <- generate_data(100, 10) # Smaller for webr
+processed_results_ex4_2 <- process_data(my_data_ex4_2)
+print("Sample run completed (without actual profiling display).")
+```
+
+---
+
+## Part 3: Specialized Debugging and Best Practices
+
+---
+
+## Lesson 5: Debugging in Specific Contexts
+
+Debugging challenges can vary significantly depending on the R environment or framework you're working with. This lesson explores common issues and tailored strategies for Shiny applications, R Markdown/Quarto documents, and custom R packages.
+
+### 1. Debugging Shiny Applications
+
+Shiny apps introduce reactivity, which can make debugging less straightforward. Errors might stem from server logic, UI definitions, or the interaction between them.
+
+**Common Issues:**
+*   **Reactivity Problems:** Outputs not updating, observers firing unexpectedly, or infinite reactive loops.
+*   **Server/UI Disconnects:** UI elements not correctly linked to server-side logic or vice-versa.
+*   **Slow Performance:** Bottlenecks in reactive expressions or data processing.
+*   **Silent Errors:** Errors within reactive expressions might not always stop the app but can lead to incorrect behavior.
+
+**Debugging Tools & Techniques:**
+*   **`browser()` in Server Logic:** Place `browser()` inside `reactive()` expressions, `observeEvent()`, or `renderPlot()` functions to inspect values and flow at specific points.
+    ```{r chunk-l5-shiny-browser, eval=FALSE}
+    # server.R or app.R (server part)
+    server <- function(input, output) {
+      data_reactive <- reactive({
+        # browser() # Uncomment to debug this reactive expression
+        req(input$my_slider)
+        data_frame <- data.frame(x = 1:input$my_slider, y = rnorm(input$my_slider))
+        # print(head(data_frame)) # Useful for quick checks
+        return(data_frame)
+      })
+    
+      output$my_plot <- renderPlot({
+        df <- data_reactive()
+        # browser() # Uncomment to inspect df before plotting
+        plot(df$x, df$y)
+      })
+    }
+    ```
+*   **`print()` Statements:** Use `print()` or `cat()` within reactive expressions to output values to the R console. Remember that these will execute every time the reactive expression re-evaluates.
+*   **`isolate()`:** Use `isolate()` to read a reactive value without creating a dependency, which can help pinpoint unnecessary re-evaluations.
+*   **`shiny::reactiveLog()` and `reactlog` package:** These tools provide a visual representation of the reactive graph and its execution, helping to understand dependencies and data flow. `reactlog::reactlog_show()` or `shiny::showReactLog()` can be very insightful.
+    ```{r chunk-l5-shiny-reactlog, eval=FALSE}
+    # At the top of your app.R or global.R
+    # options(shiny.reactlog = TRUE) # For built-in reactive log
+    
+    # Or using the reactlog package (recommended)
+    # install.packages("reactlog")
+    # library(reactlog)
+    # reactlog_enable()
+    
+    # After running the app and interacting with it:
+    # reactlog_show() # Opens the visualization
+    ```
+*   **Shiny's Built-in Debugging Aids:** Shiny often prints useful information to the R console, including error messages that might not be visible in the app's UI.
+*   **RStudio's Shiny Debugging Tools:** RStudio provides features like direct inspection of reactive values when the app is running.
+
+**Tips for Debugging Shiny Apps:**
+*   **Isolate Components:** Test reactive expressions or modules individually if possible.
+*   **Simplify:** If an app is complex, try to reproduce the issue in a minimal version.
+*   **Check Inputs:** Ensure `input` values are what you expect (e.g., correct type, not NULL when `req()` is needed).
+
+### 2. Debugging R Markdown and Quarto Documents
+
+When knitting R Markdown (`.Rmd`) or rendering Quarto (`.qmd`) documents, errors often occur within code chunks.
+
+**Common Issues:**
+*   **Code Chunk Errors:** An R error in a specific chunk stops the rendering process.
+*   **Environment Conflicts:** Variables or functions defined in one chunk might not be available or might be overwritten in another, depending on chunk options.
+*   **Rendering Problems:** Issues with output formats (HTML, PDF, Word), especially with LaTeX for PDF output.
+*   **Package/Dependency Issues:** A required package might not be installed or loaded in the environment where the document is rendered.
+
+**Debugging Tools & Techniques:**
+*   **Run Chunks Individually:** Execute code chunks one by one within RStudio (or your IDE) to pinpoint where an error occurs.
+*   **Chunk Option `error = TRUE`:** `knitr::opts_chunk$set(error = TRUE)` (globally) or ````{r error=TRUE}` (for a specific chunk) will allow the document to render even if a chunk has an error, printing the error message in the output. This is useful for identifying multiple errors at once.
+*   **Chunk Option `debug = TRUE`:** ````{r debug=TRUE}` (for a specific chunk) can sometimes provide more detailed debugging information or invoke a debugger, though its behavior can vary.
+*   **Inspect Intermediate Files:** For complex issues, especially with PDF output, inspect the intermediate `.md` or `.tex` files generated by `knitr` or Quarto. This can reveal formatting or LaTeX-specific errors.
+    *   Use `keep_md: true` or `keep_tex: true` in the YAML header.
+*   **Simplify the Document:** Comment out sections or chunks to isolate the problematic part.
+*   **Check `sessionInfo()`:** Ensure that the R session rendering the document has all necessary packages at the correct versions.
+
+**Tips for Debugging `.Rmd`/`.qmd` Files:**
+*   **Chunk Labels:** Always use unique and descriptive labels for your code chunks.
+*   **Cache with Caution:** While caching (`cache = TRUE`) speeds up rendering, it can sometimes hide issues or use stale results. Clear the cache if you suspect problems.
+*   **Small, Focused Chunks:** Break down long computations into smaller, more manageable chunks.
+
+### 3. Debugging Custom R Packages
+
+Developing R packages introduces its own set of debugging challenges, often related to namespaces, documentation, or the build/check process.
+
+**Common Issues:**
+*   **Namespace Errors:** Functions not being exported or imported correctly (`Error: object 'X' not found` when it should be available).
+*   **Documentation Mismatches:** Discrepancies between function arguments in code and in `.Rd` files (often caught by `R CMD check`).
+*   **Failing `R CMD check`:** Various warnings or errors related to coding standards, examples, tests, or vignette building.
+*   **Test Failures:** Unit tests in `tests/testthat/` not passing.
+
+**Debugging Tools & Techniques:**
+*   **`devtools::load_all()` (or `pkgload::load_all()`):** This is the most crucial tool. It simulates package installation and loading, making all exported and internal functions available for interactive testing in the console. Use it frequently during development.
+*   **`devtools::check()`:** Runs `R CMD check`, which performs a comprehensive suite of checks on your package. Address all errors, warnings, and notes.
+*   **`devtools::test()` (or `testthat::test_local()`):** Runs your unit tests. Use `browser()` within your test files or the functions being tested to debug failures.
+*   **RStudio's Build Pane:** Provides convenient buttons for `Load All`, `Test Package`, and `Check Package`.
+*   **`browser()` in Package Functions:** You can place `browser()` directly into your package's R functions. After `devtools::load_all()`, calling the function will trigger the debugger.
+*   **Debugging Exported vs. Internal Functions:** Remember that internal functions (not exported) are accessed with `packageName:::functionName`, while exported ones are `packageName::functionName` or directly after `library(packageName)`.
+
+**Tips for Debugging Packages:**
+*   **Iterative Development:** `Load All` and test small changes frequently.
+*   **Read `R CMD check` Output Carefully:** The messages, even notes, often point to important issues or best practices.
+*   **Use `roxygen2`:** For generating documentation and managing the `NAMESPACE` file. This reduces manual errors.
+*   **Write Comprehensive Unit Tests:** Good tests are your first line of defense and a great debugging aid.
+
+**Exercise 5.1: Debugging a (Conceptual) Shiny App**
+
+Imagine a Shiny app with an input `sliderInput("num", "Choose a number", 1, 10, 5)` and an output that should display `input$num * 2`. The output is not updating.
+
+1.  Where would you first place `browser()` or `print()` statements to investigate?
+2.  What are possible reasons for the output not updating?
+
+```{webr chunk-ex5-1}
+#| exercise: ex5-1
+#| solution_hidden: true
+
+# Conceptual Solution for Exercise 5.1
+
+# 1. Where to place browser() or print():
+#    - Inside the reactive expression that calculates `input$num * 2`.
+#    - Inside the render function for the output that displays the result.
+#    Example:
+#    server <- function(input, output) {
+#      output$doubled_value <- renderText({
+#        current_num <- input$num
+#        print(paste("Slider value:", current_num)) # Print statement
+#        # browser() # Or browser()
+#        result <- current_num * 2
+#        print(paste("Result:", result))
+#        return(result)
+#      })
+#    }
+
+# 2. Possible reasons for the output not updating:
+#    - The output UI element is not correctly defined or named.
+#    - The `renderText` (or similar) function is not correctly assigned to `output$doubled_value`.
+#    - The reactive expression is not actually re-evaluating (e.g., `input$num` is not being read reactively).
+#    - An error is occurring silently within the reactive expression before the new value is returned.
+#    - The UI is not correctly displaying the output (e.g., wrong output function used in UI like `textOutput` vs `verbatimTextOutput`).
+
+print("Exercise 5.1: Conceptual debugging steps for a Shiny app described above.")
+```
+
+**Exercise 5.2: Debugging an R Markdown Chunk**
+
+An R Markdown document has a chunk that loads data and then tries to plot it. The plot is not appearing, and knitting stops with an error "object 'my_data' not found" in the plotting chunk.
+
+1.  What is the most likely cause related to chunk execution order or environment?
+2.  How would you verify this and fix it?
+
+```{webr chunk-ex5-2}
+#| exercise: ex5-2
+#| solution_hidden: true
+
+# Conceptual Solution for Exercise 5.2
+
+# 1. Most likely cause:
+#    - The chunk that loads `my_data` was not executed before the chunk that tries to plot `my_data`.
+#    - The chunk loading `my_data` might have an error itself, preventing `my_data` from being created.
+#    - `my_data` was created in a chunk, but then removed or modified before the plotting chunk (less likely for simple "not found").
+#    - Chunk options like `eval=FALSE` on the data loading chunk, or a different `engine` that doesn't share the R environment.
+
+# 2. How to verify and fix:
+#    - **Verify:**
+#      - Run the data loading chunk manually in the R console or RStudio.
+#      - Check if `my_data` exists in the environment after running the loading chunk (`ls()`, `exists("my_data")`).
+#      - Check for any error messages when running the data loading chunk.
+#      - Ensure the plotting chunk comes *after* the data loading chunk in the document.
+#    - **Fix:**
+#      - Ensure the data loading chunk is correctly written and executes without errors before the plotting chunk.
+#      - Make sure `eval=TRUE` (which is default) for the data loading chunk.
+#      - If using RStudio, try "Run All Chunks Above" for the plotting chunk.
+
+print("Exercise 5.2: Conceptual debugging steps for an R Markdown document described above.")
+```
+
+---
+
+## Lesson 6: Preventative Measures and Writing Debuggable Code
+
+While knowing how to debug is crucial, writing code that is less prone to bugs and easier to debug in the first place can save significant time and effort. This lesson focuses on proactive strategies.
+
+### 1. Unit Testing with `testthat`
+
+Unit tests are small pieces of code that verify that individual functions (units) of your code work as expected. The `testthat` package is the standard for unit testing in R.
+
+**Importance of Unit Tests:**
+*   **Catch Bugs Early:** Detect regressions (when new changes break existing functionality) immediately.
+*   **Facilitate Refactoring:** Allow you to change code internals with confidence, as long as tests still pass.
+*   **Serve as Documentation:** Tests demonstrate how your functions are intended to be used and what their expected outputs are.
+*   **Improve Code Design:** Thinking about how to test a function often leads to better, more modular design.
+
+**Basic Structure of `testthat` Tests:**
+Tests are typically organized in files within the `tests/testthat/` directory of a package (e.g., `tests/testthat/test-my_function.R`).
+
+*   **`test_that("description of what is being tested", { ... })`:** Defines a block of related tests.
+*   **Expectation Functions (`expect_*`)**: These functions make assertions about your code.
+    *   `expect_equal(object, expected_value)`: Checks for exact equality (for numbers, considers tolerance).
+    *   `expect_identical(object, expected_value)`: Checks for exact, bit-for-bit equality.
+    *   `expect_true(condition)`, `expect_false(condition)`: Checks if a condition is TRUE or FALSE.
+    *   `expect_error(expression_that_should_error, regexp_for_error_message)`: Checks if code throws an error.
+    *   `expect_warning(...)`, `expect_message(...)`, `expect_output(...)`.
+    *   `expect_s3_class(object, "class_name")`, `expect_s4_class(...)`.
+    *   And many more!
+
+```{r chunk-l6-testthat, eval=FALSE}
+# Example: tests/testthat/test-addition.R
+
+# Source the function to be tested (if not in a package being loaded via devtools)
+# source("../../R/addition.R") # Assuming your function is in R/addition.R
+
+# A simple function to test
+add_numbers <- function(x, y) {
+  if (!is.numeric(x) || !is.numeric(y)) {
+    stop("Inputs must be numeric")
+  }
+  return(x + y)
+}
+
+library(testthat)
+
+test_that("add_numbers works with positive integers", {
+  expect_equal(add_numbers(2, 3), 5)
+  expect_equal(add_numbers(100, 200), 300)
+})
+
+test_that("add_numbers works with zero and negative numbers", {
+  expect_equal(add_numbers(0, 5), 5)
+  expect_equal(add_numbers(-5, 5), 0)
+  expect_equal(add_numbers(-5, -5), -10)
+})
+
+test_that("add_numbers handles non-numeric input", {
+  expect_error(add_numbers("a", 5), "Inputs must be numeric")
+  expect_error(add_numbers(5, "b"), "Inputs must be numeric")
+})
+
+# To run tests for a package:
+# devtools::test()
+
+# To run a specific test file:
+# testthat::test_file("tests/testthat/test-addition.R")
+```
+
+**Running Tests:**
+*   For packages: `devtools::test()` or RStudio's Build pane.
+*   For individual files: `testthat::test_file("path/to/test-file.R")`.
+
+### 2. Defensive Programming
+
+Defensive programming involves writing code that anticipates potential problems and handles them gracefully, rather than assuming inputs and states will always be perfect.
+
+**Techniques:**
+*   **Assertions (`stopifnot()`):**
+    `stopifnot()` checks if its arguments are all TRUE. If not, it throws an error. It's good for preconditions at the beginning of a function.
+    ```{r chunk-l6-stopifnot}
+    calculate_mean_positive <- function(vec) {
+      stopifnot(is.numeric(vec), length(vec) > 0, all(vec > 0))
+      mean(vec)
+    }
+    
+    # calculate_mean_positive(c(1, 2, -3)) # This will error due to all(vec > 0) being false
+    # calculate_mean_positive(c())       # This will error due to length(vec) > 0 being false
+    print(calculate_mean_positive(c(1, 2, 3))) # This works
+    ```
+*   **Input Validation (Checking Arguments):**
+    Explicitly check function arguments for type, class, length, range, etc., and provide informative error messages if they are invalid.
+    ```{r chunk-l6-input-validation}
+    create_greeting <- function(name, language = "en") {
+      if (!is.character(name) || length(name) != 1) {
+        stop("`name` must be a single string.", call. = FALSE)
+      }
+      if (!language %in% c("en", "es")) {
+        stop("`language` must be 'en' or 'es'.", call. = FALSE)
+      }
+      
+      if (language == "en") paste("Hello,", name)
+      else paste("Hola,", name)
+    }
+    print(create_greeting("Alice"))
+    # print(create_greeting("Bob", "fr")) # Errors
+    ```
+    The `assertthat` package provides more expressive assertion functions (e.g., `assert_that(is.number(x))`).
+*   **Graceful Failure:** Instead of just erroring, sometimes functions can return a specific value (e.g., `NA`, `NULL`, an empty data frame) or issue a warning for non-critical issues.
+*   **Clear Error Messages:** Make error messages informative. Tell the user *what* went wrong, *why*, and potentially *how to fix it*.
+
+### 3. Code Style and Readability
+
+Readable code is easier to understand, maintain, and debug (by yourself and others).
+
+**Key Principles:**
+*   **Consistent Style:** Follow a style guide (e.g., the [tidyverse style guide](https://style.tidyverse.org/)). Use linters (like the `lintr` package) to check and enforce style.
+*   **Meaningful Names:** Choose descriptive names for variables, functions, and arguments. Avoid overly short or cryptic names.
+    *   Good: `calculate_average_income`, `customer_data`
+    *   Less good: `avginc`, `df1`
+*   **Effective Commenting:** Comments should explain the "why" (the intent or logic), not just the "what" (which should be clear from the code itself). Comment complex sections or non-obvious logic.
+*   **Modularity (Small Functions):** Break down complex tasks into smaller, single-purpose functions. Each function should do one thing well. This makes them easier to test and debug.
+*   **Limit Side Effects:** Functions are easiest to reason about when they don't modify objects outside their own environment (i.e., they don't have side effects). Prefer functions that take inputs and return outputs.
+*   **DRY (Don't Repeat Yourself):** If you find yourself copying and pasting code, consider writing a function instead.
+*   **Whitespace:** Use whitespace (blank lines, indentation) to structure code visually and improve readability.
+
+**Exercise 6.1: Writing a `testthat` Test**
+
+Given the following function:
+`trim_vector <- function(x, n = 1) { x[(n+1):(length(x)-n)] }`
+
+1.  Write at least two `test_that()` blocks for this function.
+2.  Include tests for valid inputs and edge cases (e.g., what if `n` is too large? What if `x` is short?).
+
+```{webr chunk-ex6-1}
+#| exercise: ex6-1
+#| solution_hidden: true
+
+trim_vector <- function(x, n = 1) {
+  if (n < 0) stop("`n` must be non-negative")
+  len_x <- length(x)
+  start_index <- n + 1
+  end_index <- len_x - n
+  if (start_index > end_index + 1) { # Allows empty vector if n is large enough to trim everything
+      return(x[0]) # Return empty vector of same type
+  }
+  return(x[start_index:end_index])
+}
+
+test_that("trim_vector works with basic valid inputs", {
+  expect_equal(trim_vector(1:10, n = 1), 2:9)
+  expect_equal(trim_vector(letters[1:5], n = 2), letters[3])
+  expect_equal(trim_vector(c(TRUE, FALSE, TRUE, FALSE), n = 0), c(TRUE, FALSE, TRUE, FALSE))
+})
+
+test_that("trim_vector handles edge cases", {
+  expect_equal(trim_vector(1:5, n = 2), 3) # Trims to a single element
+  expect_equal(length(trim_vector(1:5, n = 3)), 0) # n is large, results in empty vector
+  expect_equal(length(trim_vector(1:2, n = 1)), 0) # Trims everything
+  expect_equal(trim_vector(c(), n = 1), c()) # Empty input
+  expect_error(trim_vector(1:5, n = -1)) # Invalid n
+})
+
+print("Exercise 6.1: testthat tests for trim_vector defined and conceptually run.")
+```
+
+**Exercise 6.2: Improving Code Readability**
+
+Consider this poorly written function:
+`f <- function(d, c1, c2, v) { d_s <- d[d[[c1]] > v, ]; aggregate(d_s[[c2]] ~ d_s[[c1]], FUN=mean) }`
+
+1.  Rewrite this function with more descriptive names and better formatting.
+2.  Add comments explaining its purpose and arguments.
+3.  Add basic input validation.
+
+```{webr chunk-ex6-2}
+#| exercise: ex6-2
+#| solution_hidden: true
+
+# Original function:
+# f <- function(d, c1, c2, v) { d_s <- d[d[[c1]] > v, ]; aggregate(d_s[[c2]] ~ d_s[[c1]], FUN=mean) }
+
+# Rewritten function:
+calculate_mean_by_group_filtered <- function(data, group_col_name, value_col_name, filter_threshold) {
+  # Calculates the mean of 'value_col_name' for each group in 'group_col_name',
+  # after filtering 'data' where 'group_col_name' is greater than 'filter_threshold'.
+  # 
+  # Args:
+  #   data: A data frame.
+  #   group_col_name: Character string, name of the column to group by and filter on.
+  #   value_col_name: Character string, name of the column to calculate the mean from.
+  #   filter_threshold: Numeric, the value to filter 'group_col_name' by (rows kept if > threshold).
+  #
+  # Returns:
+  #   A data frame with group means, or NULL if inputs are invalid.
+
+  # Input validation
+  if (!is.data.frame(data)) {
+    stop("Input 'data' must be a data frame.")
+  }
+  if (!is.character(group_col_name) || length(group_col_name) != 1 || !group_col_name %in% names(data)) {
+    stop("'group_col_name' must be a valid column name in 'data'.")
+  }
+  if (!is.character(value_col_name) || length(value_col_name) != 1 || !value_col_name %in% names(data)) {
+    stop("'value_col_name' must be a valid column name in 'data'.")
+  }
+  if (!is.numeric(data[[group_col_name]])) {
+    stop(paste("Column '", group_col_name, "' must be numeric for filtering.", sep=""))
+  }
+   if (!is.numeric(data[[value_col_name]])) {
+    stop(paste("Column '", value_col_name, "' must be numeric for calculating mean.", sep=""))
+  }
+  if (!is.numeric(filter_threshold) || length(filter_threshold) != 1) {
+    stop("'filter_threshold' must be a single numeric value.")
+  }
+
+  # Filter the data: keep rows where the group_col_name value is greater than filter_threshold
+  subset_data <- data[data[[group_col_name]] > filter_threshold, ]
+
+  if (nrow(subset_data) == 0) {
+    warning("No data remains after filtering. Returning empty result.")
+    # Create an empty data frame with expected column names
+    # The names will be group_col_name and value_col_name (or similar depending on aggregate)
+    # For simplicity, returning NULL or an empty named list might also be an option.
+    # Here, we try to match aggregate's typical output structure for consistency.
+    empty_df <- data.frame(matrix(ncol = 2, nrow = 0))
+    names(empty_df) <- c(group_col_name, value_col_name) # Adjust if aggregate names differently
+    return(empty_df)
+  }
+
+  # Construct the formula for aggregation dynamically
+  # e.g., value_column ~ group_column
+  formula_str <- paste(value_col_name, "~", group_col_name)
+  agg_formula <- as.formula(formula_str)
+  
+  # Aggregate to find the mean of value_col_name for each group in group_col_name
+  # The result of aggregate will have columns named after group_col_name and value_col_name (or x)
+  aggregated_results <- aggregate(agg_formula, data = subset_data, FUN = mean)
+  
+  return(aggregated_results)
+}
+
+# Example Usage (conceptual, as it depends on data)
+# test_df_ex6_2 <- data.frame(
+#   category = c(10, 20, 10, 30, 20, 30),
+#   amount = c(100, 150, 120, 200, 180, 220),
+#   other_col = letters[1:6]
+# )
+# result_ex6_2 <- calculate_mean_by_group_filtered(test_df_ex6_2, "category", "amount", 15)
+# print(result_ex6_2)
+
+print("Exercise 6.2: Rewritten function 'calculate_mean_by_group_filtered' defined.")
+```
+
+---
+
+## Course Conclusion
+
+Congratulations on completing the Troubleshooting and Debugging in R course! 
+
+Throughout these lessons, you've learned to:
+*   Interpret R's error messages effectively.
+*   Utilize a range of built-in debugging tools like `browser()`, `traceback()`, `tryCatch()`.
+*   Apply systematic approaches to isolate and resolve bugs.
+*   Leverage advanced techniques such as `recover()` for post-mortem debugging and `profvis` for performance profiling.
+*   Adapt your debugging strategies for specific contexts like Shiny, R Markdown/Quarto, and package development.
+*   Embrace preventative measures, including writing unit tests with `testthat`, practicing defensive programming, and maintaining a clean, readable code style.
+
+Debugging is a skill honed through practice. The more you encounter and solve errors, the more proficient you'll become. Remember to be patient, methodical, and don't hesitate to use the tools and techniques covered here.
+
+Happy coding, and may your bugs be few and easy to find!
+
+---

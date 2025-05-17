@@ -7,7 +7,9 @@
   },
   {
     "listing": "/advanced.html",
-    "items": []
+    "items": [
+      "/advanced/troubleshooting-debugging/index.html"
+    ]
   },
   {
     "listing": "/beginner.html",

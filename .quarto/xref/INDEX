@@ -46,5 +46,8 @@
   },
   "intermediate/tidyverse-II/index.qmd": {
     "index.html": "3e80042b"
+  },
+  "advanced/troubleshooting-debugging/index.qmd": {
+    "index.html": "ff82dac5"
   }
 }
