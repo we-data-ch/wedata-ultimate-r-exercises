@@ -1,14 +1,14 @@
 [
   {
-    "listing": "/intermediate.html",
-    "items": [
-      "/intermediate/tidyverse-II/index.html"
-    ]
-  },
-  {
     "listing": "/advanced.html",
     "items": [
       "/advanced/troubleshooting-debugging/index.html"
+    ]
+  },
+  {
+    "listing": "/intermediate.html",
+    "items": [
+      "/intermediate/tidyverse-II/index.html"
     ]
   },
   {
